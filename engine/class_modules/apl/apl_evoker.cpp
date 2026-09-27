@@ -78,11 +78,12 @@ void devastation( player_t* p )
   precombat->add_action( "hover,if=talent.slipstream" );
   precombat->add_action( "living_flame" );
 
-  default_->add_action( "potion,if=(!talent.dragonrage|buff.dragonrage.up)&buff.bloodlust.react|fight_remains<35" );
+  default_->add_action( "potion,if=!talent.dragonrage|buff.dragonrage.up|fight_remains<35" );
   default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?((cooldown.eternity_surge.remains-8)>?(cooldown.fire_breath.remains-8))" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.dragonrage.up|fight_remains<35" );
   default_->add_action( "variable,name=can_use_empower,op=set,value=cooldown.dragonrage.remains>=gcd.max*variable.dr_prep_time,if=talent.animosity&talent.dragonrage" );
   default_->add_action( "variable,name=use_pyre_fs,op=set,value=talent.legacy_of_the_lifebinder&(active_enemies>=5|active_enemies>=3&(talent.volatility.rank=2|talent.feed_the_flames))" );
+  default_->add_action( "variable,name=cb_ready,op=set,value=(active_enemies>=4|active_enemies>=3&talent.volatility.rank=2)&talent.charged_blast&buff.charged_blast.stack>=15" );
   default_->add_action( "variable,name=use_tts,op=set,value=(cooldown.eternity_surge.remains<=action.fire_breath.usable_in),if=talent.legacy_of_the_lifebinder" );
   default_->add_action( "quell,use_off_gcd=1,if=target.debuff.casting.react" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -99,9 +100,9 @@ void devastation( player_t* p )
   sc->add_action( "deep_breath,if=active_enemies>=2,cancel_if=gcd.remains=0", "Using DB whenever is neutral at 2T and a gain above" );
   sc->add_action( "unbound_flame,if=!buff.essence_burst.at_max_stacks&buff.unbound_flame.remains<=(buff.unbound_flame.stack+3)*gcd.max*2" );
   sc->add_action( "unbound_flame,if=!buff.essence_burst.up&active_enemies>2&buff.mass_disintegrate_stacks.up" );
-  sc->add_action( "disintegrate,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&buff.charged_blast.stack<15" );
-  sc->add_action( "pyre,target_if=max:target.health.pct,if=(active_enemies>=5|active_enemies>=4&talent.volatility.rank=2)&!buff.mass_disintegrate_stacks.up|active_enemies>=4&talent.charged_blast&buff.charged_blast.stack>=15" );
-  sc->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1&active_enemies>=3" );
+  sc->add_action( "disintegrate,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&(buff.charged_blast.stack<15|!variable.cb_ready)", "Dedicated Mass Disintegrate" );
+  sc->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=5|active_enemies>=4&talent.volatility.rank=2|variable.cb_ready" );
+  sc->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1&active_enemies>=3", "Dedicated Normal Disintegrate" );
   sc->add_action( "azure_sweep,if=active_enemies>3&!buff.essence_burst.at_max_stacks&!buff.iridescence_blue.up" );
   sc->add_action( "living_flame,if=buff.burnout.up&buff.leaping_flames.up&active_enemies<=1+buff.leaping_flames.stack" );
   sc->add_action( "unbound_flame,if=!buff.essence_burst.at_max_stacks" );
@@ -115,7 +116,7 @@ void devastation( player_t* p )
   fs->add_action( "dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|target.time_to_die>=15&active_enemies>4|!raid_event.adds.exists|raid_event.adds.in=0" );
   fs->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&!variable.use_pyre_fs" );
   fs->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&variable.use_tts" );
-  fs->add_action( "call_action_list,name=es,if=variable.can_use_empower|buff.tip_the_scales.up", "Target Match with ES (Hitting everything is priority over lower ranks)" );
+  fs->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct,if=target.time_to_die>duration&(variable.can_use_empower|buff.tip_the_scales.up)", "Upranking is just not worth it for FS (might be when playing salvo but playing salvo on FS is unrealistic in the first place)" );
   fs->add_action( "call_action_list,name=fb_fs,if=variable.can_use_empower&dot.fire_breath_damage.refreshable&!buff.tip_the_scales.up", "Upranking in 2-3T is back on the menu boys" );
   fs->add_action( "pyre,target_if=max:target.health.pct,if=variable.use_pyre_fs" );
   fs->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,chain=1,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1" );
