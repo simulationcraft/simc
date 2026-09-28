@@ -12224,11 +12224,14 @@ struct putrefy_t final : public death_knight_spell_t
 
   void execute() override
   {
+    // Check n_charges before execute, as base action_t::execute consumes 1 charge. 
+    auto n_charges = std::floor( cooldown->charges_fractional() );
+
     death_knight_spell_t::execute();
 
     p()->pet_summon.putrefy_ghoul->execute();
 
-    if ( p()->talent.unholy.putrid_echoes.ok() && std::floor( cooldown->charges_fractional() ) > 1 )
+    if ( p()->talent.unholy.putrid_echoes.ok() && n_charges > 1 )
     {
       p()->pet_summon.putrefy_ghoul->execute();
       cooldown->start( this );
