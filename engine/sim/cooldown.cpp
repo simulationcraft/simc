@@ -666,8 +666,6 @@ double cooldown_t::charges_fractional() const
     {
       c += 1 - std::min( 1.0, current_charge_remains() / cooldown_duration( this ) );
     }
-    sim.print_debug( "CHARGES_FRACTIONAL_DEBUG: {} cooldown {} has fractional charges: {:.3f} (current={}), (max_charges={}), (is_recharging={})",
-                     *player, name_str, c, current_charge, charges, recharge_event ? "no" : "yes" );
     return c;
   }
   else
