@@ -310,97 +310,62 @@ class TraitSet(DataSet):
         return (key_1, entry['class_'], spec)
 
     def _filter(self, **kwargs):
-        _spec_map = dict(
-            (entry.id_parent, entry.id_spec) for entry in self.db('SpecSetMember').values()
+        _skill_lines = set(
+            entry.ref('id_skill').id
+            for entry in self.db('SkillRaceClassInfo').values()
+            if entry.flags & 0x400
         )
 
-        # List of SkillLineXTraitTree entries related to player skills
-        _trait_skills = [
-            entry for entry in self.db('SkillLineXTraitTree').values()
-                if util.class_id(player_skill=entry.id_skill_line) != -1
-        ]
+        _trait_trees = {
+            entry.id_trait_tree: entry.ref('id_trait_tree')
+            for entry in self.db('SkillLineXTraitTree').values()
+            if entry.id_skill_line in _skill_lines
+        }
 
-        # Map of TraitTree entries
-        _trait_trees = dict(
-            (data.id_trait_tree, (data.ref('id_trait_tree'), data.id_skill_line))
-                for data in _trait_skills
-        )
+        # TraitNodeGroupXTraitCost is empty, as this is used to map what
+        # Trait Tree belongs to what specialization. As a result, walking
+        # TraitTreeXTraitCurrency does nothing and it can be skipped for Forever
+        # trait implementation.
 
-        # 12.0.7 omnium folio
-        if 1186 in self.db('TraitTree'):
-            _trait_trees[1186] = (self.db('TraitTree')[1186], 0)
+        _trait_node_groups = {
+            entry.id: {'group': entry, 'nodes': {}, 'cond': set()}
+            for trait_tree in _trait_trees.values()
+            for entry in trait_tree.child_refs('TraitNodeGroup')
+        }
 
-        # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
-        _trait_node_group_map = dict()
-        for entry in self.db('TraitTreeXTraitCurrency').values():
-            if entry.id_trait_tree not in _trait_trees:
-                continue
-
-            currency = entry.ref('id_trait_currency')
-            if currency.id == 0:
-                continue
-
-            costs = currency.child_refs('TraitCost')
-            if len(costs) == 0:
-                continue
-
-            for cost in costs:
-                node_groups = cost.child_ref('TraitNodeGroupXTraitCost')
-                if node_groups.id == 0:
-                    continue
-
-                index = 0
-                if currency.flags == 0x4:
-                    index = 1
-                elif currency.flags == 0x8:
-                    index = 2
-                _trait_node_group_map[node_groups.id_trait_node_group] = index
-
-        # Map of trait_node_id, node_data
-        _trait_nodes = dict()
-
-        # Map of trait_node_group_id, group_data
-        _trait_node_groups = dict(
-            (entry.id, {'group': entry, 'nodes': {}, 'cond': set()})
-                for tree, id_skill in _trait_trees.values()
-                    for entry in tree.child_refs('TraitNodeGroup')
-        )
         _trait_node_groups[0] = {'nodes': {}, 'cond': set()}
+        _trait_nodes = {}
 
-        # Map TraitNode entries to TraitNodeGroups
-        for data in self.db('TraitNodeGroupXTraitNode').values():
-            group_id = data.id_trait_node_group
-            node_id = data.id_trait_node
-
-            if group_id not in _trait_node_groups:
+        # Collect TraitNodes with TraitNodeGroup
+        for entry in _trait_node_groups.values():
+            group = entry.get('group')
+            if group is None:
                 continue
 
-            if node_id not in _trait_nodes:
-                _trait_nodes[node_id] = {
-                    'node': data.ref('id_trait_node'),
-                    'index': data.index,
+            entry['nodes'] |= {
+                node.id_trait_node: {
+                    'node': node.ref('id_trait_node'),
+                    'index': node.index,
                     'cond': set(),
                     'entries': set()
                 }
+                for node in group.child_refs('TraitNodeGroupXTraitNode')
+            }
+            _trait_nodes |= entry.get('nodes', {})
 
-            _trait_node_groups[group_id]['nodes'][node_id] = _trait_nodes[node_id]
-
-        # Add in nodes with no group
-        for data in self.db('TraitNode').values():
-            if data.id_trait_tree not in _trait_trees:
-                continue
-
-            node_id = data.id
-
-            if node_id not in _trait_nodes:
-                _trait_nodes[node_id] = {
-                    'node': data,
+        # Collect TraitNodes with no TraitNodeGroup
+        # (currently none)
+        for entry in _trait_trees.values():
+            _trait_node_groups[0]['nodes'] |= {
+                node.id: {
+                    'node': node,
                     'cond': set(),
                     'entries': set()
                 }
-
-                # Use group 0 to hold the nodes with no group
-                _trait_node_groups[0]['nodes'][node_id] = _trait_nodes[node_id]
+                for node in entry.child_refs('TraitNode')
+                if node.id not in _trait_nodes
+            }
+        _trait_nodes |= _trait_node_groups[0]['nodes']
 
         # Collect TraitCond entries for each used TraitNodeGroup
         for data in self.db('TraitNodeGroupXTraitCond').values():
@@ -450,10 +415,23 @@ class TraitSet(DataSet):
 
         for group in _trait_node_groups.values():
             class_id = 0
-            tree_index = 1 # If a node has no groups, assume it is in the class tree.
+            # tree_index = 1 # If a node has no groups, assume it is in the class tree.
             if 'group' in group:
-                class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
-                tree_index = _trait_node_group_map.get(group['group'].id, 0)
+                skill_lines = set(
+                    entry.id_skill_line
+                    for entry in _trait_trees[group['group'].id_parent].child_refs('SkillLineXTraitTree')
+                )
+                print(group['group'].id_parent)
+                print(skill_lines)
+                class_id = -1
+                for e in constants.CLASS_INFO:
+                    for s in skill_lines:
+                        if s in e['skill']:
+                            class_id = e['id']
+                            print(e['name'])
+                # raise SystemExit
+                # class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
+                # tree_index = _trait_node_group_map.get(group['group'].id, 0)
 
             group_specs = set(_spec_map.get(cond.id_spec_set, 0)
                 for cond in group['cond'] if cond.type == 1
@@ -480,15 +458,15 @@ class TraitSet(DataSet):
 
                 # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
                 # tree selection nodes are type 3
-                if node['node'].type == 3:
-                    tree_index = 4
-                # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
-                elif node['node'].id_trait_sub_tree != 0:
-                    tree_index = 3
-                # 12.0.7 omnium folio traits
-                elif node['node'].id_trait_tree == 1186:
-                    tree_index = 6
-                    node_class_id = 0
+                # if node['node'].type == 3:
+                #     tree_index = 4
+                # # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
+                # elif node['node'].id_trait_sub_tree != 0:
+                #     tree_index = 3
+                # # 12.0.7 omnium folio traits
+                # elif node['node'].id_trait_tree == 1186:
+                #     tree_index = 6
+                #     node_class_id = 0
 
                 for entry, db2_id in node['entries']:
                     key = entry.id
@@ -506,9 +484,6 @@ class TraitSet(DataSet):
                     _traits[key]['starter'] |= group_starter | node_starter
                     _traits[key]['starter'].discard(0)
                     _traits[key]['is_granted'] |= group_granted | node_granted
-
-                    if tree_index != 0 and _traits[key]['tree'] == 0:
-                        _traits[key]['tree'] = tree_index
 
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
