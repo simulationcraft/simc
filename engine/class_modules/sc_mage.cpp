@@ -4043,23 +4043,8 @@ struct frostbolt_t final : public filler_spell_t<frost_mage_spell_t>
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
-    // TODO: Splitting Ice has a couple of issues that affect Frostbolt and Frostfire Bolt
-    //
-    // 1) Frostbolt cleave distance is much smaller than the other SI spells (including FFB)
-    // 2) The secondary target reduction is applied by keeping track of the target
-    // of the last cast. The impact spell then deals full damage if its target matches the one
-    // above. This has its own set of (rather meaningless) bugs, e.g. casting another spell
-    // before the previous one hits can change how the previous spell deals damage.
-    //
-    // However, the bigger issue is that it's currently only Frostfire Bolt that sets this tracked
-    // target. Frostbolt uses it to deal damage but doesn't set it. This has the following consequences:
-    //
-    // * If you cast Frostfire Bolt and then switch to Spellslinger, your Frostbolt will only ever
-    // deal full damage to the last FFB target.
-    // * If you never cast Frostfire Bolt, Frostbolt simply deals full damage to everything.
-    //
-    // Since the last behavior is the most common one, that's what we'll model in simc.
-    // TODO: Adjust this (and the comment above) for 12.1.5
+
+    // TODO: PTR check
     if ( p->bugs && !frostfire && sim->dbc->wowv() < wowv_t{ 12, 1, 5 } )
       chain_multiplier = 1.0;
 
@@ -4415,8 +4400,10 @@ struct winters_end_t final : public mage_spell_t
 
 struct ice_lance_data_t
 {
+  bool fingers_of_frost = false;
   bool thermal_void = false;
-  void debug( std::ostringstream& s ) const { s << " thermal_void=" << thermal_void; }
+  void debug( std::ostringstream& s ) const
+  { s << " fof=" << fingers_of_frost << " thermal_void=" << thermal_void; }
 };
 
 struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_lance_data_t>
@@ -4449,7 +4436,9 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
+    cast_state( s )->data.fingers_of_frost = p()->buffs.fingers_of_frost->check();
     cast_state( s )->data.thermal_void = p()->buffs.thermal_void->check();
+
     custom_state_spell_t::snapshot_state( s, rt );
   }
 
@@ -4457,6 +4446,7 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
   {
     custom_state_spell_t::execute();
 
+    // TODO: The state is still used for the S1 set bonus. Remove later.
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
 
@@ -4472,7 +4462,7 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
     {
       int consume = ( cast_state( s )->data.thermal_void ? 2 : 1 ) * freezing_consume;
       int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
-                                         s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
+                                         s->chain_target == 0 ? shatter_source : shatter_source_cleave, cast_state( s )->data.fingers_of_frost );
 
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
