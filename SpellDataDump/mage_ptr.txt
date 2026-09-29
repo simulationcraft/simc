@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -45,7 +45,7 @@ Affecting Spells : Frosty Zap (24392 effect#1), Improved Counterspell (24429 eff
 Family Flags     : 5, 57
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=75)       : Trigger Missiles (32): Frostbolt | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=75)       : Trigger Missiles (32): Frostbolt | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Trigger Spell: 228597 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.$?a1246769[
 
@@ -6144,7 +6144,7 @@ Effects          :
 Description      : $@spelldesc269650
 Tooltip          : Damage done by your next non-instant Pyroblast or Flamestrike increased by $s1%.
 
-Name             : Ray of Frost (id=269748) [Spell Family (3), Hidden] 
+Name             : Ray of Frost (id=269748) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -6153,7 +6153,7 @@ Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Is Channelled (34), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
+Attributes       : No Immunities (29), No Redirection (35), No Reflection (39), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=718211)   : Apply Aura (6) | Periodic Trigger Spell (23): Fingers of Frost every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 44544 | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -18178,7 +18178,7 @@ Family Flags     : 84, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Do Not Display Range (126), Melee Chain Targeting (172), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), No PvP Battle Fatigue (387), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1259945)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 12 | PvP Coefficient: 0.5625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 12 | PvP Coefficient: 0.50625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc1250646
 
 Name             : Takedown (id=1253860) [Spell Family (9)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -7818,7 +7818,7 @@ bonus_id={ 12844 }, base_ilevel={ 315 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12845 }, base_ilevel={ 318 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12846 }, base_ilevel={ 321 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12847 }, base_ilevel={ 324 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12848 }, base_ilevel={ 328 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12848 }, base_ilevel={ 328 }, req_ilevel={ 90 }, desc={ Ascendant Venomforged: Hero }, quality={ epic }
 bonus_id={ 12849 }, base_ilevel={ 318 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12850 }, base_ilevel={ 321 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12851 }, base_ilevel={ 324 }, req_ilevel={ 90 }, quality={ epic }
@@ -7826,7 +7826,7 @@ bonus_id={ 12852 }, base_ilevel={ 328 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12853 }, base_ilevel={ 331 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12854 }, base_ilevel={ 334 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12855 }, base_ilevel={ 337 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12856 }, base_ilevel={ 340 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12856 }, base_ilevel={ 340 }, req_ilevel={ 90 }, desc={ Ascendant Venomforged: Myth }, quality={ epic }
 bonus_id={ 12857 }, quality={ uncommon }
 bonus_id={ 12858 }, quality={ uncommon }
 bonus_id={ 12859 }, quality={ uncommon }
@@ -7883,10 +7883,10 @@ bonus_id={ 13184 }, effects={ Renewed Haste (id=1247569, index=2, type=equip) }
 bonus_id={ 13185 }, effects={ Renewed Mastery (id=1247570, index=2, type=equip) }
 bonus_id={ 13186 }, effects={ Renewed Versatility (id=1247571, index=2, type=equip) }
 bonus_id={ 13187 }
-bonus_id={ 13210 }, desc={ Rank 1/4 }, effects={ Adding (id=1248523, index=0, type=use) }
-bonus_id={ 13211 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248525, index=0, type=use) }
-bonus_id={ 13212 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248526, index=0, type=use) }
-bonus_id={ 13213 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248527, index=0, type=use) }
+bonus_id={ 13210 }, desc={ Rank 1/5 }, effects={ Adding (id=1248523, index=0, type=use) }
+bonus_id={ 13211 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1248525, index=0, type=use) }
+bonus_id={ 13212 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1248526, index=0, type=use) }
+bonus_id={ 13213 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1248527, index=0, type=use) }
 bonus_id={ 13214 }, desc={ Rank 1/4 }, effects={ Adding (id=1248529, index=0, type=use) }
 bonus_id={ 13215 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248531, index=0, type=use) }
 bonus_id={ 13216 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248532, index=0, type=use) }
@@ -7899,10 +7899,10 @@ bonus_id={ 13222 }, desc={ Rank 1/4 }, effects={ Adding (id=1248556, index=0, ty
 bonus_id={ 13223 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248557, index=0, type=use) }
 bonus_id={ 13224 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248558, index=0, type=use) }
 bonus_id={ 13225 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248559, index=0, type=use) }
-bonus_id={ 13226 }, desc={ Rank 1/4 }, effects={ Adding (id=1248560, index=0, type=use) }
-bonus_id={ 13227 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248561, index=0, type=use) }
-bonus_id={ 13228 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248562, index=0, type=use) }
-bonus_id={ 13229 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248564, index=0, type=use) }
+bonus_id={ 13226 }, desc={ Rank 1/5 }, effects={ Adding (id=1248560, index=0, type=use) }
+bonus_id={ 13227 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1248561, index=0, type=use) }
+bonus_id={ 13228 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1248562, index=0, type=use) }
+bonus_id={ 13229 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1248564, index=0, type=use) }
 bonus_id={ 13230 }, desc={ Rank 1/4 }, effects={ Adding (id=1248565, index=0, type=use) }
 bonus_id={ 13231 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248566, index=0, type=use) }
 bonus_id={ 13232 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248577, index=0, type=use) }
@@ -7915,14 +7915,14 @@ bonus_id={ 13238 }, desc={ Rank 1/4 }, effects={ Adding (id=1248586, index=0, ty
 bonus_id={ 13239 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248585, index=0, type=use) }
 bonus_id={ 13240 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248584, index=0, type=use) }
 bonus_id={ 13241 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248583, index=0, type=use) }
-bonus_id={ 13242 }, desc={ Rank 1/4 }, effects={ Adding (id=1248590, index=0, type=use) }
-bonus_id={ 13243 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248589, index=0, type=use) }
-bonus_id={ 13244 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248588, index=0, type=use) }
-bonus_id={ 13245 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248587, index=0, type=use) }
-bonus_id={ 13246 }, desc={ Rank 1/4 }, effects={ Adding (id=1248594, index=0, type=use) }
-bonus_id={ 13247 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1248593, index=0, type=use) }
-bonus_id={ 13248 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1248592, index=0, type=use) }
-bonus_id={ 13249 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1248591, index=0, type=use) }
+bonus_id={ 13242 }, desc={ Rank 1/5 }, effects={ Adding (id=1248590, index=0, type=use) }
+bonus_id={ 13243 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1248589, index=0, type=use) }
+bonus_id={ 13244 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1248588, index=0, type=use) }
+bonus_id={ 13245 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1248587, index=0, type=use) }
+bonus_id={ 13246 }, desc={ Rank 1/5 }, effects={ Adding (id=1248594, index=0, type=use) }
+bonus_id={ 13247 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1248593, index=0, type=use) }
+bonus_id={ 13248 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1248592, index=0, type=use) }
+bonus_id={ 13249 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1248591, index=0, type=use) }
 bonus_id={ 13253 }, quality={ artifact }
 bonus_id={ 13254 }, quality={ artifact }
 bonus_id={ 13255 }, quality={ artifact }
@@ -8179,22 +8179,22 @@ bonus_id={ 13661 }, base_ilevel={ 259 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 13668 }, socket={ 1 }
 bonus_id={ 13669 }, base_ilevel={ 220 }, req_ilevel={ 90 }
 bonus_id={ 13670 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }
-bonus_id={ 13673 }, desc={ Rank 1/4 }, effects={ Adding (id=1288603, index=0, type=use) }
-bonus_id={ 13674 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1288604, index=0, type=use) }
-bonus_id={ 13675 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1288605, index=0, type=use) }
-bonus_id={ 13676 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1288606, index=0, type=use) }
-bonus_id={ 13677 }, desc={ Rank 1/4 }, effects={ Adding (id=1288609, index=0, type=use) }
-bonus_id={ 13678 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1288610, index=0, type=use) }
-bonus_id={ 13679 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1288611, index=0, type=use) }
-bonus_id={ 13680 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1288612, index=0, type=use) }
-bonus_id={ 13681 }, desc={ Rank 1/4 }, effects={ Adding (id=1288613, index=0, type=use) }
-bonus_id={ 13682 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1288614, index=0, type=use) }
-bonus_id={ 13683 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1288615, index=0, type=use) }
-bonus_id={ 13684 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1288616, index=0, type=use) }
-bonus_id={ 13685 }, desc={ Rank 1/4 }, effects={ Adding (id=1288620, index=0, type=use) }
-bonus_id={ 13686 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1288617, index=0, type=use) }
-bonus_id={ 13687 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1288619, index=0, type=use) }
-bonus_id={ 13688 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1288618, index=0, type=use) }
+bonus_id={ 13673 }, desc={ Rank 1/5 }, effects={ Adding (id=1288603, index=0, type=use) }
+bonus_id={ 13674 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1288604, index=0, type=use) }
+bonus_id={ 13675 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1288605, index=0, type=use) }
+bonus_id={ 13676 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1288606, index=0, type=use) }
+bonus_id={ 13677 }, desc={ Rank 1/5 }, effects={ Adding (id=1288609, index=0, type=use) }
+bonus_id={ 13678 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1288610, index=0, type=use) }
+bonus_id={ 13679 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1288611, index=0, type=use) }
+bonus_id={ 13680 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1288612, index=0, type=use) }
+bonus_id={ 13681 }, desc={ Rank 1/5 }, effects={ Adding (id=1288613, index=0, type=use) }
+bonus_id={ 13682 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1288614, index=0, type=use) }
+bonus_id={ 13683 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1288615, index=0, type=use) }
+bonus_id={ 13684 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1288616, index=0, type=use) }
+bonus_id={ 13685 }, desc={ Rank 1/5 }, effects={ Adding (id=1288620, index=0, type=use) }
+bonus_id={ 13686 }, desc={ Rank 2/5 }, quality={ uncommon }, effects={ Adding (id=1288617, index=0, type=use) }
+bonus_id={ 13687 }, desc={ Rank 3/5 }, quality={ rare }, effects={ Adding (id=1288619, index=0, type=use) }
+bonus_id={ 13688 }, desc={ Rank 4/5 }, quality={ epic }, effects={ Adding (id=1288618, index=0, type=use) }
 bonus_id={ 13689 }, base_ilevel={ 49 }, req_ilevel={ 40 }, quality={ rare }
 bonus_id={ 13695 }, socket={ 1 }
 bonus_id={ 13699 }, base_ilevel={ 279 }, req_ilevel={ 90 }
@@ -8305,14 +8305,14 @@ bonus_id={ 13901 }, base_ilevel={ 140 }, quality={ rare }
 bonus_id={ 13902 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13935 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13936 }, base_ilevel={ 126 }, quality={ rare }
-bonus_id={ 13946 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1314982, index=0, type=use) }
-bonus_id={ 13947 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315188, index=0, type=use) }
-bonus_id={ 13948 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315186, index=0, type=use) }
-bonus_id={ 13949 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315184, index=0, type=use) }
-bonus_id={ 13950 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315161, index=0, type=use) }
-bonus_id={ 13951 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315163, index=0, type=use) }
-bonus_id={ 13952 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1315173, index=0, type=use) }
-bonus_id={ 13953 }, desc={ Rank 5 }, quality={ epic }, effects={ Adding (id=1314571, index=0, type=use) }
+bonus_id={ 13946 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1314982, index=0, type=use) }
+bonus_id={ 13947 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315188, index=0, type=use) }
+bonus_id={ 13948 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315186, index=0, type=use) }
+bonus_id={ 13949 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315184, index=0, type=use) }
+bonus_id={ 13950 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315161, index=0, type=use) }
+bonus_id={ 13951 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315163, index=0, type=use) }
+bonus_id={ 13952 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1315173, index=0, type=use) }
+bonus_id={ 13953 }, desc={ Rank 5/5 }, quality={ epic }, effects={ Adding (id=1314571, index=0, type=use) }
 bonus_id={ 13967 }, desc={ Rank 2/4 }, quality={ uncommon }
 bonus_id={ 13968 }, desc={ Rank 3/4 }, quality={ rare }
 bonus_id={ 13969 }, desc={ Rank 4/4 }, quality={ epic }
