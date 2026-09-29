@@ -325,6 +325,7 @@ void unholy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* high_priority = p->get_action_priority_list( "high_priority" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
@@ -347,29 +348,31 @@ void unholy( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
-  default_->add_action( "call_action_list,name=racials" );
-  default_->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)" );
-  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "call_action_list,name=racials,if=variable.st_planning|variable.adds_remain|fight_remains<30" );
+  default_->add_action( "call_action_list,name=high_priority" );
+  default_->add_action( "call_action_list,name=trinkets,if=variable.st_planning|variable.adds_remain|fight_remains<30" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<3" );
 
-  aoe->add_action( "death_and_decay,if=talent.cycle_of_death&cooldown.putrefy.charges<cooldown.putrefy.max_charges&(raid_event.adds.exists&raid_event.adds.remains>duration%2|!raid_event.adds.exists&fight_remains>duration%2)&(raid_event.adds.exists&raid_event.adds.count<active_enemies|!raid_event.adds.exists|charges=max_charges|raid_event.adds.remains>cooldown.any_dnd.duration)", "Aoe Rotation" );
-  aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)" );
-  aoe->add_action( "putrefy,if=buff.dark_transformation.up" );
-  aoe->add_action( "soul_reaper,target_if=min:health.pct,if=raid_event.pull.has_boss" );
-  aoe->add_action( "epidemic,if=variable.epidemic_prio" );
-  aoe->add_action( "death_coil,target_if=min:health.pct,if=!variable.epidemic_prio" );
-  aoe->add_action( "festering_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack=0" );
-  aoe->add_action( "scourge_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack>=1" );
-  aoe->add_action( "epidemic,if=variable.epidemic_prio" );
-  aoe->add_action( "death_coil,target_if=min:health.pct,if=!variable.epidemic_prio" );
+  high_priority->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active" );
+  high_priority->add_action( "invoke_external_buff,name=power_infusion,if=pet.army_ghoul.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
+  high_priority->add_action( "scourge_strike,if=buff.vampiric_strike.up&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.remains<gcd*3" );
 
-  cooldowns->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active", "Cooldowns" );
-  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.army_ghoul.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
-  cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&dot.dread_plague.active_dots=0&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
+  aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3*gcd|buff.festering_scythe_tt.remains<3*gcd)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3*gcd)", "Aoe Rotation" );
+  aoe->add_action( "putrefy,if=buff.dark_transformation.up|charges=max_charges" );
+  aoe->add_action( "soul_reaper,target_if=is_boss,if=buff.dark_transformation.up&cooldown.dark_transformation.remains<38|target.health.pct<35" );
+  aoe->add_action( "epidemic,if=variable.epidemic_prio&(buff.sudden_doom.react|runic_power.deficit<15|buff.essence_of_the_blood_queen.stack>=buff.essence_of_the_blood_queen.max_stack-1|buff.essence_of_the_blood_queen.remains<7&!buff.vampiric_strike.react|rune<2)" );
+  aoe->add_action( "festering_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack<3" );
+  aoe->add_action( "scourge_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack>=1" );
+  aoe->add_action( "death_coil,target_if=min:health.pct,if=!variable.epidemic_prio&(buff.sudden_doom.react|runic_power.deficit<15|buff.essence_of_the_blood_queen.stack>=buff.essence_of_the_blood_queen.max_stack-1|buff.essence_of_the_blood_queen.remains<7&!buff.vampiric_strike.react|rune<2)" );
+  aoe->add_action( "epidemic,if=variable.epidemic_prio" );
+  aoe->add_action( "death_coil,target_if=min:health.pct" );
+
+  cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&dot.dread_plague.active_dots=0&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)", "Cooldowns" );
+  cooldowns->add_action( "death_and_decay,if=active_enemies>=3&talent.cycle_of_death&(buff.festering_scythe_tt.up|!talent.festering_scythe)&(cooldown.putrefy.charges<cooldown.putrefy.max_charges&(raid_event.adds.exists&raid_event.adds.remains>=duration*0.75|!raid_event.adds.exists&fight_remains>=duration*0.75)&(raid_event.adds.exists&raid_event.adds.count<active_enemies|!raid_event.adds.exists|charges=max_charges))" );
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(buff.festering_scythe_tt.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&(active_enemies<3&talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2|(!talent.soul_reaper|active_enemies>=3)&(buff.dark_transformation.remains<gcd*2|trinket.1.proc.any_dps.up&trinket.1.proc.any_dps.remains<gcd*2|trinket.2.proc.any_dps.up&trinket.2.proc.any_dps.remains<gcd*2)|!talent.reaping&buff.dark_transformation.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<3|fight_remains<3)" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&((active_enemies<=3|raid_event.pull.has_boss)&(talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2)|fight_remains<3|raid_event.adds.exists&raid_event.adds.remains<3|buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|trinket.1.proc.any_dps.up&trinket.1.proc.any_dps.remains<gcd*2|trinket.2.proc.any_dps.up&trinket.2.proc.any_dps.remains<gcd*2|cooldown.dark_transformation.remains<3)" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -382,7 +385,6 @@ void unholy( player_t* p )
 
   single_target->add_action( "festering_strike,if=talent.festering_scythe&fight_remains>10&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)", "Single Target Rotation" );
   single_target->add_action( "soul_reaper,target_if=min:health.pct,if=buff.dark_transformation.up&cooldown.dark_transformation.remains<38|target.health.pct<35" );
-  single_target->add_action( "scourge_strike,if=buff.vampiric_strike.up&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.remains<gcd*3" );
   single_target->add_action( "putrefy,if=buff.dark_transformation.up&runic_power.deficit>10" );
   single_target->add_action( "scourge_strike,if=runic_power.deficit<90&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.stack<buff.essence_of_the_blood_queen.max_stack" );
   single_target->add_action( "death_coil,if=buff.sudden_doom.react|runic_power.deficit<=10" );
