@@ -15454,8 +15454,7 @@ void death_knight_t::spell_lookups()
   pet_spell.unholy_devotion_buff = conditional_spell_lookup( talent.unholy.unholy_devotion.ok(), 1270491 );
   pet_spell.ghoulish_frenzy      = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
   // Army of the dead
-  pet_spell.army_claw =
-      conditional_spell_lookup( talent.unholy.army_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 199373 );
+  pet_spell.army_claw = conditional_spell_lookup( specialization() == DEATH_KNIGHT_UNHOLY, 199373 );
   // All Ghouls
   pet_spell.pet_stun = find_spell( 47466 );
   pet_spell.leap     = find_spell( 91809 );
