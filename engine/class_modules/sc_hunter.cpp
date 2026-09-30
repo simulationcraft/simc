@@ -365,6 +365,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* spotters_mark;
     buff_t* spotters_mark_rapid_fire;
     buff_t* sentinels_mark;
+    buff_t* blood_fletching;
   } debuffs;
 
   struct dots_t
@@ -792,6 +793,8 @@ public:
     spell_data_ptr_t accuracy_by_volume;
     spell_data_ptr_t salvo;
     spell_data_ptr_t blood_fletching;
+    spell_data_ptr_t blood_fletching_damage;
+    spell_data_ptr_t blood_fletching_debuff;
 
     spell_data_ptr_t take_aim_1;
     spell_data_ptr_t take_aim_2;
@@ -5174,6 +5177,14 @@ struct master_marksman_t : public residual_bleed_base_t
   master_marksman_t( hunter_t* p ) : residual_bleed_base_t( "master_marksman", p, p->talents.master_marksman_bleed ) {}
 };
 
+struct blood_fletching_damage_t : public hunter_ranged_attack_t
+{
+  blood_fletching_damage_t( hunter_t* p ) : hunter_ranged_attack_t( "blood_fletching", p, p->talents.blood_fletching_damage )
+  {
+    background = dual = true;
+  }
+};
+
 // Multi-Shot =================================================================
 
 struct multishot_t: public hunter_ranged_attack_t
@@ -5389,6 +5400,9 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     hunter_td_t* target_data = td( s->target );
+
+    if ( p()->talents.blood_fletching.ok() && s->result == RESULT_CRIT )
+      target_data->debuffs.blood_fletching->trigger();
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
@@ -7266,6 +7280,8 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
+  
+  debuffs.blood_fletching = make_buff( *this, "blood_fletching", p->talents.blood_fletching_debuff );
 
   dots.wildfire_bomb = t->get_dot( p->talents.shrapnel_bomb ? "wildfire_bomb_bleed" : "wildfire_bomb_dot", p );
   dots.sanctified_armaments = t->get_dot( "sanctified_armaments", p );
@@ -7654,6 +7670,8 @@ void hunter_t::init_spells()
     talents.accuracy_by_volume                = find_talent_spell( talent_tree::SPECIALIZATION, "Accuracy By Volume", HUNTER_MARKSMANSHIP );
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
     talents.blood_fletching                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Fletching", HUNTER_MARKSMANSHIP );
+    talents.blood_fletching_damage            = talents.blood_fletching.ok() ? find_spell( 1319015 ) : spell_data_t::not_found();
+    talents.blood_fletching_debuff            = talents.blood_fletching.ok() ? find_spell( 1319016 ) : spell_data_t::not_found();
 
     talents.take_aim_1                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 1 );
     talents.take_aim_2                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 2 );
@@ -8545,32 +8563,78 @@ void hunter_t::init_special_effects()
   {
     struct master_marksman_cb_t : public dbc_proc_callback_t
     {
-      double bleed_amount;
+      hunter_t* owner;
       action_t* bleed;
 
-      master_marksman_cb_t( const special_effect_t& e, double amount, action_t* bleed ) : dbc_proc_callback_t( e.player, e ),
-        bleed_amount( amount ), bleed( bleed )
+      master_marksman_cb_t( const special_effect_t& e, hunter_t* p, action_t* bleed ) : dbc_proc_callback_t( e.player, e ),
+        owner( p ), bleed( bleed )
       {
       }
 
       void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
+        if ( !t || !s )
+          return;
+
+        const bool aimed_shot_crit = s->action && s->action->data().id() == owner->talents.aimed_shot->id();
+        double bleed_amount = 0;
+
+        if ( aimed_shot_crit && owner->talents.blood_fletching.ok() )
+        {
+          bleed_amount = owner->talents.blood_fletching->effectN( 1 ).percent();
+        }
+        else
+        {
+          bleed_amount = owner->talents.master_marksman->effectN( 1 ).percent();
+        }
+
         dbc_proc_callback_t::execute( spell, t, s );
 
-        double amount = s -> result_amount * bleed_amount;
+        double amount = s->result_amount * bleed_amount;
         if ( amount > 0 )
-          residual_action::trigger( bleed, s -> target, amount );
+          residual_action::trigger( bleed, t, amount );
       }
     };
 
     auto const effect = new special_effect_t( this );
     effect -> name_str = "master_marksman";
-    effect -> spell_id = talents.master_marksman -> id();
+    effect -> spell_id = talents.master_marksman->id();
     effect -> proc_flags2_ = PF2_CRIT;
     special_effects.push_back( effect );
 
-    auto cb = new master_marksman_cb_t( *effect, talents.master_marksman -> effectN( 1 ).percent(), new attacks::master_marksman_t( this ) );
+    auto cb = new master_marksman_cb_t( *effect, this, new attacks::master_marksman_t( this ) );
     cb -> initialize();
+  }
+
+  if ( talents.blood_fletching.ok() )
+  {
+    struct blood_fletching_damage_cb_t : public dbc_proc_callback_t
+    {
+      hunter_t* owner;
+      action_t* damage;
+
+      blood_fletching_damage_cb_t( const special_effect_t& e, hunter_t* p, action_t* a )
+        : dbc_proc_callback_t( e.player, e ), owner( p ), damage( a )
+      {
+      }
+
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
+      {
+        if ( !t || !s || !owner->get_target_data( t )->debuffs.blood_fletching->check() )
+          return;
+
+        dbc_proc_callback_t::execute( spell, t, s );
+        damage->execute_on_target( t );
+      }
+    };
+
+    auto const damage_effect = new special_effect_t( this );
+    damage_effect->name_str = "blood_fletching";
+    damage_effect->spell_id = talents.blood_fletching->id();
+    damage_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    special_effects.push_back( damage_effect );
+    auto damage_cb = new blood_fletching_damage_cb_t( *damage_effect, this, new attacks::blood_fletching_damage_t( this ) );
+    damage_cb->initialize();
   }
 }
 
