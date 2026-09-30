@@ -104,10 +104,10 @@ void beast_mastery( player_t* p )
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
   cleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains&cooldown.wild_thrash.remains<gcd|!talent.beast_cleave|!talent.wild_thrash" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
-  cleave->add_action( "kill_command,if=(buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)|!apex.3)&(buff.beast_cleave.remains>1|!talent.beast_cleave)" );
-  cleave->add_action( "cobra_shot,if=buff.cobra_fang.up&buff.beast_cleave.remains>1" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=(buff.beast_cleave.remains>1|!talent.beast_cleave)" );
-  cleave->add_action( "cobra_shot,if=buff.beast_cleave.remains>1|!talent.beast_cleave" );
+  cleave->add_action( "kill_command,if=(buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)|!apex.3)&(buff.beast_cleave.remains>gcd*0.25|!talent.beast_cleave)" );
+  cleave->add_action( "cobra_shot,if=buff.cobra_fang.up&buff.beast_cleave.remains>gcd*0.25" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=(buff.beast_cleave.remains>gcd*0.25|!talent.beast_cleave)" );
+  cleave->add_action( "cobra_shot,if=buff.beast_cleave.remains>gcd*0.25|!talent.beast_cleave" );
 
   drcleave->add_action( "black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2" );
   drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains|!talent.beast_cleave" );
