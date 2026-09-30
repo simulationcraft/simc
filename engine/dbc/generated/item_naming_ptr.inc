@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.1.5.69952
-static constexpr std::array<item_name_description_t, 1060> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 12.1.5.70077
+static constexpr std::array<item_name_description_t, 1064> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1059,6 +1059,10 @@ static constexpr std::array<item_name_description_t, 1060> __ptr_item_name_descr
   { 14486, "Ascendant Venomforged: Hero"                 },
   { 14528, "Adventurer"                                  },
   { 14530, "Midnight Season 1"                           },
-  { 14532, "Rank 5"                                      },
+  { 14532, "Rank 5/5"                                    },
+  { 14572, "Rank 2/5"                                    },
+  { 14573, "Rank 1/5"                                    },
+  { 14574, "Rank 3/5"                                    },
+  { 14575, "Rank 4/5"                                    },
 } };
 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -951,7 +951,7 @@ Family Flags     : 4, 43, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=42113)    : School Damage (2): physical | Attributes: Unknown(28)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.914 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.761 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=42114)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
                    Modified By: Voracious (273953 effect#2), Improved Death Strike (374277 effect#1)

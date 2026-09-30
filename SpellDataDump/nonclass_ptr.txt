@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -243525,7 +243525,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1248899|r
 
 $@spelldesc455680
 
-Name             : Ouroboric Curse (desc=Rank 1/4) (id=1248856) [Passive, Hidden] 
+Name             : Ouroboric Curse (desc=Rank 1/5) (id=1248856) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243539,7 +243539,7 @@ Effects          :
 Description      : $@spelldesc1248903
 Tooltip          : $@spelldesc1248903
 
-Name             : Ouroboric Curse (desc=Rank 2/4) (id=1248858) [Passive, Hidden] 
+Name             : Ouroboric Curse (desc=Rank 2/5) (id=1248858) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243553,7 +243553,7 @@ Effects          :
 Description      : $@spelldesc1305627
 Tooltip          : $@spelldesc1305627
 
-Name             : Ouroboric Curse (desc=Rank 3/4) (id=1248859) [Passive, Hidden] 
+Name             : Ouroboric Curse (desc=Rank 3/5) (id=1248859) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243567,7 +243567,7 @@ Effects          :
 Description      : $@spelldesc1305628
 Tooltip          : $@spelldesc1305628
 
-Name             : Ouroboric Curse (desc=Rank 4/4) (id=1248860) [Passive, Hidden] 
+Name             : Ouroboric Curse (desc=Rank 4/5) (id=1248860) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243749,7 +243749,7 @@ Effects          :
 Description      : $@spelldesc1248915
 Tooltip          : $@spelldesc1248915
 
-Name             : Corrosive Bilespear (desc=Rank 4/4) (id=1248875) [Passive, Hidden] 
+Name             : Corrosive Bilespear (desc=Rank 4/5) (id=1248875) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243763,7 +243763,7 @@ Effects          :
 Description      : $@spelldesc1305644
 Tooltip          : $@spelldesc1305644
 
-Name             : Corrosive Bilespear (desc=Rank 3/4) (id=1248876) [Passive, Hidden] 
+Name             : Corrosive Bilespear (desc=Rank 3/5) (id=1248876) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243777,7 +243777,7 @@ Effects          :
 Description      : $@spelldesc1305643
 Tooltip          : $@spelldesc1305643
 
-Name             : Corrosive Bilespear (desc=Rank 2/4) (id=1248877) [Passive, Hidden] 
+Name             : Corrosive Bilespear (desc=Rank 2/5) (id=1248877) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243791,7 +243791,7 @@ Effects          :
 Description      : $@spelldesc1305642
 Tooltip          : $@spelldesc1305642
 
-Name             : Corrosive Bilespear (desc=Rank 1/4) (id=1248878) [Passive, Hidden] 
+Name             : Corrosive Bilespear (desc=Rank 1/5) (id=1248878) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243973,7 +243973,7 @@ Effects          :
 Description      : $@spelldesc1248931
 Tooltip          : $@spelldesc1248931
 
-Name             : Dundun's Favor (desc=Rank 4/4) (id=1248892) [Passive, Hidden] 
+Name             : Dundun's Favor (desc=Rank 4/5) (id=1248892) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -243987,7 +243987,7 @@ Effects          :
 Description      : $@spelldesc1305673
 Tooltip          : $@spelldesc1305673
 
-Name             : Dundun's Favor (desc=Rank 3/4) (id=1248893) [Passive, Hidden] 
+Name             : Dundun's Favor (desc=Rank 3/5) (id=1248893) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244001,7 +244001,7 @@ Effects          :
 Description      : $@spelldesc1305674
 Tooltip          : $@spelldesc1305674
 
-Name             : Dundun's Favor (desc=Rank 2/4) (id=1248894) [Passive, Hidden] 
+Name             : Dundun's Favor (desc=Rank 2/5) (id=1248894) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244015,7 +244015,7 @@ Effects          :
 Description      : $@spelldesc1305675
 Tooltip          : $@spelldesc1305675
 
-Name             : Dundun's Favor (desc=Rank 1/4) (id=1248895) [Passive, Hidden] 
+Name             : Dundun's Favor (desc=Rank 1/5) (id=1248895) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244029,7 +244029,7 @@ Effects          :
 Description      : $@spelldesc1248935
 Tooltip          : $@spelldesc1248935
 
-Name             : Soul-Cracking Dreamcatcher (desc=Rank 4/4) (id=1248896) [Passive, Hidden] 
+Name             : Soul-Cracking Dreamcatcher (desc=Rank 4/5) (id=1248896) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244043,7 +244043,7 @@ Effects          :
 Description      : $@spelldesc1305682
 Tooltip          : $@spelldesc1305682
 
-Name             : Soul-Cracking Dreamcatcher (desc=Rank 3/4) (id=1248897) [Passive, Hidden] 
+Name             : Soul-Cracking Dreamcatcher (desc=Rank 3/5) (id=1248897) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244057,7 +244057,7 @@ Effects          :
 Description      : $@spelldesc1305684
 Tooltip          : $@spelldesc1305684
 
-Name             : Soul-Cracking Dreamcatcher (desc=Rank 2/4) (id=1248898) [Passive, Hidden] 
+Name             : Soul-Cracking Dreamcatcher (desc=Rank 2/5) (id=1248898) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -244071,7 +244071,7 @@ Effects          :
 Description      : $@spelldesc1305683
 Tooltip          : $@spelldesc1305683
 
-Name             : Soul-Cracking Dreamcatcher (desc=Rank 1/4) (id=1248899) [Passive, Hidden] 
+Name             : Soul-Cracking Dreamcatcher (desc=Rank 1/5) (id=1248899) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -246205,7 +246205,7 @@ Name             : Unstable Felheart Crystal (id=1254339)
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 40 yards
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : Can't Crit (93), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
@@ -252011,7 +252011,7 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 205421.5 (coefficient=1607.323) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 154555.2 (coefficient=1209.319) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -254401,7 +254401,7 @@ Effects          :
 Description      : Upon entering combat, party members become Poisoned, suffering $s6% of their current health as Nature damage every 1 min, while gaining $s2% movement speed and $s4% haste for every $s3% of their health missing. This effect is reversed for the first $s5 sec of combat.
 Tooltip          : Upon entering combat, party members become Poisoned, suffering $w6% of their current health as Nature damage every 1 min, while gaining $w2% movement speed and $w4% haste for every $w3% of their health missing. This effect is reversed for the first $w5 sec of combat.
 
-Name             : Venom Infusion (desc=Rank 1/4) (id=1288782) [Passive, Hidden] 
+Name             : Venom Infusion (desc=Rank 1/5) (id=1288782) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254415,7 +254415,7 @@ Effects          :
 Description      : $@spelldesc1288781
 Tooltip          : $@spelldesc1288781
 
-Name             : Venom Infusion (desc=Rank 2/4) (id=1288783) [Passive, Hidden] 
+Name             : Venom Infusion (desc=Rank 2/5) (id=1288783) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254429,7 +254429,7 @@ Effects          :
 Description      : $@spelldesc1305689
 Tooltip          : $@spelldesc1305689
 
-Name             : Venom Infusion (desc=Rank 3/4) (id=1288785) [Passive, Hidden] 
+Name             : Venom Infusion (desc=Rank 3/5) (id=1288785) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254443,7 +254443,7 @@ Effects          :
 Description      : $@spelldesc1305688
 Tooltip          : $@spelldesc1305688
 
-Name             : Venom Infusion (desc=Rank 4/4) (id=1288786) [Passive, Hidden] 
+Name             : Venom Infusion (desc=Rank 4/5) (id=1288786) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254491,7 +254491,7 @@ Effects          :
 Description      : While in combat, your companion has a chance to place down $s1 Essence Trap. When an enemy comes within 3 yards, the trap activates, slowing targets inside by $s2% for $1295974d before detonating, dealing moderate Nature damage and stunning all enemies inside for $s3 sec.
 Tooltip          : While in combat, your companion has a chance to place down $w1 Essence Trap. When an enemy comes within 3 yards, the trap activates, slowing targets inside by $w2% for $1295974d before detonating, dealing moderate Nature damage and stunning all enemies inside for $w3 sec.
 
-Name             : Essence Trap (desc=Rank 1/4) (id=1288788) [Passive, Hidden] 
+Name             : Essence Trap (desc=Rank 1/5) (id=1288788) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254505,7 +254505,7 @@ Effects          :
 Description      : $@spelldesc1288787
 Tooltip          : $@spelldesc1288787
 
-Name             : Essence Trap (desc=Rank 2/4) (id=1288789) [Passive, Hidden] 
+Name             : Essence Trap (desc=Rank 2/5) (id=1288789) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254519,7 +254519,7 @@ Effects          :
 Description      : $@spelldesc1305666
 Tooltip          : $@spelldesc1305666
 
-Name             : Essence Trap (desc=Rank 3/4) (id=1288790) [Passive, Hidden] 
+Name             : Essence Trap (desc=Rank 3/5) (id=1288790) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254533,7 +254533,7 @@ Effects          :
 Description      : $@spelldesc1305665
 Tooltip          : $@spelldesc1305665
 
-Name             : Essence Trap (desc=Rank 4/4) (id=1288791) [Passive, Hidden] 
+Name             : Essence Trap (desc=Rank 4/5) (id=1288791) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254547,7 +254547,7 @@ Effects          :
 Description      : $@spelldesc1305664
 Tooltip          : $@spelldesc1305664
 
-Name             : Viperwind Idol (desc=Rank 1/4) (id=1288794) [Passive, Hidden] 
+Name             : Viperwind Idol (desc=Rank 1/5) (id=1288794) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254589,7 +254589,7 @@ Tooltip          : Your spells and abilities have a chance to turn you into a fu
 
 Venom coils wildly around you and hardens, reducing damage taken by $w2%.
 
-Name             : Viperwind Idol (desc=Rank 2/4) (id=1288796) [Passive, Hidden] 
+Name             : Viperwind Idol (desc=Rank 2/5) (id=1288796) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254603,7 +254603,7 @@ Effects          :
 Description      : $@spelldesc1314566
 Tooltip          : $@spelldesc1314566
 
-Name             : Viperwind Idol (desc=Rank 3/4) (id=1288797) [Passive, Hidden] 
+Name             : Viperwind Idol (desc=Rank 3/5) (id=1288797) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254617,7 +254617,7 @@ Effects          :
 Description      : $@spelldesc1314567
 Tooltip          : $@spelldesc1314567
 
-Name             : Viperwind Idol (desc=Rank 4/4) (id=1288798) [Passive, Hidden] 
+Name             : Viperwind Idol (desc=Rank 4/5) (id=1288798) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254631,7 +254631,7 @@ Effects          :
 Description      : $@spelldesc1314568
 Tooltip          : $@spelldesc1314568
 
-Name             : Dusty Loa Totem (desc=Rank 1/4) (id=1288801) [Passive, Hidden] 
+Name             : Dusty Loa Totem (desc=Rank 1/5) (id=1288801) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254681,7 +254681,7 @@ Dust-covered claw sigils awaken beneath your touch, increasing your maximum heal
 $@spellicon1314938$@spellname1314938
 Dust-covered feather sigils awaken beneath your touch, increasing your Speed by $s4% and Haste by $s3%.
 
-Name             : Dusty Loa Totem (desc=Rank 2/4) (id=1288803) [Passive, Hidden] 
+Name             : Dusty Loa Totem (desc=Rank 2/5) (id=1288803) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254695,7 +254695,7 @@ Effects          :
 Description      : $@spelldesc1314971
 Tooltip          : $@spelldesc1314971
 
-Name             : Dusty Loa Totem (desc=Rank 3/4) (id=1288804) [Passive, Hidden] 
+Name             : Dusty Loa Totem (desc=Rank 3/5) (id=1288804) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -254709,7 +254709,7 @@ Effects          :
 Description      : $@spelldesc1314972
 Tooltip          : $@spelldesc1314972
 
-Name             : Dusty Loa Totem (desc=Rank 4/4) (id=1288805) [Passive, Hidden] 
+Name             : Dusty Loa Totem (desc=Rank 4/5) (id=1288805) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -261393,7 +261393,7 @@ Proc Chance      : 101%
 Real PPM         : 12
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Light's Justice (1309762)
-Attributes       : Do Not Sheath (18), Aura Is Buff (140), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
+Attributes       : Do Not Sheath (18), Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1338840)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
@@ -261475,7 +261475,7 @@ Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Acidbrood Scourge (1310088)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1339314)  : Apply Aura (6) | Proc Trigger Spell (42): Call the Swarm | Scaling Class: Replace Secondary (-9)
                    Base Value: 300 | Scaled Value: 1255.431 (coefficient=9.823139) | Trigger Spell: 1310083 | Target: Self (1)
@@ -261517,7 +261517,7 @@ Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Void Eruption (1310209)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1339535)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 300 | Scaled Value: 941.5734 (coefficient=7.367354) | Target: Self (1)
@@ -261821,7 +261821,7 @@ $@spelldesc1314550
 
 $@spelldesc1314572
 
-Name             : Viperwind Idol (desc=Rank 5) (id=1314570) [Passive, Hidden] 
+Name             : Viperwind Idol (desc=Rank 5/5) (id=1314570) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262070,7 +262070,7 @@ Dust-covered claw sigils awaken beneath your touch, increasing your maximum heal
 $@spellicon1314938$@spellname1314938
 Dust-covered feather sigils awaken beneath your touch, increasing your Speed by $s4% and Haste by $s3%.
 
-Name             : Dusty Loa Totem (desc=Rank 5) (id=1314978) [Passive, Hidden] 
+Name             : Dusty Loa Totem (desc=Rank 5/5) (id=1314978) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262097,7 +262097,7 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1314978|r
 
 $@spelldesc455680
 
-Name             : Ouroboric Curse (desc=Rank 5) (id=1315060) [Passive, Hidden] 
+Name             : Ouroboric Curse (desc=Rank 5/5) (id=1315060) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262111,7 +262111,7 @@ Effects          :
 Description      : $@spelldesc1315159
 Tooltip          : $@spelldesc1315159
 
-Name             : Corrosive Bilespear (desc=Rank 5) (id=1315061) [Passive, Hidden] 
+Name             : Corrosive Bilespear (desc=Rank 5/5) (id=1315061) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262125,7 +262125,7 @@ Effects          :
 Description      : $@spelldesc1315162
 Tooltip          : $@spelldesc1315162
 
-Name             : Essence Trap (desc=Rank 5) (id=1315062) [Passive, Hidden] 
+Name             : Essence Trap (desc=Rank 5/5) (id=1315062) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262139,7 +262139,7 @@ Effects          :
 Description      : $@spelldesc1315170
 Tooltip          : $@spelldesc1315170
 
-Name             : Dundun's Favor (desc=Rank 5) (id=1315063) [Passive, Hidden] 
+Name             : Dundun's Favor (desc=Rank 5/5) (id=1315063) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262153,7 +262153,7 @@ Effects          :
 Description      : $@spelldesc1315183
 Tooltip          : $@spelldesc1315183
 
-Name             : Soul-Cracking Dreamcatcher (desc=Rank 5) (id=1315064) [Passive, Hidden] 
+Name             : Soul-Cracking Dreamcatcher (desc=Rank 5/5) (id=1315064) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
@@ -262167,7 +262167,7 @@ Effects          :
 Description      : $@spelldesc1315185
 Tooltip          : $@spelldesc1315185
 
-Name             : Venom Infusion (desc=Rank 5) (id=1315065) [Passive, Hidden] 
+Name             : Venom Infusion (desc=Rank 5/5) (id=1315065) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 3206
