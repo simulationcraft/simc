@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.5.70077
-static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29365> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14791,8 +14791,6 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {  341532, "Gaining Stealth, Vanish, or Shroud of Concealment increases movement speed by |cFFFFFFFF$s1%|r for $341533d.", 0, 0 },
   {  341533, "$@spelldesc341532", "Movement speed increased by $w1%.", 0 },
   {  341541, "$@spelldesc193315", 0, 0 },
-  {  341549, "Eviscerate and Black Powder increase your Shadow damage dealt by |cFFFFFFFF${$s1}.1%|r for $341550d.", 0, 0 },
-  {  341550, "$@spelldesc341549", "Shadow damage dealt increased by ${$w1}.1%.", 0 },
   {  341617, "Deals $s1 Nauture damage to nearby enemies and applies an aura reducing damage by $s2%.", "Damage reduced by $w2%.", 0 },
   {  341624, "Pull out a green parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
   {  341630, "Reduces your falling speed for $d.", "Falling speed reduced.", 0 },
@@ -17248,7 +17246,7 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {  382513, "Vanish has $s1 additional $lcharge:charges;.", 0, 0 },
   {  382514, "Movement speed increased by $386237s1% and damage taken reduced by $386237s2% for $386237d after gaining Stealth, Vanish, or Shadow Dance.", 0, 0 },
   {  382515, "Vanish grants you a shield for $386165d, absorbing damage equal to $s1% of your maximum health.", 0, 0 },
-  {  382517, "Shadow damage increased by $383405s1%.", 0, 0 },
+  {  382517, "Shadow damage increased by $s1%.", 0, 0 },
   {  382518, "$?s200758[Gloomblade][Backstab], Shuriken Storm, and Shadowstrike have $1264521s3% increased damage while Find Weakness is active.", 0, 0 },
   {  382522, "$@spelldesc382275", "Your next Blade of Justice casts Consecration.", 0 },
   {  382524, "After Shadow Dance ends, $?s200758[Gloomblade][Backstab] and Shuriken Storm deal an additional $s1% damage as Shadow, fading by ${$s1/$s3}.1% per sec.", 0, 0 },
@@ -17375,7 +17373,6 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {  383391, "Fire Blast increases your mastery by ${$383395s1}% for $383395d. Multiple applications may overlap.", 0, 0 },
   {  383395, "$@spelldesc383391", "Mastery increased by ${$w1}%.", 0 },
   {  383396, "Divine Storm projects an additional wave of light, striking all enemies up to $s1 yds in front of you for $s2% of Divine Storm's damage.", 0, 0 },
-  {  383405, "$@spelldesc341549", "Shadow damage dealt increased by $w1%.", 0 },
   {  383410, "Bring the celestial bodies into alignment over the target area, blasting all enemies for ${$361237s1*$<mastery>} Astral damage and applying Stellar Flare to them.\r\n\r\nFor $d, both Eclipses are maintained and you gain $s1% haste.", "Both Eclipses active. Haste increased by $w1%.", 0 },
   {  383414, "$@spelldesc381664", "Envenom consumes stacks to amplify its damage.", 0 },
   {  383430, "Critical strike damage of your abilities is increased by $s1%.", 0, 0 },
@@ -29371,7 +29368,8 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.5.70077
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  382517,  0, "Shadow damage increased by $383405s1%.", "Shadow damage increased by $s1%." },
 } };
 
 // Spell description variables, wow build 12.1.5.70077
