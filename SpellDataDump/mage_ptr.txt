@@ -210,8 +210,9 @@ Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49),
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Radius: 100 yards | Target: Targeted Ally or Raid (118)
-#2 (id=1286688)  : Apply Aura (6) | Dummy (4)
+#2 (id=1286688)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+Hotfixed         : Sub Type (4 -> 79)
 #3 (id=1356090)  : Remove Aura (203): Arcane Intellect Highlight
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271907 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  

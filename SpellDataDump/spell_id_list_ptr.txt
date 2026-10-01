@@ -18259,8 +18259,8 @@ Rogue
 341542  *Ambidexterity
 341543  *Sleight of Hand
 341546  *Count the Odds
-341549   Deeper Daggers
-341550   Deeper Daggers
+341549  *Deeper Daggers
+341550  *Deeper Daggers
 341556  *Planned Execution
 341559  *Stiletto Staccato
 341567  *Perforated Veins
@@ -18459,7 +18459,7 @@ Rogue
 382746  *Improved Main Gauche
 382794  *Restless Crew
 383281   Hidden Opportunity
-383405   Deeper Daggers
+383405  *Deeper Daggers
 383414   Amplifying Poison
 384631   Flagellation
 385408  *Sepsis
