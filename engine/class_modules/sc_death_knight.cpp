@@ -10415,7 +10415,9 @@ struct festering_base_t : public death_knight_melee_attack_t
   {
     min_ghouls = as<int>( p->spec.festering_strike->effectN( 3 ).base_value() );
     // rng().range() does not include the max value, so we add 1 here
-    max_ghouls = as<int>( p->spec.festering_strike->effectN( 4 ).base_value() + 1 );
+    max_ghouls  = as<int>( p->spec.festering_strike->effectN( 4 ).base_value() + 1 );
+    trigger_gcd = data().gcd();
+    gcd_type    = gcd_haste_type::ATTACK_HASTE;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -10448,11 +10450,20 @@ private:
 
 struct festering_scythe_t final : public festering_base_t
 {
-  festering_scythe_t( std::string_view n, death_knight_t* p )
-    : festering_base_t( n, p, p->spell.festering_scythe )
+  festering_scythe_t( std::string_view n, death_knight_t* p ) : festering_base_t( n, p, p->spell.festering_scythe )
   {
-    aoe             = -1;
-    background      = true;
+    aoe = -1;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = festering_base_t::gcd();
+
+    // Festering scythe currently double dips the hasted gcd.
+    if ( p()->bugs )
+      t *= p()->composite_melee_haste();
+
+    return t;
   }
 
   void execute() override
@@ -10476,7 +10487,8 @@ struct festering_strike_t final : public festering_base_t
     parse_options( options_str );
 
     if ( p->talent.unholy.festering_scythe.ok() )
-      set_replacement_action( get_action<festering_scythe_t>( "festering_scythe", p ), p->buffs.festering_scythe, !p->options.wcl_reporting_mode );
+      set_replacement_action( new festering_scythe_t( "festering_scythe", p ), p->buffs.festering_scythe,
+                              !p->options.wcl_reporting_mode );
   }
 
   void execute() override
