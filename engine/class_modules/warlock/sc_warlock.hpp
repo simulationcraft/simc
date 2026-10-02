@@ -4,7 +4,7 @@
 #include "player/pet_spawner.hpp"
 #include "sc_warlock_pets.hpp"
 #include "action/parse_effects.hpp"
-#include "class_modules/apl/warlock.hpp"
+#include "class_modules/apl/apl_warlock.hpp"
 
 namespace warlock
 {

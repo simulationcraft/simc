@@ -6,7 +6,7 @@
 #include "config.hpp"
 
 #include "action/parse_effects.hpp"
-#include "class_modules/apl/druid/druid.hpp"
+#include "class_modules/apl/druid/apl_druid.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/highchart.hpp"
 

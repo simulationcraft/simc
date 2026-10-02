@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "util/util.hpp"
-#include "class_modules/apl/mage.hpp"
+#include "class_modules/apl/apl_mage.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 

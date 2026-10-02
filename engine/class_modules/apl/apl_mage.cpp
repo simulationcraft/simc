@@ -1,4 +1,4 @@
-#include "class_modules/apl/mage.hpp"
+#include "class_modules/apl/apl_mage.hpp"
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"

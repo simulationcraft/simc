@@ -4,7 +4,7 @@
 
 #include "sc_warlock_pets.hpp"
 #include "util/util.hpp"
-#include "class_modules/apl/warlock.hpp"
+#include "class_modules/apl/apl_warlock.hpp"
 
 #include <queue>
 

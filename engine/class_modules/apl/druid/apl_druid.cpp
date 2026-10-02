@@ -1,4 +1,4 @@
-#include "class_modules/apl/druid/druid.hpp"
+#include "class_modules/apl/druid/apl_druid.hpp"
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
