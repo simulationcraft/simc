@@ -17687,98 +17687,12 @@ struct death_knight_module_t : public module_t
   
   void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (direct) buffed 6%", 179689,
+    hotfix::register_effect( "Death Knight", "2026-10-2", "Blightfall reverted to 100%.", 1285178,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( -4 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (periodic) buffed 6%", 191174,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( -4 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (pet) buffed 6%", 844541,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( -4 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (guardian) buffed 6%", 1032340,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( -4 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (melee) buffed 6%", 1052714,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 314 )
-        .verification_value( 297 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh) buffed 15%", 60372,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .6210621 )
-        .verification_value( .540054 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (mh) buffed 15%", 331344,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .6210621 )
-        .verification_value( .540054 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h) buffed 15%", 815754,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .919399 )
-        .verification_value( .799477 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh) buffed 15%", 60372,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .6210621 )
-        .verification_value( .540054 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (mh frost) buffed 15%", 1275166,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .6210621 )
-        .verification_value( .540054 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh frost) buffed 15%", 1275169,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .6210621 )
-        .verification_value( .540054 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h) buffed 15%", 815754,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .919399 )
-        .verification_value( .799477 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h frost) buffed 15%", 1275170,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .919399 )
-        .verification_value( .799477 );
-   */
+        .modifier( 100 )
+        .verification_value( 200 );
   }
 
   void register_actor_initializers( sim_t* ) const override
