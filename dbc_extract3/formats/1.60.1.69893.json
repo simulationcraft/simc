@@ -590,6 +590,13 @@
       { "data_type": "i", "field": "color",      "formats": { "cpp": "%#.8x" } }
     ]
   },
+  "GlobalCurve": {
+    "fields": [
+      { "data_type": "i", "field": "id_curve", "ref": "Curve" },
+      { "data_type": "i", "field": "type" },
+      { "data_type": "i", "field": "subtype" }
+    ]
+  },
   "GlyphProperties": {
     "fields": [
       { "data_type": "I", "field": "id_spell",   "formats": { "cpp": "%-7u" }, "ref": "SpellName" },
