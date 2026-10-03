@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 1.60.1.70009
+Class Spell ID List, wow build 1.60.1.70205
 
 Druid
 99       Demoralizing Roar
@@ -59,7 +59,7 @@ Druid
 5229     Enrage
 5232     Mark of the Wild
 5234     Mark of the Wild
-5421    *Aquatic Form (Passive)
+5421     Aquatic Form (Passive)
 5487     Bear Form
 5570     Insect Swarm
 6756     Mark of the Wild
@@ -650,7 +650,7 @@ Druid
 1278759  Hurricane
 1278965  Hurricane
 1278968  Hurricane
-1291059  Tiger's Fury Cooldown Reduction
+1291059  Shifting Power Cooldown Reduction
 1291060  Increased Enrage Rage
 1291061  Increased Insect Swarm Duration
 1291075  Swiftmend Cooldown Reduction
@@ -673,7 +673,7 @@ Druid
 1301077 *1.60.0 - Item - Tier 1 - Druid - Restoration 4P Bonus - Healing/Damage
 1301084 *1.60.0 - Item - Tier 1 - Paladin - Retribution 4P Bonus - AP vs. Undead
 1301242 *1.60.0 - Item - Tier 1 - Druid - Balance 5P Bonus - Insect Swarm
-1301247 *1.60.0 - Item - Tier 1 - Druid - Feral 5P Bonus - Tiger's Fury
+1301247 *1.60.0 - Item - Tier 1 - Druid - Feral 5P Bonus - Shifting Power
 1301249 *1.60.0 - Item - Tier 1 - Druid - Guardian 5P Bonus - Berserk
 1301250 *1.60.0 - Item - Tier 1 - Druid - Restoration 5P Bonus - Swiftmend
 1306459 *Thick Hide
@@ -687,6 +687,9 @@ Druid
 1310503 *Mark of the Wild
 1310990 *Wolfshead Helm
 1312152 *Tiger's Fury
+1322605  Shifting Power
+1322670 *Improved Shifting Power
+1323400 *Revelation
 
 Hunter
 75       Auto Shot
@@ -1331,11 +1334,11 @@ Hunter
 1242634  Counterattack
 1262309 *The Quick and the Dead
 1264455  Thunderstomp
-1264478 *Sonic Blast
-1264479 *Sonic Blast
-1264480 *Sonic Blast
-1264481 *Sonic Blast
-1264482 *Sonic Blast
+1264478  Sonic Blast
+1264479  Sonic Blast
+1264480  Sonic Blast
+1264481  Sonic Blast
+1264482  Sonic Blast
 1264494  Swipe
 1264497  Swipe
 1264498  Swipe
@@ -1418,6 +1421,7 @@ Hunter
 1310785 *Sniper Shot
 1310786 *Sniper Shot
 1317257  Strider Kick
+1323410 *Revelation
 
 Mage
 10       Blizzard
@@ -1859,8 +1863,8 @@ Mage
 400621   Fire Blast
 400622   Fire Blast
 400623   Fire Blast
-400624   Hot Streak
-400625   Hot Streak
+400624   Heating Up
+400625   Heating Up
 400640   Ice Lance
 400647   Fingers of Frost
 400669   Fingers of Frost
@@ -2114,6 +2118,7 @@ Mage
 1240045  Ice Lance
 1240046  Ice Lance
 1240047  Ice Lance
+1248808 *Revelation
 1259817  Eureka!
 1262243 *The Quick and the Dead
 1262638 *Reagent Economy
@@ -2750,6 +2755,7 @@ Paladin
 1316101  Repentance Duration Increase
 1317271 *Righteous Indignation
 1317272 *Righteous Indignation
+1323419 *Revelation
 
 Priest
 17       Power Word: Shield
@@ -3388,6 +3394,7 @@ Priest
 1316994  Penance
 1316995  Penance
 1317006 *Litany of Light
+1323377 *Revelation
 
 Rogue
 53       Backstab
@@ -4009,7 +4016,7 @@ Shaman
 10438    Searing Totem
 10441    Strength of Earth
 10442    Strength of Earth Totem
-10444   *Flametongue Attack
+10444    Flametongue Attack
 10445    Flametongue Weapon Proc
 10447    Flame Shock
 10448    Flame Shock
@@ -4225,8 +4232,8 @@ Shaman
 29199   *Corrupted Mind
 29206    Healing Way
 29228    Flame Shock
-29469   *Flametongue Attack
-29470   *Flametongue Attack
+29469    Flametongue Attack
+29470    Flametongue Attack
 30160    Elemental Devastation
 30165    Elemental Devastation
 30812   *Mental Quickness
@@ -4526,7 +4533,7 @@ Shaman
 1249011  Totem of Ancestral Protection
 1262315 *The Quick and the Dead
 1262643 *Reagent Economy
-1270478 *Charged Lightning
+1270478 *Flame Charged
 1270492 *Totem Affinity
 1281744 *Natural Guidance
 1291076  Reduced Healing Wave Cost
@@ -4551,6 +4558,8 @@ Shaman
 1309422  Rage of Earth
 1309442  Storm's Grasp
 1309539  Tidebringer's Claw
+1323418 *Revelation
+1323420 *Totemic Recall
 
 Warlock
 128     *Spellstone
@@ -5042,7 +5051,7 @@ Warlock
 433672  *Loathing
 433813  *Neverending Soul Vessel
 435086  *Brimstone Carving
-437032   Soul Harvesting
+437032   Soul Harvest
 437169  *Portal of Summoning
 437311  *Portal of Summoning
 440870   Decimation
@@ -5197,6 +5206,7 @@ Warlock
 1311680 *Curse of the Elements
 1316697  Wrack
 1322007 *Summon Voidwalker
+1323392 *Revelation
 
 Warrior
 71       Defensive Stance
@@ -5328,6 +5338,7 @@ Warrior
 12877    Improved Demoralizing Shout
 12878    Improved Demoralizing Shout
 12879    Improved Demoralizing Shout
+12880    Enrage
 12886    Improved Challenging Shout
 12944    Improved Shield Block
 12945    Improved Shield Block
@@ -5349,7 +5360,7 @@ Warrior
 18328   *Incapacitating Shout
 18381    Cripple
 18499    Berserker Rage
-18826   *Savior's Sacrifice
+18826    Savior's Sacrifice
 19131   *Shield Charge
 19134   *Intimidating Shout
 19196   *Surge
@@ -5679,4 +5690,9 @@ Warrior
 1310222  Spearing Strike
 1310315 *Raging Blows
 1310317 *Vanguard
-1313291 *Dual Wield Specialization
+1322574  Rule of Rage (DND)
+1323965 *Lingering Rage
+1323966 *Lingering Rage
+1323967 *Gore Drinker
+1323968 *Gore Drinker
+1323969 *Gore Drinker
