@@ -11,6 +11,9 @@ struct shaman_t final : public player_t
 {
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
     player_t( sim, SHAMAN, name, r ) {}
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  void init_action_list() override;
 };
 
 // SHAMAN MODULE INTERFACE ==================================================
@@ -47,6 +50,78 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override {}
 };
+
+// ==========================================================================
+// Shaman Attack
+// ==========================================================================
+
+// shaman_attack_t::impact ============================================
+
+// Melee Attack =============================================================
+
+struct shaman_melee_t : public melee_attack_t
+{
+  shaman_melee_t( util::string_view name, player_t* player, weapon_t* w )
+    : melee_attack_t( name, player, spell_data_t::nil() )
+  {
+    weapon            = w;
+    weapon_multiplier = 1.0;
+    base_execute_time = w->swing_time;
+    school            = SCHOOL_PHYSICAL;
+    trigger_gcd       = 0_ms;
+
+    background        = true;
+    repeating         = true;
+    may_glance        = true;
+    special           = false;
+  }
+};
+
+
+struct shaman_auto_attack_t : public melee_attack_t
+{
+  shaman_auto_attack_t( shaman_t* p, util::string_view options_str )
+    : melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+  {
+    parse_options( options_str );
+    trigger_gcd           = 0_ms;
+    ignore_false_positive = true;
+
+    assert( p->main_hand_weapon.type != WEAPON_NONE );
+
+    p->main_hand_attack = new shaman_melee_t( "melee", p, &p->main_hand_weapon );
+  }
+
+  void execute() override
+  {
+    player->main_hand_attack->schedule_execute();
+  }
+
+  bool ready() override
+  {
+    if ( player->is_moving() )
+    {
+      return false;
+    }
+    return player->main_hand_attack->execute_event == nullptr;
+  }
+};
+
+action_t* shaman_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "auto_attack" )
+    return new shaman_auto_attack_t( this, options_str );
+
+  return player_t::create_action( name, options_str );
+}
+
+void shaman_t::init_action_list()
+{
+  if ( action_list_str.empty() )
+  {
+    get_action_priority_list( "default" )->add_action( "auto_attack" );
+  }
+}
 
 }  // namespace
 
