@@ -2720,7 +2720,7 @@ void sim_t::init()
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
   auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
-                               ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+                               ->set_default_value_from_effect( 1 );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
                                    ->set_default_value_from_effect( 1 )
