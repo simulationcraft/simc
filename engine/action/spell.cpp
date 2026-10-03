@@ -31,7 +31,7 @@ spell_base_t::spell_base_t( action_e at, util::string_view token, player_t* p, c
   min_gcd = p->min_gcd;
   special = true;
 
-  base_crit_bonus = 1.0;
+  base_crit_bonus = 0.5;
 }
 
 result_e spell_base_t::calculate_result( action_state_t* s ) const
