@@ -415,23 +415,15 @@ class TraitSet(DataSet):
 
         for group in _trait_node_groups.values():
             class_id = 0
-            # tree_index = 1 # If a node has no groups, assume it is in the class tree.
             if 'group' in group:
                 skill_lines = set(
                     entry.id_skill_line
                     for entry in _trait_trees[group['group'].id_parent].child_refs('SkillLineXTraitTree')
                 )
-                print(group['group'].id_parent)
-                print(skill_lines)
-                class_id = -1
                 for e in constants.CLASS_INFO:
                     for s in skill_lines:
                         if s in e['skill']:
                             class_id = e['id']
-                            print(e['name'])
-                # raise SystemExit
-                # class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
-                # tree_index = _trait_node_group_map.get(group['group'].id, 0)
 
             group_specs = set(_spec_map.get(cond.id_spec_set, 0)
                 for cond in group['cond'] if cond.type == 1
@@ -455,18 +447,6 @@ class TraitSet(DataSet):
                 )
 
                 node_granted = any(cond.type == 2 for cond in node['cond'])
-
-                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
-                # tree selection nodes are type 3
-                # if node['node'].type == 3:
-                #     tree_index = 4
-                # # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
-                # elif node['node'].id_trait_sub_tree != 0:
-                #     tree_index = 3
-                # # 12.0.7 omnium folio traits
-                # elif node['node'].id_trait_tree == 1186:
-                #     tree_index = 6
-                #     node_class_id = 0
 
                 for entry, db2_id in node['entries']:
                     key = entry.id
@@ -496,9 +476,6 @@ class TraitSet(DataSet):
         _x_map = {}
         _y_map = {}
         for entry in _traits.values():
-            if entry['tree'] == 0:
-                continue
-
             for spec in entry['specs'] | set((0,)):
                 if entry['tree'] == 2 and spec == 0:
                     continue
