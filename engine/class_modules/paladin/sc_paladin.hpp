@@ -5,8 +5,8 @@
 namespace paladin
 {
 // Forward declarations
-typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
-typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
 namespace buffs
@@ -1303,10 +1303,10 @@ template <class Base>
 struct paladin_spell_base_t : public paladin_action_t<Base>
 {
 private:
-  typedef paladin_action_t<Base> ab;
+  using ab = paladin_action_t<Base>;
 
 public:
-  typedef paladin_spell_base_t base_t;
+  using base_t = paladin_spell_base_t;
 
   paladin_spell_base_t( util::string_view n, paladin_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s )
