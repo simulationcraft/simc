@@ -199,9 +199,9 @@ template <class ACTION_BASE>
 struct warlock_pet_action_t : public parse_action_effects_t<ACTION_BASE>
 {
 private:
-  typedef parse_action_effects_t<ACTION_BASE> ab; // action base, eg. spell_t
+  using ab = parse_action_effects_t<ACTION_BASE>; // action base, eg. spell_t
 public:
-  typedef warlock_pet_action_t base_t;
+  using base_t = warlock_pet_action_t;
 
   warlock_pet_action_t( util::string_view n, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s )
