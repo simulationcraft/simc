@@ -9,8 +9,8 @@
 
 #include "action.hpp"
 
-// WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
-constexpr double WEAPON_POWER_COEFFICIENT = 6;
+// WDPS -> Attack Power Coefficient used for Forever/Classic Attack Power calculations
+constexpr double WEAPON_POWER_COEFFICIENT = 14;
 
 struct attack_t : public action_t
 {
