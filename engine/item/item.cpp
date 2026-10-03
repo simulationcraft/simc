@@ -2149,10 +2149,6 @@ bool item_t::download_item( item_t& item )
     enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
   }
 
-  // Starting with the Midnight expansion, item squishes need to be applied to any old item in the game.
-  if ( !item.parsed.has_midnight_scaling )
-    item.parsed.data.level = as<int>( util::round( item_database::curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, item.parsed.data.level ) ) );
-
   return success;
 }
 

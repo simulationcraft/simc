@@ -4321,6 +4321,9 @@ double player_t::resource_regen_per_second( resource_e r ) const
 
 double player_t::apply_combat_rating_dr( rating_e rating, double value ) const
 {
+  // TODO FOREVER - retail curves don't exist. Doesn't seem like ratings are used at all?
+  return value;
+
   switch ( rating )
   {
     case RATING_LEECH:

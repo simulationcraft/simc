@@ -185,11 +185,6 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_SQUISH_CURVE:
     {
       item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, entry.value_1, entry.value_2 ) ) );
-      // TODO: In the future, multiple squish curves may need to be applied here and
-      // we can extract them from ItemSquishEra.db2. For now, only the midnight curve
-      // needs to be applied and only when value_3 is 1.
-      if ( entry.value_3 == 1 )
-        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, item.parsed.data.level ) ) );
       item.parsed.has_midnight_scaling = true;
       break;
     }
@@ -215,12 +210,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
              ( level > content_tuning.max_level_squish || level == 0 ) )
           level = content_tuning.max_level_squish;
       }
-      if ( scaling_entry.squish_era_id < 2 )
-        item.parsed.data.level = as<int>(
-            util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
-      else
-        item.parsed.data.level = as<int>(
-            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      item.parsed.data.level = as<int>(
+          util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item.parsed.data.level += offset_entry.offset;
       item.parsed.has_midnight_scaling = true;
       item.parsed.data.req_level       = level;
@@ -1308,16 +1299,6 @@ static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::
   int player_level = 0;
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_SQUISH_CURVE )
-    {
-      int curve_level = as<int>( util::round( item_database::curve_point_value( dbc, entry.value_1, entry.value_2 ) ) );
-      // TODO: In the future, multiple squish curves may need to be applied here and
-      // we can extract them from ItemSquishEra.db2. For now, only the midnight curve
-      // needs to be applied and only when value_3 is 1.
-      if ( entry.value_3 == 1 )
-        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, curve_level ) ) );
-    }
-
     if ( entry.type == ITEM_BONUS_SCALE_CONFIG || entry.type == ITEM_BONUS_SCALE_CONFIG_2 )
     {
       const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, dbc.ptr );
@@ -1328,12 +1309,6 @@ static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::
       if ( offset_entries.size() == 0 )
         continue;
       const auto& offset_entry = offset_entries[ 0 ];
-      // For type 49, apply the midnight squish curve
-      if ( entry.type == ITEM_BONUS_SCALE_CONFIG && entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
-        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
-      // for type 51 apply the scaling curve directly
-      else
-        item_level = as<int>( util::round( item_database::curve_point_value( dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item_level += offset_entry.offset;
       player_level = scaling_entry.player_level;
     }

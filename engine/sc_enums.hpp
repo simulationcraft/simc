@@ -76,9 +76,6 @@ constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of
 constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
 constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
 
-// Midnight curve from ItemSquishEra.db2
-constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
-
 // Maximum damage reduction from armor / block
 constexpr auto MAX_ARMOR_DAMAGE_REDUCTION = 0.85;
 
