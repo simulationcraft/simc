@@ -1909,8 +1909,8 @@ unsigned util::race_id( race_e race )
     case RACE_EARTHEN_HORDE:       return 18;
     case RACE_HARANIR_ALLIANCE:    return 21;
     case RACE_HARANIR_HORDE:       return 20;
-    case RACE_SKYBORNE_ALLIANCE:   return 32;
-    case RACE_SKYBORNE_HORDE:      return 33;
+    case RACE_SKYBORNE_ALLIANCE:   return 33;
+    case RACE_SKYBORNE_HORDE:      return 34;
     default:                       return 0;
   }
 }
