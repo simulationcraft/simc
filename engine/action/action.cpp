@@ -818,11 +818,8 @@ void action_t::parse_effect_direct_mods( const spelleffect_data_t& spelleffect_d
 
   if ( !item_scaling )
   {
-    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-    {
-      base_dd_min = spelleffect_data.min( player, player->level() );
-      base_dd_max = spelleffect_data.max( player, player->level() );
-    }
+    base_dd_min = spelleffect_data.min( player, player->level() );
+    base_dd_max = spelleffect_data.max( player, player->level() );
   }
   else
   {
