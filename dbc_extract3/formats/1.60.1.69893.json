@@ -1554,7 +1554,7 @@
   },
   "SkillRaceClassInfo": {
     "fields": [
-      { "data_type": "h", "field": "id_skill" },
+      { "data_type": "h", "field": "id_skill", "ref": "SkillLine" },
       { "data_type": "i", "field": "class_mask" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "availability" },
@@ -2176,7 +2176,7 @@
     "fields": [
       { "data_type": "S", "field": "unk_9" },
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "id_trait_system" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "i", "field": "unk_5" },

@@ -3840,52 +3840,11 @@ class TraitGenerator(DataGenerator):
             index = [ index for _, index in sorted(trait_spell_index) ],
             array = 'trait_spell')
 
-        # Hero trees
-        ht_per_class = {
-            class_.id: {
-                tst_id
-                for tst_id in sorted(subtrees)
-                if ( ttid := self.db('TraitSubTree')[tst_id].id_trait_tree )
-                for ttl in self.db('TraitTreeLoadout').values()
-                if ttl.id_trait_tree == ttid
-                if ttl.ref('id_spec').class_id == class_.id
-            }
-            for class_ in self.db('ChrClasses').values()
-        }
-        self._out.write('#define {}MAX_HERO_TREES_PER_CLASS ({})\n\n'.format(
-            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
-            max(len(v) for v in ht_per_class.values())))
+        self._out.write('#define {}MAX_HERO_TREES_PER_CLASS (0)// TODO (FOREVER) remove\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or ''))
 
-        self.output_header(
-            header='Hero trees',
-            type='std::tuple<unsigned, const char*, unsigned>',
-            array='trait_sub_tree',
-            length=len(subtrees)
-        )
-
-        for e in sorted(subtrees):
-            ttid = self.db('TraitSubTree')[e].id_trait_tree
-            class_ids = {
-                str(e.ref('id_spec').class_id)
-                for e in self.db('TraitTreeLoadout').values()
-                if e.id_trait_tree == ttid
-            }
-            assert(len(class_ids) == 1)
-            class_id = class_ids.pop()
-            self.output_record(['{}, "{}", {}'.format(e, self.db('TraitSubTree')[e].name, class_id)])
-
-        self.output_footer()
-        """
-        print(
-            f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '
-            f'groups=[{", ".join([str(x.id) for x in sorted(entry["groups"], key=lambda v:v.id)])}] '
-            f'tree={entry["tree"]} node_id={entry["node"].id} node_type={entry["node"].type} '
-            f'entry={entry["entry"].id} '
-            f'replace={entry["definition"].id_replace_spell} '
-            f'override={entry["definition"].id_override_spell} '
-            f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
-        )
-        """
+        self._out.write('// TODO (FOREVER) remove\n')
+        self._out.write('static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { { } };\n\n')
 
 class PermanentEnchantItemGenerator(DataGenerator):
     def filter(self):

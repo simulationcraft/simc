@@ -12,7 +12,8 @@ def class_id(**kwargs):
         if not hasattr(class_id, '_byskill'):
             class_id._byskill = dict()
             for v in constants.CLASS_INFO:
-                class_id._byskill[v['skill']] = v['id']
+                for u in v['skill']:
+                    class_id._byskill[u] = v['id']
 
         return class_id._byskill.get(player_skill, -1)
 
@@ -101,10 +102,11 @@ def class_mask(**kwargs):
         if not hasattr(class_mask, '_byskill'):
             class_mask._byskill = dict()
             for v in constants.CLASS_INFO:
-                if v['skill'] not in class_mask._byskill:
-                    class_mask._byskill[v['skill']] = 0
+                for u in v['skill']:
+                    if u not in class_mask._byskill:
+                        class_mask._byskill[u] = 0
 
-                class_mask._byskill[v['skill']] |= (1 << v['bit'])
+                    class_mask._byskill[u] |= (1 << v['bit'])
 
         return class_mask._byskill.get(skill, 0)
 
