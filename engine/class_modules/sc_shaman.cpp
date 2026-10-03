@@ -5,12 +5,18 @@
 
 #include "simulationcraft.hpp"
 
+#include "class_modules/apl/shaman.hpp"
+
 namespace {
 
 struct shaman_t final : public player_t
 {
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
     player_t( sim, SHAMAN, name, r ) {}
+
+  std::string default_potion() const override   { return shaman_apl::potion( this ); }
+  std::string default_flask() const override    { return shaman_apl::flask( this ); }
+  std::string default_food() const override     { return shaman_apl::food( this ); }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_action_list() override;
