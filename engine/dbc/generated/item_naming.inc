@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 1.60.1.70009
+// Item name descriptions, wow build 1.60.1.70205
 static constexpr std::array<item_name_description_t, 92> __item_name_description_data { {
   { 13921, "Raid Unique (3)"                             },
   { 13967, "Blue"                                        },

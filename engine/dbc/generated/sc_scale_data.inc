@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 90, wow build 1.60.1.70009
+// Hit points per stamina for level 1 - 90, wow build 1.60.1.70205
 static constexpr double __hp_per_sta[90] = {
     10,	10,	10,	10,	10,	//    5
     10,	10,	10,	10,	10,	//   10
@@ -20,7 +20,7 @@ static constexpr double __hp_per_sta[90] = {
     10,	10,	10,	10,	10,	//   90
 };
 
-// Spell scaling multipliers for levels 1 - 90, wow build 1.60.1.70009
+// Spell scaling multipliers for levels 1 - 90, wow build 1.60.1.70205
 static constexpr double __spell_scaling[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -147,6 +147,26 @@ static constexpr double __spell_scaling[][90] = {
     0,	0,	0,	0,	0,	//   85
     0,	0,	0,	0,	0,	//   90
   },
+  {
+    0,	0,	0,	0,	0,	//    5
+    0,	0,	0,	0,	0,	//   10
+    0,	0,	0,	0,	0,	//   15
+    0,	0,	0,	0,	0,	//   20
+    0,	0,	0,	0,	0,	//   25
+    0,	0,	0,	0,	0,	//   30
+    0,	0,	0,	0,	0,	//   35
+    0,	0,	0,	0,	0,	//   40
+    0,	0,	0,	0,	0,	//   45
+    0,	0,	0,	0,	0,	//   50
+    0,	0,	0,	0,	0,	//   55
+    0,	0,	0,	0,	0,	//   60
+    0,	0,	0,	0,	0,	//   65
+    0,	0,	0,	0,	0,	//   70
+    0,	0,	0,	0,	0,	//   75
+    0,	0,	0,	0,	0,	//   80
+    0,	0,	0,	0,	0,	//   85
+    0,	0,	0,	0,	0,	//   90
+  },
   // Shaman
   {
     0,	0,	0,	0,	0,	//    5
@@ -190,6 +210,26 @@ static constexpr double __spell_scaling[][90] = {
     0,	0,	0,	0,	0,	//   90
   },
   // Warlock
+  {
+    0,	0,	0,	0,	0,	//    5
+    0,	0,	0,	0,	0,	//   10
+    0,	0,	0,	0,	0,	//   15
+    0,	0,	0,	0,	0,	//   20
+    0,	0,	0,	0,	0,	//   25
+    0,	0,	0,	0,	0,	//   30
+    0,	0,	0,	0,	0,	//   35
+    0,	0,	0,	0,	0,	//   40
+    0,	0,	0,	0,	0,	//   45
+    0,	0,	0,	0,	0,	//   50
+    0,	0,	0,	0,	0,	//   55
+    0,	0,	0,	0,	0,	//   60
+    0,	0,	0,	0,	0,	//   65
+    0,	0,	0,	0,	0,	//   70
+    0,	0,	0,	0,	0,	//   75
+    0,	0,	0,	0,	0,	//   80
+    0,	0,	0,	0,	0,	//   85
+    0,	0,	0,	0,	0,	//   90
+  },
   {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -422,7 +462,7 @@ static constexpr double __spell_scaling[][90] = {
   },
 };
 
-// Base mana points for levels 1 - 90, wow build 1.60.1.70009
+// Base mana points for levels 1 - 90, wow build 1.60.1.70205
 static constexpr double __base_mp[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -549,6 +589,26 @@ static constexpr double __base_mp[][90] = {
     1655,	1664,	1673,	1682,	1691,	//   85
     1685,	1694,	1703,	1697,	1706,	//   90
   },
+  {
+    0,	0,	0,	0,	0,	//    5
+    0,	0,	0,	0,	0,	//   10
+    0,	0,	0,	0,	0,	//   15
+    0,	0,	0,	0,	0,	//   20
+    0,	0,	0,	0,	0,	//   25
+    0,	0,	0,	0,	0,	//   30
+    0,	0,	0,	0,	0,	//   35
+    0,	0,	0,	0,	0,	//   40
+    0,	0,	0,	0,	0,	//   45
+    0,	0,	0,	0,	0,	//   50
+    0,	0,	0,	0,	0,	//   55
+    0,	0,	0,	0,	0,	//   60
+    0,	0,	0,	0,	0,	//   65
+    0,	0,	0,	0,	0,	//   70
+    0,	0,	0,	0,	0,	//   75
+    0,	0,	0,	0,	0,	//   80
+    0,	0,	0,	0,	0,	//   85
+    0,	0,	0,	0,	0,	//   90
+  },
   // Shaman
   {
     55,	61,	68,	91,	100,	//    5
@@ -612,6 +672,26 @@ static constexpr double __base_mp[][90] = {
     1679,	1685,	1691,	1697,	1703,	//   85
     1709,	1715,	1721,	1727,	1733,	//   90
   },
+  {
+    0,	0,	0,	0,	0,	//    5
+    0,	0,	0,	0,	0,	//   10
+    0,	0,	0,	0,	0,	//   15
+    0,	0,	0,	0,	0,	//   20
+    0,	0,	0,	0,	0,	//   25
+    0,	0,	0,	0,	0,	//   30
+    0,	0,	0,	0,	0,	//   35
+    0,	0,	0,	0,	0,	//   40
+    0,	0,	0,	0,	0,	//   45
+    0,	0,	0,	0,	0,	//   50
+    0,	0,	0,	0,	0,	//   55
+    0,	0,	0,	0,	0,	//   60
+    0,	0,	0,	0,	0,	//   65
+    0,	0,	0,	0,	0,	//   70
+    0,	0,	0,	0,	0,	//   75
+    0,	0,	0,	0,	0,	//   80
+    0,	0,	0,	0,	0,	//   85
+    0,	0,	0,	0,	0,	//   90
+  },
   // Druid
   {
     50,	57,	65,	74,	84,	//    5
@@ -635,7 +715,7 @@ static constexpr double __base_mp[][90] = {
   },
 };
 
-// Combat rating values for level 1 - 90, wow build 1.60.1.70009
+// Combat rating values for level 1 - 90, wow build 1.60.1.70205
 static constexpr double __combat_ratings[][90] = {
   // Dodge
   {
@@ -1143,7 +1223,7 @@ static constexpr double __combat_ratings[][90] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 1.60.1.70009
+// Combat rating multipliers for item level 1 - 1300, wow build 1.60.1.70205
 static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2199,7 +2279,7 @@ static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 1.60.1.70009
+// Item level translation for item level 1 - 1300, wow build 1.60.1.70205
 static constexpr double __item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2463,7 +2543,7 @@ static constexpr double __item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 1.60.1.70009
+// Item socket costs for item levels 1 - 1300, wow build 1.60.1.70205
 static constexpr double __item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2667,7 +2747,7 @@ static constexpr double __item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 1.60.1.70009
+// Stamina multipliers for item level 1 - 1300, wow build 1.60.1.70205
 static constexpr double __stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {

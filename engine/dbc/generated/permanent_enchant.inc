@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 1.60.1.70009
+// Permanent item enchants, wow build 1.60.1.70205
 static constexpr std::array<permanent_enchant_entry_t, 210> __permanent_enchant_data { {
   {   33,  0,  2, 0x00000000, 0x0004000c, "accurate_scope"                    },
   { 2523,  0,  2, 0x00000000, 0x0004000c, "biznicks_247x128_accurascope"      },
