@@ -1061,5 +1061,5 @@ static const std::array<uint16_t, 469> __trait_spell_id_index { {
 #define MAX_HERO_TREES_PER_CLASS (0)// TODO (FOREVER) remove
 
 // TODO (FOREVER) remove
-static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { { } };
+static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 0> __trait_sub_tree_data { { } };
 
