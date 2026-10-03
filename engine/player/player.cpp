@@ -6270,8 +6270,6 @@ void player_t::arise()
     consumables.flask_action->execute();
   if ( consumables.food && consumables.food_action )
     consumables.food_action->execute();
-  if ( consumables.augmentation && consumables.augmentation_action )
-    consumables.augmentation_action->execute();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
@@ -11839,8 +11837,6 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "flask=" + flask_option + term;
       if ( !food_option.empty() )
         profile_str += "food=" + food_option + term;
-      if ( !rune_option.empty() )
-        profile_str += "augmentation=" + rune_option + term;
       if ( !tench_option.empty() )
         profile_str += "temporary_enchant=" + tench_option + term;
     }
@@ -12165,7 +12161,6 @@ void player_t::create_options()
   add_option( opt_string( "flask", flask_str ) );
   add_option( opt_string( "phial", flask_str ) );
   add_option( opt_string( "food", food_str ) );
-  add_option( opt_string( "augmentation", rune_str ) );
   add_option( opt_string( "temporary_enchant", temporary_enchant_str ) );
 
   // Positioning

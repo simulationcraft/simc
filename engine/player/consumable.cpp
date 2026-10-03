@@ -568,75 +568,6 @@ struct potion_t : public dbc_consumable_base_t
 };
 
 // ==========================================================================
-// Augmentation runes (Raiding consumable) (DBC-backed)
-// ==========================================================================
-
-struct augmentation_t : public dbc_consumable_base_t
-{
-  augmentation_t( player_t* p ) : dbc_consumable_base_t(p, "augmentation")
-  {
-    type = ITEM_SUBCLASS_CONSUMABLE_OTHER;
-  }
-
-  bool disabled_consumable() const override
-  {
-    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>( sim->allow_augmentations );
-  }
-
-  std::string consumable_default() const override
-  {
-    if ( !player->rune_str.empty() )
-    {
-      return player->rune_str;
-    }
-    else if ( !player->default_rune().empty() )
-    {
-      return player->default_rune();
-    }
-
-    return {};
-  }
-
-  // Custom driver for now, we don't really want to include the item data for now
-  const spell_data_t* driver() const override
-  {
-    if      ( util::str_in_str_ci( consumable_name, "defiled"        ) ) return player->find_spell( 224001 );
-    else if ( util::str_in_str_ci( consumable_name, "focus"          ) ) return player->find_spell( 175457 );
-    else if ( util::str_in_str_ci( consumable_name, "hyper"          ) ) return player->find_spell( 175456 );
-    else if ( util::str_in_str_ci( consumable_name, "stout"          ) ) return player->find_spell( 175439 );
-    else if ( util::str_in_str_ci( consumable_name, "battle_scarred" ) ) return player->find_spell( 270058 );
-    else if ( util::str_in_str_ci( consumable_name, "veiled"         ) ) return player->find_spell( 347901 );
-    else if ( util::str_in_str_ci( consumable_name, "draconic"       ) ) return player->find_spell( 393438 );
-    // NOTE: still using hte old spell for Draconic Augment Rune in spelldata
-    else if ( util::str_in_str_ci( consumable_name, "dreambound"     ) ) return player->find_spell( 393438 );
-    else if ( util::str_in_str_ci( consumable_name, "crystallized"   ) ) return player->find_spell( 453250 );
-    else if ( util::str_in_str_ci( consumable_name, "void_touched"   ) ) return player->find_spell( 1264426 );
-    else return spell_data_t::not_found();
-  }
-
-  void init() override
-  {
-    dbc_consumable_base_t::init();
-
-    if ( consumable_buff )
-    {
-      player->consumables.augmentation = consumable_buff;
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !player->consumables.augmentation )
-      return false;
-
-    if ( player->consumables.augmentation && player->consumables.augmentation->check() )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
-// ==========================================================================
 // Food (DBC-backed)
 // ==========================================================================
 
@@ -1026,14 +957,6 @@ action_t* create_action( player_t* p, std::string_view name, std::string_view op
     // due to failing to "create" the action.
     return p->consumables.food_action;
   }
-  if ( name == "augmentation" )
-  {
-    p->sim->error( "Augmentation Rune Action has been depreciated and is no longer needed in the Precombat APL\n" );
-    // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
-    // as augmentation_t::ready() checks if the buff is already active. This prevents the sim from erroring out
-    // due to failing to "create" the action.
-    return p->consumables.augmentation_action;
-  }
 
   if ( name == "potion" )
     return new potion_t( p, options_str );
@@ -1058,6 +981,5 @@ void create_consumeable_actions( player_t* p )
   // Create consumable actions for effects without APL actions
   p->consumables.food_action = new food_t( p );
   p->consumables.flask_action = new flask_t( p );
-  p->consumables.augmentation_action = new augmentation_t( p );
 }
 }  // namespace consumable

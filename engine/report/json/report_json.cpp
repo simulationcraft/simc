@@ -813,7 +813,6 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "potion" ] = p.potion_str.empty() ? p.default_potion() : p.potion_str;
   root[ "flask" ] = p.flask_str.empty() ? p.default_flask() : p.flask_str;
   root[ "food" ] = p.food_str.empty() ? p.default_food() : p.food_str;
-  root[ "augmentation" ] = p.rune_str.empty() ? p.default_rune() : p.rune_str;
   root[ "temporary_enchant" ] =
       p.temporary_enchant_str.empty() ? p.default_temporary_enchant() : p.temporary_enchant_str;
 
