@@ -764,11 +764,15 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
+
+  { // PLACEHOLDER FOR DK - DO NOT DELETE
+  },
+
   { // Shaman TODO: 2-60
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {     21,     20,     21,     21,     22 }, // 1/5  Defense; Dodge: 4.5099997520; Parry: 0.0000000000; Block: 4.8000001907; Armor: 40
-    {      0,      0,      0,      0,      0 },
+    {     22,     20,     22,     22,     23 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 5
@@ -782,7 +786,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 15
-    {     33,     27,     34,     34,     37 },
+    {     34,     26,     35,     33,     37 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
@@ -1137,6 +1141,8 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
+  },
+  { // PLACEHOLDER FOR MONK - DO NOT DELETE
   },
   { // Druid TODO: 2-60
     // Str = 0.43 of Primary
