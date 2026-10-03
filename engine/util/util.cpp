@@ -424,6 +424,8 @@ const char* util::race_type_string( race_e type )
     case RACE_WORGEN:              return "worgen";
     case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_UNKNOWN:             return "unknown";
+    case RACE_SKYBORNE_ALLIANCE:   return "skyborne_alliance";
+    case RACE_SKYBORNE_HORDE:      return "skyborne_horde";
     case RACE_MAX:                 return "unknown";
     // trivial npcs
     case RACE_CRITTER:             return "critter";
@@ -1870,6 +1872,7 @@ int util::class_id( player_e type )
 }
 
 // race_id ==================================================================
+// ChrRaces.PlayableRaceBit
 
 unsigned util::race_id( race_e race )
 {
@@ -1906,6 +1909,8 @@ unsigned util::race_id( race_e race )
     case RACE_EARTHEN_HORDE:       return 18;
     case RACE_HARANIR_ALLIANCE:    return 21;
     case RACE_HARANIR_HORDE:       return 20;
+    case RACE_SKYBORNE_ALLIANCE:   return 32;
+    case RACE_SKYBORNE_HORDE:      return 33;
     default:                       return 0;
   }
 }
@@ -2032,6 +2037,8 @@ race_e util::translate_race_id( int rid )
     case 85: return RACE_EARTHEN_ALLIANCE;
     case 86: return RACE_HARANIR_ALLIANCE;
     case 91: return RACE_HARANIR_HORDE;
+    case 95: return RACE_SKYBORNE_ALLIANCE;
+    case 96: return RACE_SKYBORNE_HORDE;
   }
 
   return RACE_NONE;
@@ -3350,6 +3357,7 @@ bool is_alliance( race_e race )
     case RACE_DRACTHYR_ALLIANCE:
     case RACE_EARTHEN_ALLIANCE:
     case RACE_HARANIR_ALLIANCE:
+    case RACE_SKYBORNE_ALLIANCE:
       return true;
     default:
       return false;
@@ -3375,6 +3383,7 @@ bool is_horde( race_e race )
     case RACE_DRACTHYR_HORDE:
     case RACE_EARTHEN_HORDE:
     case RACE_HARANIR_HORDE:
+    case RACE_SKYBORNE_HORDE:
       return true;
     default:
       return false;
