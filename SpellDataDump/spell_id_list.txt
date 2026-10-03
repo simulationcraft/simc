@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 1.60.1.70009
+Class Spell ID List, wow build 1.60.1.70205
 
 Druid
 99       Demoralizing Roar
@@ -59,7 +59,7 @@ Druid
 5229     Enrage
 5232     Mark of the Wild
 5234     Mark of the Wild
-5421    *Aquatic Form (Passive)
+5421     Aquatic Form (Passive)
 5487     Bear Form
 5570     Insect Swarm
 6756     Mark of the Wild
@@ -162,61 +162,61 @@ Druid
 16811    Nature's Grasp
 16812    Nature's Grasp
 16813    Nature's Grasp
-16814    Improved Wrath
-16819    Nature's Reach
-16821    Improved Moonfire
-16833    Natural Shapeshifter
-16836    Improved Thorns
-16839    Improved Thorns
-16840    Improved Thorns
-16845    Moonglow
-16850    Improved Starfire
-16858    Feral Aggression
-16859    Feral Aggression
-16860    Feral Aggression
-16861    Feral Aggression
-16862    Feral Aggression
-16864    Omen of Clarity
+16814   *Improved Wrath
+16819   *Nature's Reach
+16821   *Improved Moonfire
+16833   *Natural Shapeshifter
+16836   *Improved Thorns
+16839   *Improved Thorns
+16840   *Improved Thorns
+16845   *Moonglow
+16850   *Improved Starfire
+16858   *Feral Aggression
+16859   *Feral Aggression
+16860   *Feral Aggression
+16861   *Feral Aggression
+16862   *Feral Aggression
+16864   *Omen of Clarity
 16870    Clearcasting
 16877   *Thorns
-16880    Nature's Grace
-16886    Nature's Grace
-16896    Moonfury
-16902    Natural Weapons
-16903    Natural Weapons
-16904    Natural Weapons
-16905    Natural Weapons
-16906    Natural Weapons
-16909    Vengeance
+16880   *Nature's Grace
+16886   *Nature's Grace
+16896   *Moonfury
+16902   *Natural Weapons
+16903   *Natural Weapons
+16904   *Natural Weapons
+16905   *Natural Weapons
+16906   *Natural Weapons
+16909   *Vengeance
 16914    Hurricane
-16918    Improved Entangling Roots
-16929    Thick Hide
-16934    Ferocity
-16940    Brutal Impact
-16947    Feral Instinct
-16966    Shredding Attacks
-16968    Improved Shred
-16972    Predatory Strikes
-16979    Feral Charge (Bear)
-16998    Savage Fury
-17002    Feral Swiftness
+16918   *Improved Entangling Roots
+16929   *Thick Hide
+16934   *Ferocity
+16940   *Brutal Impact
+16947   *Feral Instinct
+16966   *Shredding Attacks
+16968   *Improved Shred
+16972   *Predatory Strikes
+16979   *Feral Charge (Bear)
+16998   *Savage Fury
+17002   *Feral Swiftness
 17007    Leader of the Pack
-17050    Improved Mark of the Wild
-17051    Improved Mark of the Wild
-17053    Improved Mark of the Wild
-17054    Improved Mark of the Wild
-17055    Improved Mark of the Wild
-17056    Furor
-17063    Nature's Focus
-17069    Naturalist
-17074    Improved Regrowth
-17079    Improved Enrage
-17082    Improved Enrage
+17050   *Improved Mark of the Wild
+17051   *Improved Mark of the Wild
+17053   *Improved Mark of the Wild
+17054   *Improved Mark of the Wild
+17055   *Improved Mark of the Wild
+17056   *Furor
+17063   *Nature's Focus
+17069   *Naturalist
+17074   *Improved Regrowth
+17079   *Improved Enrage
+17082   *Improved Enrage
 17104    Gift of Nature
-17111    Improved Rejuvenation
-17116    Nature's Swiftness
-17118    Subtlety
-17123    Improved Tranquility
+17111   *Improved Rejuvenation
+17116   *Nature's Swiftness
+17118   *Subtlety
+17123   *Improved Tranquility
 17144   *Wrath
 17154    The Green Tower
 17245    Overgrowth
@@ -226,7 +226,7 @@ Druid
 17768    Wolfshead Helm
 18104   *Wrath
 18461    Vanish Purge
-18562    Swiftmend
+18562   *Swiftmend
 18657    Hibernate
 18658    Hibernate
 18960   *Teleport: Moonglade
@@ -334,7 +334,7 @@ Druid
 28847    Healing Touch Refund
 28854    Improved Moonfire
 28855   *Reduced Maul and Swipe Cost
-29166    Innervate
+29166   *Innervate
 29194   *Corrupted Mind
 29195   *Corrupted Mind
 29201   *Corrupted Mind
@@ -448,7 +448,7 @@ Druid
 436287  *Improved Wrath
 436892  *Feline Swiftness
 436893  *Feline Swiftness
-436895   S03 - Tuning and Overrides Passive - Druid
+436895  *S03 - Tuning and Overrides Passive - Druid
 436937   Regrowth
 436938   Regrowth
 436939   Regrowth
@@ -595,10 +595,10 @@ Druid
 1220685 *Totemic Power
 1220686 *Totemic Power
 1220702 *Idol of Longevity
-1223081  Genesis
-1223082  Nature's Majesty
-1223083  Nature's Splendor
-1223242  Predatory Instincts
+1223081 *Genesis
+1223082 *Nature's Majesty
+1223083 *Nature's Splendor
+1223242 *Predatory Instincts
 1226032 *S03 - Item - Scarlet Enclave - Druid - Restoration 2P Bonus
 1226035 *Swiftbloom
 1226038 *Rejuvenating
@@ -650,7 +650,7 @@ Druid
 1278759  Hurricane
 1278965  Hurricane
 1278968  Hurricane
-1291059  Tiger's Fury Cooldown Reduction
+1291059  Shifting Power Cooldown Reduction
 1291060  Increased Enrage Rage
 1291061  Increased Insect Swarm Duration
 1291075  Swiftmend Cooldown Reduction
@@ -673,7 +673,7 @@ Druid
 1301077 *1.60.0 - Item - Tier 1 - Druid - Restoration 4P Bonus - Healing/Damage
 1301084 *1.60.0 - Item - Tier 1 - Paladin - Retribution 4P Bonus - AP vs. Undead
 1301242 *1.60.0 - Item - Tier 1 - Druid - Balance 5P Bonus - Insect Swarm
-1301247 *1.60.0 - Item - Tier 1 - Druid - Feral 5P Bonus - Tiger's Fury
+1301247 *1.60.0 - Item - Tier 1 - Druid - Feral 5P Bonus - Shifting Power
 1301249 *1.60.0 - Item - Tier 1 - Druid - Guardian 5P Bonus - Berserk
 1301250 *1.60.0 - Item - Tier 1 - Druid - Restoration 5P Bonus - Swiftmend
 1306459 *Thick Hide
@@ -687,6 +687,9 @@ Druid
 1310503 *Mark of the Wild
 1310990 *Wolfshead Helm
 1312152 *Tiger's Fury
+1322605  Shifting Power
+1322670 *Improved Shifting Power
+1323400 *Revelation
 
 Hunter
 75       Auto Shot
@@ -837,55 +840,55 @@ Hunter
 17331   *Fang of the Crystal Spider
 17353   *Shoot
 18561   *Shoot
-19159    Savage Strikes
-19184    Entrapment
-19228    Improved Wing Clip
-19239    Clever Traps
-19255    Survivalist
-19263    Deterrence
-19286    Improved Feign Death
-19287    Improved Feign Death
+19159   *Savage Strikes
+19184   *Entrapment
+19228   *Improved Wing Clip
+19239   *Clever Traps
+19255   *Survivalist
+19263   *Deterrence
+19286   *Improved Feign Death
+19287   *Improved Feign Death
 19290    Surefooted
 19306    Counterattack
 19376    Survival Tactics
-19407    Improved Concussive Shot
-19416    Efficiency
-19421    Improved Hunter's Mark
-19426    Lethal Attacks
-19434    Aimed Shot
-19454    Improved Arcane Shot
-19461    Barrage
-19464    Improved Serpent Sting
-19485    Mortal Shots
-19498    Hawk Eye
-19503    Scatter Shot
-19506    Trueshot Aura
+19407   *Improved Concussive Shot
+19416   *Efficiency
+19421   *Improved Hunter's Mark
+19426   *Lethal Attacks
+19434   *Aimed Shot
+19454   *Improved Arcane Shot
+19461   *Barrage
+19464   *Improved Serpent Sting
+19485   *Mortal Shots
+19498   *Hawk Eye
+19503   *Scatter Shot
+19506   *Trueshot Aura
 19549    Improved Aspect of the Monkey
-19552    Deadly Aspects
-19557    Improved Eyes of the Beast
-19558    Improved Eyes of the Beast
-19559    Pathfinding
-19572    Improved Mend Pet
-19574    Bestial Wrath
+19552   *Deadly Aspects
+19557   *Improved Eyes of the Beast
+19558   *Improved Eyes of the Beast
+19559   *Pathfinding
+19572   *Improved Mend Pet
+19574   *Bestial Wrath
 19577    Intimidation
 19580   *Tamed Pet Passive (DND)
 19581   *Tamed Pet Passive (DND)
 19582   *Tamed Pet Passive (DND)
-19583    Endurance Training
+19583   *Endurance Training
 19589   *Tamed Pet Passive (DND)
-19590    Bestial Discipline
+19590   *Bestial Discipline
 19591   *Tamed Pet Passive (DND)
-19596    Bestial Swiftness
+19596   *Bestial Swiftness
 19597   *Tame Ice Claw Bear
-19598    Ferocity
+19598   *Ferocity
 19603   *Bestial Fury
 19605   *Bestial Fury
 19606   *Bestial Fury
 19607   *Bestial Fury
 19608   *Bestial Fury
-19609    Thick Hide
-19616    Unleashed Fury
-19621    Frenzy
+19609   *Thick Hide
+19616   *Unleashed Fury
+19621   *Frenzy
 19676   *Tame Snow Leopard
 19677   *Tame Large Crag Boar
 19678   *Tame Adult Plainstrider
@@ -914,13 +917,13 @@ Hunter
 20736    Distracting Shot
 20782   *Tamed Pet Passive (DND)
 20784   *Tamed Pet Passive (DND)
-20900    Aimed Shot
-20901    Aimed Shot
-20902    Aimed Shot
-20903    Aimed Shot
-20904    Aimed Shot
-20905    Trueshot Aura
-20906    Trueshot Aura
+20900   *Aimed Shot
+20901   *Aimed Shot
+20902   *Aimed Shot
+20903   *Aimed Shot
+20904   *Aimed Shot
+20905   *Trueshot Aura
+20906   *Trueshot Aura
 20909    Counterattack
 20910    Counterattack
 21942   *Hunter Giant Stalker
@@ -950,15 +953,15 @@ Hunter
 23721    Arcane Infused
 23989    Readiness
 24049   *Impale
-24118    Lacerate
-24119    Lacerate
-24120    Lacerate
+24118   *Lacerate
+24119   *Lacerate
+24120   *Lacerate
 24293    Improved Tracking
 24335   *Wyvern Sting
 24336   *Wyvern Sting
 24348   *Cheetah Sprint
 24353   *Devilsaur Tooth
-24406    Improved Mend Pet
+24406   *Improved Mend Pet
 24416   *Superior Aspects
 24432    Improved Feign Death
 24443    Improved Revive Pet
@@ -1209,11 +1212,11 @@ Hunter
 1218589 *S03 - Item - Naxxramas - Hunter - Melee 6P Bonus
 1221404  Enchanted Flare
 1221416  Enchanted Flare
-1223755  Focused Fire
+1223755 *Focused Fire
 1223758 *The Beast Within
 1223793 *Seal of the Dawn
-1223984  Careful Aim
-1223987  Rapid Recuperation
+1223984 *Careful Aim
+1223987 *Rapid Recuperation
 1226132 *S03 - Item - Scarlet Enclave - Hunter - Ranged 2P Bonus
 1226137 *S03 - Item - Scarlet Enclave - Hunter - Ranged 4P Bonus
 1226138 *S03 - Item - Scarlet Enclave - Hunter - Ranged 6P Bonus
@@ -1327,15 +1330,15 @@ Hunter
 1236847 *Experiment-800M
 1236848 *Experiment-800M
 1242139 *Focused Fire
-1242512  Rapid Recuperation
+1242512 *Rapid Recuperation
 1242634  Counterattack
 1262309 *The Quick and the Dead
 1264455  Thunderstomp
-1264478 *Sonic Blast
-1264479 *Sonic Blast
-1264480 *Sonic Blast
-1264481 *Sonic Blast
-1264482 *Sonic Blast
+1264478  Sonic Blast
+1264479  Sonic Blast
+1264480  Sonic Blast
+1264481  Sonic Blast
+1264482  Sonic Blast
 1264494  Swipe
 1264497  Swipe
 1264498  Swipe
@@ -1394,9 +1397,9 @@ Hunter
 1293639 *Improved Revive Pet
 1294124 *Aimed Shot
 1294189 *Poison Spear
-1299332  Lacerate
-1299346  Trueshot Aura
-1299348  Trueshot Aura
+1299332 *Lacerate
+1299346 *Trueshot Aura
+1299348 *Trueshot Aura
 1299437 *Improved Aimed Shot
 1299445  Aspect of the Beast
 1299446  Aspect of the Beast
@@ -1407,17 +1410,18 @@ Hunter
 1301252 *1.60.0 - Item - Tier 1 - Hunter 5P Bonus - Aimed and Multi-Shot
 1306284 *Shoot
 1310180 *Wing Clip
-1310496  Survivalist's Discipline
-1310532  Expose Prey
-1310533  Lacerating Strikes
-1310536  Lacerating Strikes
-1310627  Predator's Edge
-1310661  Improved Stings
+1310496 *Survivalist's Discipline
+1310532 *Expose Prey
+1310533 *Lacerating Strikes
+1310536 *Lacerating Strikes
+1310627 *Predator's Edge
+1310661 *Improved Stings
 1310684 *Lone Wolf
-1310687  Sniper Shot
-1310785  Sniper Shot
-1310786  Sniper Shot
+1310687 *Sniper Shot
+1310785 *Sniper Shot
+1310786 *Sniper Shot
 1317257  Strider Kick
+1323410 *Revelation
 
 Mage
 10       Blizzard
@@ -1585,7 +1589,7 @@ Mage
 11108    Improved Flamestrike
 11113    Blast Wave
 11115    Critical Mass
-11119    Ignite
+11119   *Ignite
 11124    Fire Power
 11129    Combustion
 11151    Piercing Ice
@@ -1599,14 +1603,14 @@ Mage
 11190    Improved Cone of Cold
 11207    Ice Shards
 11210    Arcane Subtlety
-11213    Arcane Concentration
-11222    Arcane Focus
-11232    Arcane Mind
-11237    Improved Channeling
-11242    Arcane Impact
-11247    Arcane Geometry
-11252    Arcane Shielding
-11255    Improved Counterspell
+11213   *Arcane Concentration
+11222   *Arcane Focus
+11232   *Arcane Mind
+11237   *Improved Channeling
+11242   *Arcane Impact
+11247   *Arcane Geometry
+11252   *Arcane Shielding
+11255   *Improved Counterspell
 11262   *Improved Blink
 11366    Pyroblast
 11416   *Portal: Ironforge
@@ -1616,9 +1620,9 @@ Mage
 11420   *Portal: Thunder Bluff
 11426    Ice Barrier
 11958    Ice Block
-12042    Arcane Power
-12043    Presence of Mind
-12051    Evocation
+12042   *Arcane Power
+12043   *Presence of Mind
+12051   *Evocation
 12354   *Flame of Hakkar
 12379   *Scorch Talent Test (PT)
 12472    Cold Snap
@@ -1631,13 +1635,13 @@ Mage
 12526    Pyroblast
 12529   *Chilling Touch
 12531   *Chilling Touch
-12536    Clearcasting
+12536   *Clearcasting
 12544   *Frost Armor
 12556   *Frost Armor
 12557   *Cone of Cold
 12579    Winter's Chill
 12604   *Improved Blink
-12606    Magic Attunement
+12606   *Magic Attunement
 12611   *Cone of Cold
 12824   *Polymorph
 12825   *Polymorph
@@ -1664,7 +1668,7 @@ Mage
 14514   *Blink
 15041   *Fire Ward
 15044   *Frost Ward
-15058    Arcane Instability
+15058   *Arcane Instability
 15091   *Blast Wave
 15122   *Counterspell
 15241   *Scorch
@@ -1692,7 +1696,7 @@ Mage
 16415   *Fireball
 16454   *Searing Blast
 16551   *Felstriker
-16757    Arctic Reach
+16757   *Arctic Reach
 16785   *Flamebreak
 16876   *Arcane Intellect
 16927    Chilled
@@ -1718,7 +1722,7 @@ Mage
 18146   *Chilling Touch
 18199    Fireball
 18398    Frost Blast
-18459    Incineration
+18459   *Incineration
 18796    Fireball
 18809    Pyroblast
 18833   *Firebolt
@@ -1771,7 +1775,7 @@ Mage
 24429    Improved Counterspell
 24489   *Improved Arcane Intellect
 24491   *Improved Flamestrike
-24530    Felfire
+24530   *Felfire
 24544    Arcane Potency
 25022   *Hallow's End Fright
 25023   *Hallow's End Fright
@@ -1859,8 +1863,8 @@ Mage
 400621   Fire Blast
 400622   Fire Blast
 400623   Fire Blast
-400624   Hot Streak
-400625   Hot Streak
+400624   Heating Up
+400625   Heating Up
 400640   Ice Lance
 400647   Fingers of Frost
 400669   Fingers of Frost
@@ -1935,7 +1939,7 @@ Mage
 412437  *Waterbolt
 412510   Mass Regeneration
 412532   Spellfrost Bolt
-412538   Ignite
+412538  *Ignite
 412545  *Ignite
 414692   Sunfire
 415459   Spell Power
@@ -2085,8 +2089,8 @@ Mage
 1218995 *S03 - Item - Naxxramas - Mage - Damage 6P Bonus
 1219270 *Stygian Grasp
 1220520 *Stygian Grasp
-1222988  Earthbound
-1223246  Rend and Tear
+1222988 *Earthbound
+1223246 *Rend and Tear
 1226377 *Timey-Bearimy
 1226378 *S03 - Item - Scarlet Enclave - Mage - Healer 6P Bonus
 1226406 *Arcane Tunneling
@@ -2114,6 +2118,7 @@ Mage
 1240045  Ice Lance
 1240046  Ice Lance
 1240047  Ice Lance
+1248808 *Revelation
 1259817  Eureka!
 1262243 *The Quick and the Dead
 1262638 *Reagent Economy
@@ -2172,7 +2177,7 @@ Paladin
 1026     Holy Light
 1032     Devotion Aura
 1038     Blessing of Salvation
-1042     Holy Light
+1042    *Holy Light
 1044     Blessing of Freedom
 1152     Purify
 1866     Holy Strike
@@ -2252,16 +2257,16 @@ Paladin
 19981    Holy Light
 19982    Holy Light
 19993    Flash of Light
-20042    Improved Blessing of Might
-20045    Improved Blessing of Might
-20046    Improved Blessing of Might
-20047    Improved Blessing of Might
-20048    Improved Blessing of Might
-20049    Vengeance
+20042   *Improved Blessing of Might
+20045   *Improved Blessing of Might
+20046   *Improved Blessing of Might
+20047   *Improved Blessing of Might
+20048   *Improved Blessing of Might
+20049   *Vengeance
 20066    Repentance
-20091    Improved Retribution Aura
-20092    Improved Retribution Aura
-20101    Benediction
+20091   *Improved Retribution Aura
+20092   *Improved Retribution Aura
+20101   *Benediction
 20116    Consecration
 20138    Improved Devotion Aura
 20154    Seal of Righteousness
@@ -2281,20 +2286,20 @@ Paladin
 20188    Judgement of the Crusader
 20194   *Improved Blessing of Salvation
 20195   *Improved Blessing of Salvation
-20205    Spiritual Focus
-20210    Illumination
-20216    Divine Favor
+20205   *Spiritual Focus
+20210   *Illumination
+20216   *Divine Favor
 20217    Blessing of Kings
 20218   *Sanctity Aura
-20224    Improved Seals
+20224   *Improved Seals
 20231    Seal of Fury
 20232    Judgement of Fury
-20237    Healing Light
-20244    Improved Blessing of Wisdom
-20245    Improved Blessing of Wisdom
-20249    Improved Flash of Light
-20250    Improved Flash of Light
-20251    Improved Flash of Light
+20237   *Healing Light
+20244   *Improved Blessing of Wisdom
+20245   *Improved Blessing of Wisdom
+20249   *Improved Flash of Light
+20250   *Improved Flash of Light
+20251   *Improved Flash of Light
 20254    Improved Concentration Aura
 20267    Judgement of Light
 20271    Judgement
@@ -2322,9 +2327,9 @@ Paladin
 20308    Seal of the Crusader
 20333    Seal of Light
 20334    Seal of Light
-20335    Improved Seal of the Crusader
-20336    Improved Seal of the Crusader
-20337    Improved Seal of the Crusader
+20335   *Improved Seal of the Crusader
+20336   *Improved Seal of the Crusader
+20337   *Improved Seal of the Crusader
 20340    Seal of Light
 20341    Judgement of Light
 20342    Judgement of Light
@@ -2344,7 +2349,7 @@ Paladin
 20359    Lasting Judgement
 20360    Lasting Judgement
 20361    Lasting Judgement
-20375    Seal of Command
+20375   *Seal of Command
 20411    Judgement of Fury
 20412    Judgement of Fury
 20413    Judgement of Fury
@@ -2357,35 +2362,35 @@ Paladin
 20421    Seal of Fury
 20422    Seal of Fury
 20423    Seal of Fury
-20424    Seal of Command
-20425    Judgement of Command
-20467    Judgement of Command
+20424   *Seal of Command
+20425   *Judgement of Command
+20467   *Judgement of Command
 20468    Improved Righteous Fury
-20473    Holy Shock
+20473   *Holy Shock
 20487    Improved Hammer of Justice
 20729    Blessing of Sacrifice
 20772    Redemption
 20773    Redemption
-20915    Seal of Command
-20918    Seal of Command
-20919    Seal of Command
-20920    Seal of Command
+20915   *Seal of Command
+20918   *Seal of Command
+20919   *Seal of Command
+20920   *Seal of Command
 20922    Consecration
 20923    Consecration
 20924    Consecration
 20925    Holy Shield
 20927    Holy Shield
 20928    Holy Shield
-20929    Holy Shock
-20930    Holy Shock
-20961    Judgement of Command
-20962    Judgement of Command
-20963    Judgement of Command
-20964    Judgement of Command
-20965    Judgement of Command
-20966    Judgement of Command
-20967    Judgement of Command
-20968    Judgement of Command
+20929   *Holy Shock
+20930   *Holy Shock
+20961   *Judgement of Command
+20962   *Judgement of Command
+20963   *Judgement of Command
+20964   *Judgement of Command
+20965   *Judgement of Command
+20966   *Judgement of Command
+20967   *Judgement of Command
+20968   *Judgement of Command
 21082    Seal of the Crusader
 21084    Seal of Righteousness
 21183    Judgement of the Crusader
@@ -2642,7 +2647,7 @@ Paladin
 1220645 *Improved Holy Light/Holy Shock/Sacred Shield
 1224553 *Sanctified Light
 1224692 *Divinity
-1224697  Sacred Duty
+1224697 *Sacred Duty
 1226451 *Emergency
 1226452 *S03 - Item - Scarlet Enclave - Paladin - Holy 2P Bonus
 1226454 *S03 - Item - Scarlet Enclave - Paladin - Holy 4P Bonus
@@ -2660,7 +2665,7 @@ Paladin
 1232104 *Infusion of Souls
 1233525 *Avenging Shield
 1234299 *Leogan
-1237268  Holy Conduit
+1237268 *Holy Conduit
 1239543  Sunlight
 1240571 *S03 - Item - Scarlet Enclave - Paladin - Shockadin 2P Bonus
 1240573 *S03 - Item - Scarlet Enclave - Paladin - Shockadin 6P Bonus
@@ -2698,10 +2703,10 @@ Paladin
 1306749  Steadfast
 1306786 *Libram of the Wild Sky
 1310735  Twist of Light
-1310897  Voice of Truth
+1310897 *Voice of Truth
 1310902 *Improved Holy Strike
-1310904  Divine Precision
-1310905  Consecrated Ground
+1310904 *Divine Precision
+1310905 *Consecrated Ground
 1310909  Light's Vigil
 1310910 *Light's Vigil
 1310911  Light's Vigil
@@ -2710,13 +2715,13 @@ Paladin
 1310927 *Light's Fury
 1310994  Swift Judgement
 1311015  Templar's Bulwark
-1311033  Iron Creed
-1311034  Iron Creed
+1311033 *Iron Creed
+1311034 *Iron Creed
 1311074  Sanctified Judgement
 1311083 *Crusade
-1311084  Champion of the Light
-1311085  Instrument of Law
-1311087  Sacred Arbiter
+1311084 *Champion of the Light
+1311085 *Instrument of Law
+1311087 *Sacred Arbiter
 1311590  Light's Vigil
 1311591  Light's Vigil
 1311592  Light's Vigil
@@ -2727,9 +2732,9 @@ Paladin
 1311597  Light's Vigil
 1311598  Light's Vigil
 1311599 *Light's Vigil
-1311604  Holy Shock
-1311605  Holy Shock
-1311606  Holy Shock
+1311604 *Holy Shock
+1311605 *Holy Shock
+1311606 *Holy Shock
 1311647  Seal of Fury
 1311649  Seal of Fury
 1311650  Judgement of Fury
@@ -2750,6 +2755,7 @@ Paladin
 1316101  Repentance Duration Increase
 1317271 *Righteous Indignation
 1317272 *Righteous Indignation
+1323419 *Revelation
 
 Priest
 17       Power Word: Shield
@@ -2880,27 +2886,27 @@ Priest
 10965    Greater Heal
 13896    Feedback
 13908    Desperate Prayer
-14520    Mental Agility
-14523    Silent Resolve
-14747    Improved Inner Fire
+14520   *Mental Agility
+14523   *Silent Resolve
+14747   *Improved Inner Fire
 14748    Improved Power Word: Shield
-14749    Improved Power Word: Fortitude
-14750    Improved Mana Burn
-14751    Inner Focus
+14749   *Improved Power Word: Fortitude
+14750   *Improved Mana Burn
+14751   *Inner Focus
 14752    Divine Spirit
-14767    Improved Power Word: Fortitude
+14767   *Improved Power Word: Fortitude
 14816   *Empathy
 14818    Divine Spirit
 14819    Divine Spirit
-14889    Holy Specialization
-14892    Inspiration
+14889   *Holy Specialization
+14892   *Inspiration
 14898    Spiritual Healing
-14901    Spiritual Guidance
+14901   *Spiritual Guidance
 14904   *Master Healer
-14908    Improved Renew
-14909    Searing Light
-14912    Improved Healing
-14913    Twilight Focus
+14908   *Improved Renew
+14909   *Searing Light
+14912   *Improved Healing
+14913   *Twilight Focus
 14914    Holy Fire
 15007   *Resurrection Sickness
 15024   *Master Healer
@@ -2966,12 +2972,12 @@ Priest
 18165   *Holy Fire
 18167   *Holy Fire
 18388    Quick Fade
-18530    Divine Fury
-18544    Force of Will
-18547    Force of Will
-18548    Force of Will
-18549    Force of Will
-18550    Force of Will
+18530   *Divine Fury
+18544   *Force of Will
+18547   *Force of Will
+18548   *Force of Will
+18549   *Force of Will
+18550   *Force of Will
 18807    Mind Flay
 19236    Desperate Prayer
 19238    Desperate Prayer
@@ -3103,7 +3109,7 @@ Priest
 27804    Holy Nova
 27805    Holy Nova
 27811    Blessed Recovery
-27827    Spirit of Redemption
+27827   *Spirit of Redemption
 27828    Focused Casting
 27839    Improved Vampiric Embrace
 27841    Divine Spirit
@@ -3276,7 +3282,7 @@ Priest
 1222996 *Damage Over Time Increase
 1222997  Damage Over Time Increase
 1225132  Twin Disciplines
-1225139  Improved Mind Flay
+1225139 *Improved Mind Flay
 1226499 *S03 - Item - Scarlet Enclave - Priest - Healer 2P Bonus
 1226500 *Absolution
 1226501 *S03 - Item - Scarlet Enclave - Priest - Healer 6P Bonus
@@ -3355,7 +3361,7 @@ Priest
 1277638  Contingency Plan
 1277639  Contingency Plan
 1277640  Contingency Plan
-1284536  Holy Purpose
+1284536 *Holy Purpose
 1286257 *(DNT) Prayer of Spirit - TEST RAID SPELL
 1287768 *Unholy Might
 1289450 *Renew
@@ -3370,15 +3376,15 @@ Priest
 1301087 *1.60.0 - Item - Tier 1 - Priest - Shadow 4P Bonus - SP vs. Undead
 1301703 *1.60.0 - Item - Tier 1 - Priest - Discipline/Holy 5P Bonus - Penance and Prayer of Mending
 1301706 *1.60.0 - Item - Tier 1 - Priest - Shadow 5P Bonus - Devouring Plague
-1309595  Shadow Word: Death
+1309595 *Shadow Word: Death
 1309598 *Shadow Word: Death
-1309633  Shadow Word: Death
-1309635  Shadow Word: Death
-1309636  Shadow Word: Death
-1309950  Devouring Contagion
-1309957  Holy Precision
-1309969  Power in Light
-1310076  Early Demise
+1309633 *Shadow Word: Death
+1309635 *Shadow Word: Death
+1309636 *Shadow Word: Death
+1309950 *Devouring Contagion
+1309957 *Holy Precision
+1309969 *Power in Light
+1310076 *Early Demise
 1310993 *Corrupted Healing
 1313379 *Prayer of Mending
 1313381 *Prayer of Mending
@@ -3387,7 +3393,8 @@ Priest
 1316993  Penance
 1316994  Penance
 1316995  Penance
-1317006  Litany of Light
+1317006 *Litany of Light
+1323377 *Revelation
 
 Rogue
 53       Backstab
@@ -3534,47 +3541,47 @@ Rogue
 13228    Wound Poison II
 13229    Wound Poison III
 13230    Wound Poison IV
-13715    Dual Wield Specialization
-13732    Improved Sinister Strike
-13741    Improved Gouge
-13742    Endurance
-13743    Improved Sprint
-13750    Adrenaline Rush
-13754    Improved Kick
-13877    Blade Flurry
-13975    Camouflage
-13976    Initiative
-13981    Elusiveness
-14057    Opportunity
-14076    Improved Sap
-14079    Improved Ambush
-14082    Dirty Deeds
-14084    Improved Distract
-14094    Improved Sap
-14095    Improved Sap
-14113    Improved Poisons
-14128    Lethality
-14143    Remorseless
-14156    Ruthlessness
-14158    Murder
+13715   *Dual Wield Specialization
+13732   *Improved Sinister Strike
+13741   *Improved Gouge
+13742   *Endurance
+13743   *Improved Sprint
+13750   *Adrenaline Rush
+13754   *Improved Kick
+13877   *Blade Flurry
+13975   *Camouflage
+13976   *Initiative
+13981   *Elusiveness
+14057   *Opportunity
+14076   *Improved Sap
+14079   *Improved Ambush
+14082   *Dirty Deeds
+14084   *Improved Distract
+14094   *Improved Sap
+14095   *Improved Sap
+14113   *Improved Poisons
+14128   *Lethality
+14143   *Remorseless
+14156   *Ruthlessness
+14158   *Murder
 14162    Improved Eviscerate
 14165    Improved Slice and Dice
-14168    Improved Expose Armor
-14171    Serrated Blades
+14168   *Improved Expose Armor
+14171   *Serrated Blades
 14174    Improved Kidney Shot
-14177    Cold Blood
-14179    Relentless Strikes
-14183    Premeditation
-14185    Preparation
-14186    Seal Fate
-14251    Riposte
+14177   *Cold Blood
+14179   *Relentless Strikes
+14183   *Premeditation
+14185   *Preparation
+14186   *Seal Fate
+14251   *Riposte
 14278    Ghostly Strike
 14795    Venomhide Poison
 14873   *Sinister Strike
 14874   *Rupture
 14902   *Cheap Shot
 14903   *Rupture
-14983    Vigor
+14983   *Vigor
 15054   *Distract Test
 15055   *Distract Test
 15087   *Evasion
@@ -3585,8 +3592,8 @@ Rogue
 15692   *Eviscerate
 16321    Juju Escape
 16511    Hemorrhage
-16513    Vile Poisons
-18425    Silenced - Kick
+16513   *Vile Poisons
+18425   *Silenced - Kick
 18427    Aggression
 18469   *Counterspell - Silenced
 18498    Silenced
@@ -3639,7 +3646,7 @@ Rogue
 30819   *Dual Wield Specialization
 30820   *Dual Wield Specialization
 30821   *Dual Wield Specialization
-30892    Sleight of Hand
+30892   *Sleight of Hand
 31016    Eviscerate
 398196   Quick Draw
 398197   Quick Draw
@@ -3805,8 +3812,8 @@ Rogue
 1219356 *S03 - Item - Naxxramas - Rogue - Tank 2P Bonus
 1219358 *S03 - Item - Naxxramas - Rogue - Tank 4P Bonus
 1219359 *S03 - Item - Naxxramas - Rogue - Tank 6P Bonus
-1224716  Puncturing Wounds
-1224782  Dirty Tricks
+1224716 *Puncturing Wounds
+1224782 *Dirty Tricks
 1226843 *S03 - Item - Scarlet Enclave - Rogue - Damage 2P Bonus
 1226869 *S03 - Item - Scarlet Enclave - Rogue - Damage 4P Bonus
 1226871 *S03 - Item - Scarlet Enclave - Rogue - Damage 6P Bonus
@@ -3853,11 +3860,11 @@ Rogue
 1310705  Mutilate
 1310706  Mutilate
 1310707  Mutilate
-1310709  Coup de Grace
-1310711  Flawless Execution
-1310721  Thousand Cuts
-1310723  Thousand Cuts
-1310728  Quietus
+1310709 *Coup de Grace
+1310711 *Flawless Execution
+1310721 *Thousand Cuts
+1310723 *Thousand Cuts
+1310728 *Quietus
 1318151 *Stealth
 
 Shaman
@@ -4009,7 +4016,7 @@ Shaman
 10438    Searing Totem
 10441    Strength of Earth
 10442    Strength of Earth Totem
-10444   *Flametongue Attack
+10444    Flametongue Attack
 10445    Flametongue Weapon Proc
 10447    Flame Shock
 10448    Flame Shock
@@ -4079,40 +4086,40 @@ Shaman
 15567    Rockbiter Weapon (Passive)
 15568    Rockbiter Weapon (Passive)
 15569    Rockbiter Weapon (Passive)
-16035    Concussion
-16038    Call of Flame
-16039    Convection
-16040    Reverberation
-16043    Earth's Grasp
-16086    Improved Fire Nova
-16089    Elemental Fury
-16120    Call of Thunder
-16164    Elemental Focus
-16173    Totemic Focus
+16035   *Concussion
+16038   *Call of Flame
+16039   *Convection
+16040   *Reverberation
+16043   *Earth's Grasp
+16086   *Improved Fire Nova
+16089   *Elemental Fury
+16120   *Call of Thunder
+16164   *Elemental Focus
+16173   *Totemic Focus
 16176    Ancestral Healing
-16178    Purification
-16179    Tidal Focus
-16180    Nature's Guidance
-16181    Healing Focus
-16182    Improved Healing Wave
-16184    Improved Reincarnation
-16187    Restorative Totems
-16188    Nature's Swiftness
-16189    Totemic Mastery
+16178   *Purification
+16179   *Tidal Focus
+16180   *Nature's Guidance
+16181   *Healing Focus
+16182   *Improved Healing Wave
+16184   *Improved Reincarnation
+16187   *Restorative Totems
+16188   *Nature's Swiftness
+16189   *Totemic Mastery
 16190    Mana Tide Totem
 16191    Mana Tide
-16194    Tidal Mastery
-16196    Nature's Guidance
-16198    Nature's Guidance
+16194   *Tidal Mastery
+16196   *Nature's Guidance
+16198   *Nature's Guidance
 16246    Clearcasting
-16257    Flurry
-16258    Guardian Totems
-16259    Enhancing Totems
-16261    Improved Lightning Shield
-16262    Improved Ghost Wolf
+16257   *Flurry
+16258   *Guardian Totems
+16259   *Enhancing Totems
+16261   *Improved Lightning Shield
+16262   *Improved Ghost Wolf
 16266    Elemental Weapons
-16268    Spirit Weapons
-16295    Enhancing Totems
+16268   *Spirit Weapons
+16295   *Enhancing Totems
 16311    Rockbiter Weapon (Passive)
 16312    Rockbiter Weapon (Passive)
 16313    Rockbiter Weapon (Passive)
@@ -4125,17 +4132,17 @@ Shaman
 16368   *Flametongue Attack
 16387    Flametongue Totem
 16389    Flametongue Totem Proc
-16578    Elemental Alacrity
-16579    Lightning Mastery
-16580    Lightning Mastery
-16581    Lightning Mastery
-16582    Lightning Mastery
+16578   *Elemental Alacrity
+16579   *Lightning Mastery
+16580   *Lightning Mastery
+16581   *Lightning Mastery
+16582   *Lightning Mastery
 17012   *Devour Magic
 17354    Mana Tide Totem
 17355    Mana Tide
 17359    Mana Tide Totem
 17360    Mana Tide
-17364    Stormstrike
+17364   *Stormstrike
 20608    Reincarnation
 20609    Ancestral Spirit
 20610    Ancestral Spirit
@@ -4225,11 +4232,11 @@ Shaman
 29199   *Corrupted Mind
 29206    Healing Way
 29228    Flame Shock
-29469   *Flametongue Attack
-29470   *Flametongue Attack
+29469    Flametongue Attack
+29470    Flametongue Attack
 30160    Elemental Devastation
 30165    Elemental Devastation
-30812    Mental Quickness
+30812   *Mental Quickness
 30861   *Elemental Shields
 30862   *Elemental Shields
 30863   *Elemental Shields
@@ -4490,8 +4497,8 @@ Shaman
 1220749 *Earth Shock
 1220750 *Earth Shock
 1220751 *Earth Shock
-1223030  Shamanistic Focus
-1223031  Improved Stormstrike
+1223030 *Shamanistic Focus
+1223031 *Improved Stormstrike
 1226961 *S03 - Item - Scarlet Enclave - Shaman - Elemental 2P Bonus
 1226963 *Flame Shock
 1226972 *Flame Shock
@@ -4515,18 +4522,18 @@ Shaman
 1234326 *Scarlet Smashbringer
 1235353 *Mercy by Fire
 1238149 *S03 - Item - Naxxramas - Shaman - Enhancement 2P Bonus
-1238289  Earthbound
+1238289 *Earthbound
 1238299  Lava Burst
 1238300  Lava Burst
 1238373  Lava Burst
 1238376  Lava Burst
-1238640  Ghost Wolf
+1238640 *Ghost Wolf
 1239242  Riptide
 1239243  Riptide
 1249011  Totem of Ancestral Protection
 1262315 *The Quick and the Dead
 1262643 *Reagent Economy
-1270478 *Charged Lightning
+1270478 *Flame Charged
 1270492 *Totem Affinity
 1281744 *Natural Guidance
 1291076  Reduced Healing Wave Cost
@@ -4551,6 +4558,8 @@ Shaman
 1309422  Rage of Earth
 1309442  Storm's Grasp
 1309539  Tidebringer's Claw
+1323418 *Revelation
+1323420 *Totemic Recall
 
 Warlock
 128     *Spellstone
@@ -4581,7 +4590,7 @@ Warlock
 755      Health Funnel
 980      Bane of Agony
 1010     Curse of Idiocy
-1014     Bane of Agony
+1014    *Bane of Agony
 1086     Demon Armor
 1088     Shadow Bolt
 1094     Immolate
@@ -4719,14 +4728,14 @@ Warlock
 17751    Suffering
 17752    Suffering
 17767    Consume Shadows
-17778    Cataclysm
-17783    Fel Concentration
-17788    Bane
-17793    Improved Shadow Bolt
-17794    Shadow Vulnerability
-17804    Soul Siphon
+17778   *Cataclysm
+17783   *Fel Concentration
+17788   *Bane
+17793   *Improved Shadow Bolt
+17794   *Shadow Vulnerability
+17804   *Soul Siphon
 17809   *Lesser Firestone Attack
-17810    Improved Corruption
+17810   *Improved Corruption
 17815    Improved Immolate
 17833    Improved Immolate
 17834    Improved Immolate
@@ -4738,7 +4747,7 @@ Warlock
 17853    Consume Shadows
 17854    Consume Shadows
 17877    Shadowburn
-17917    Destructive Reach
+17917   *Destructive Reach
 17919    Searing Pain
 17920    Searing Pain
 17921    Searing Pain
@@ -4747,7 +4756,7 @@ Warlock
 17924    Soul Fire
 17925    Death Coil
 17926    Death Coil
-17927    Agonizing Flames
+17927   *Agonizing Flames
 17928    Howl of Terror
 17933   *Firestone Attack
 17934   *Greater Firestone Attack
@@ -4756,49 +4765,49 @@ Warlock
 17951    Create Firestone
 17952    Create Firestone
 17953    Create Firestone
-17954    Emberstorm
-17959    Ruin
+17954   *Emberstorm
+17959   *Ruin
 17962    Conflagrate
-18073    Pyroclasm
-18094    Nightfall
-18096    Apocalypse
-18119    Aftermath
-18126    Improved Firebolt
-18127    Improved Firebolt
-18128    Improved Lash of Pain
-18129    Improved Lash of Pain
-18130    Devastation
-18135    Intensity
-18174    Suppression
-18179    Improved Curse of Weakness
-18180    Improved Curse of Weakness
-18181    Improved Curse of Weakness
+18073   *Pyroclasm
+18094   *Nightfall
+18096   *Apocalypse
+18119   *Aftermath
+18126   *Improved Firebolt
+18127   *Improved Firebolt
+18128   *Improved Lash of Pain
+18129   *Improved Lash of Pain
+18130   *Devastation
+18135   *Intensity
+18174   *Suppression
+18179   *Improved Curse of Weakness
+18180   *Improved Curse of Weakness
+18181   *Improved Curse of Weakness
 18182    Improved Life Tap
-18218    Grim Reach
-18223    Curse of Exhaustion
+18218   *Grim Reach
+18223   *Curse of Exhaustion
 18265    Siphon Life
-18271    Shadow Mastery
-18288    Amplify Curse
-18310    Improved Curse of Exhaustion
-18311    Improved Curse of Exhaustion
-18312    Improved Curse of Exhaustion
-18313    Improved Curse of Exhaustion
+18271   *Shadow Mastery
+18288   *Amplify Curse
+18310   *Improved Curse of Exhaustion
+18311   *Improved Curse of Exhaustion
+18312   *Improved Curse of Exhaustion
+18313   *Improved Curse of Exhaustion
 18376   *Corruption
 18540   *Ritual of Doom
 18647    Banish
 18671   *Curse of Agony
-18692    Improved Healthstone
-18693    Improved Healthstone
-18694    Improved Imp
+18692   *Improved Healthstone
+18693   *Improved Healthstone
+18694   *Improved Imp
 18703    Improved Health Funnel
-18705    Improved Voidwalker
-18708    Fel Domination
-18709    Master Summoner
+18705   *Improved Voidwalker
+18708   *Fel Domination
+18709   *Master Summoner
 18727   *Tamed Pet Passive (DND)
 18728   *Tamed Pet Passive (DND)
 18729   *Tamed Pet Passive (DND)
 18730   *Tamed Pet Passive (DND)
-18731    Fel Vitality
+18731   *Fel Vitality
 18735   *Tamed Pet Passive (DND)
 18736   *Tamed Pet Passive (DND)
 18737   *Tamed Pet Passive (DND)
@@ -4807,24 +4816,24 @@ Warlock
 18740   *Tamed Pet Passive (DND)
 18741   *Tamed Pet Passive (DND)
 18742   *Tamed Pet Passive (DND)
-18754    Improved Sayaad
+18754   *Improved Sayaad
 18757   *Master Conjuror
 18758   *Master Conjuror
-18767    Improved Firestone
-18768    Improved Firestone
+18767   *Improved Firestone
+18768   *Improved Firestone
 18769    Unholy Power
-18774    Improved Spellstone
-18775    Improved Spellstone
-18789    Burning Shadow
-18790    Fel Stamina
-18791    Touch of Fire
-18792    Fel Energy
-18821    Improved Subjugate Demon
-18822    Improved Subjugate Demon
-18823    Improved Subjugate Demon
-18824    Improved Subjugate Demon
-18825    Improved Subjugate Demon
-18827    Improved Bane of Agony
+18774   *Improved Spellstone
+18775   *Improved Spellstone
+18789   *Burning Shadow
+18790   *Fel Stamina
+18791   *Touch of Fire
+18792   *Fel Energy
+18821   *Improved Subjugate Demon
+18822   *Improved Subjugate Demon
+18823   *Improved Subjugate Demon
+18824   *Improved Subjugate Demon
+18825   *Improved Subjugate Demon
+18827   *Improved Bane of Agony
 18867    Shadowburn
 18868    Shadowburn
 18869    Shadowburn
@@ -5042,7 +5051,7 @@ Warlock
 433672  *Loathing
 433813  *Neverending Soul Vessel
 435086  *Brimstone Carving
-437032   Soul Harvesting
+437032   Soul Harvest
 437169  *Portal of Summoning
 437311  *Portal of Summoning
 440870   Decimation
@@ -5131,8 +5140,8 @@ Warlock
 1222977 *Damage Over Time Increase
 1223794 *Seal of the Dawn
 1223963 *Corruption
-1225177  Malediction
-1225217  Improved Felhunter
+1225177 *Malediction
+1225217 *Improved Felhunter
 1225228  Bane of Havoc
 1225841 *Curse of Recklessness
 1226981  Grimoire of Synergy
@@ -5151,7 +5160,7 @@ Warlock
 1232093 *Infusion of Souls
 1233077 *Curse of Agony
 1233988 *Infernalist Armor
-1235316  Demonic Aegis
+1235316 *Demonic Aegis
 1237162  Increase Shadow Dam
 1237164  Increase Shadow Dam
 1237165  Increase Shadow Dam
@@ -5178,8 +5187,8 @@ Warlock
 1293641 *Improved Soulstone
 1293693 *Haunt
 1293694 *Haunt
-1293695  Demonic Brand
-1293696  Demonic Brand
+1293695 *Demonic Brand
+1293696 *Demonic Brand
 1293697 *Demonic Brand
 1293698 *Demonic Brand
 1293699 *Demonic Brand
@@ -5191,12 +5200,13 @@ Warlock
 1301068 *1.60.0 - Item - Tier 1 - Warlock 3P Bonus - Banish
 1301094 *1.60.0 - Item - Tier 1 - Warlock 4P Bonus - SP vs. Demons
 1301715 *1.60.0 - Item - Tier 1 - Warlock 5P Bonus - Life Tap
-1310949  Malevolence
-1311676  Curse of the Elements
-1311677  Curse of the Elements
-1311680  Curse of the Elements
+1310949 *Malevolence
+1311676 *Curse of the Elements
+1311677 *Curse of the Elements
+1311680 *Curse of the Elements
 1316697  Wrack
 1322007 *Summon Voidwalker
+1323392 *Revelation
 
 Warrior
 71       Defensive Stance
@@ -5283,14 +5293,14 @@ Warrior
 11605    Slam
 11608    Cleave
 11609    Cleave
-12282    Improved Heroic Strike
-12285    Improved Charge
-12286    Improved Rend
-12287    Improved Thunder Clap
-12288    Improved Pummel
-12289    Improved Hamstring
-12290    Improved Overpower
-12292    Sweeping Strikes
+12282   *Improved Heroic Strike
+12285   *Improved Charge
+12286   *Improved Rend
+12287   *Improved Thunder Clap
+12288   *Improved Pummel
+12289   *Improved Hamstring
+12290   *Improved Overpower
+12292   *Sweeping Strikes
 12294    Mortal Strike
 12295    Improved Tactical Mastery
 12301    Improved Bloodrage
@@ -5309,12 +5319,12 @@ Warrior
 12328    Death Wish
 12329    Improved Cleave
 12555   *Pummel
-12707    Improved Pummel
-12708    Improved Pummel
+12707   *Improved Pummel
+12708   *Improved Pummel
 12765    Improved Taunt
 12797    Improved Revenge
 12809    Concussion Blow
-12834    Deep Wounds
+12834   *Deep Wounds
 12857    Improved Battle Shout
 12858    Improved Battle Shout
 12860    Improved Battle Shout
@@ -5328,10 +5338,11 @@ Warrior
 12877    Improved Demoralizing Shout
 12878    Improved Demoralizing Shout
 12879    Improved Demoralizing Shout
+12880    Enrage
 12886    Improved Challenging Shout
 12944    Improved Shield Block
 12945    Improved Shield Block
-12963    Improved Overpower
+12963   *Improved Overpower
 12975    Last Stand
 13490   *Howling Blade
 13730   *Demoralizing Shout
@@ -5342,14 +5353,14 @@ Warrior
 15615   *Pummel
 15749   *Shield Charge
 16244   *Demoralizing Shout
-16493    Impale
+16493   *Impale
 16508   *Intimidating Roar
 16636   *Berserker Charge
 17198   *Overpower
 18328   *Incapacitating Shout
 18381    Cripple
 18499    Berserker Rage
-18826   *Savior's Sacrifice
+18826    Savior's Sacrifice
 19131   *Shield Charge
 19134   *Intimidating Shout
 19196   *Surge
@@ -5507,7 +5518,7 @@ Warrior
 411684  *Charge
 412507   Blood Frenzy
 412513   Gladiator Stance
-412609   Deep Wound
+412609  *Deep Wound
 412613  *Deep Wound
 413301  *War Machine
 413380   Blood Surge
@@ -5651,17 +5662,17 @@ Warrior
 1236176 *Disarm
 1236177 *Hamstring
 1240193  Slam
-1240287  Charge
-1240288  Charge
-1240289  Charge
+1240287 *Charge
+1240288 *Charge
+1240289 *Charge
 1259813  Eureka!
 1262317 *The Quick and the Dead
 1264437 *Extremely Loud Bark
 1270802 *Berserker Charge
 1270811 *Intimidating Shout
 1277424 *Shield Wall
-1289681  Bloodthrill
-1289682  Bloodthrill
+1289681 *Bloodthrill
+1289682 *Bloodthrill
 1300968 *1.60.0 - Item - Tier 1 - Warrior - Arms/Fury 2P Bonus - Haste
 1301069 *1.60.0 - Item - Tier 1 - Warrior - Arms/Fury 3P Bonus - Intimidating Shout
 1301071 *1.60.0 - Item - Tier 1 - Warrior - Protection 3P Bonus - Intervene
@@ -5677,6 +5688,11 @@ Warrior
 1310199  Slam
 1310200  Slam
 1310222  Spearing Strike
-1310315  Raging Blows
-1310317  Vanguard
-1313291 *Dual Wield Specialization
+1310315 *Raging Blows
+1310317 *Vanguard
+1322574  Rule of Rage (DND)
+1323965 *Lingering Rage
+1323966 *Lingering Rage
+1323967 *Gore Drinker
+1323968 *Gore Drinker
+1323969 *Gore Drinker
