@@ -16,6 +16,8 @@ struct shaman_t final : public player_t
 
   resource_e primary_resource() const override { return RESOURCE_MANA; }
 
+  void init_base_stats() override;
+
   std::string default_potion() const override   { return shaman_apl::potion( this ); }
   std::string default_flask() const override    { return shaman_apl::flask( this ); }
   std::string default_food() const override     { return shaman_apl::food( this ); }
@@ -59,6 +61,15 @@ struct shaman_module_t : public module_t
   void register_hotfixes() const override {}
 };
 
+void shaman_t::init_base_stats()
+{
+  base.attack_power_per_strength = 2.0;
+
+  player_t::init_base_stats();
+
+  base.stats.attack_power = 2.0 * level() - 20.0;
+}
+
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -68,7 +79,7 @@ struct shaman_module_t : public module_t
 struct earth_shock_t : public spell_t
 {
   earth_shock_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "earth_shock", player, player->find_spell( 8044 ) )
+    spell_t( "earth_shock", player, player->find_spell( 8045 ) )
   {
     parse_options( options_str );
   }
@@ -96,6 +107,7 @@ struct shaman_melee_t : public melee_attack_t
     background        = true;
     repeating         = true;
     may_glance        = true;
+    may_crit          = true;
     special           = false;
   }
 };
