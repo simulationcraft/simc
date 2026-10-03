@@ -420,10 +420,10 @@ class TraitSet(DataSet):
                     entry.id_skill_line
                     for entry in _trait_trees[group['group'].id_parent].child_refs('SkillLineXTraitTree')
                 )
-                for e in constants.CLASS_INFO:
-                    for s in skill_lines:
-                        if s in e['skill']:
-                            class_id = e['id']
+                for s in skill_lines:
+                    class_id = util.class_id(player_skill=s)
+                    if class_id != -1:
+                        break
 
             group_specs = set(_spec_map.get(cond.id_spec_set, 0)
                 for cond in group['cond'] if cond.type == 1
@@ -436,7 +436,18 @@ class TraitSet(DataSet):
             group_granted = any(cond.type == 2 for cond in group['cond'])
 
             for node in group['nodes'].values():
-                node_class_id = class_id if class_id else util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
+                node_class_id = None
+                if class_id:
+                    node_class_id = class_id
+                else:
+                    skill_lines = set(
+                        entry.id_skill_line
+                        for entry in _trait_trees[node['node'].id_parent].child_refs('SkillLineXTraitTree')
+                    )
+                    for s in skill_lines:
+                        class_id = util.class_id(player_skill=s)
+                        if class_id != -1:
+                            break
 
                 node_specs = set(_spec_map.get(cond.id_spec_set, 0)
                     for cond in node['cond'] if cond.type == 1
