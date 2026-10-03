@@ -14,6 +14,8 @@ struct shaman_t final : public player_t
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
     player_t( sim, SHAMAN, name, r ) {}
 
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+
   std::string default_potion() const override   { return shaman_apl::potion( this ); }
   std::string default_flask() const override    { return shaman_apl::flask( this ); }
   std::string default_food() const override     { return shaman_apl::food( this ); }
@@ -55,6 +57,21 @@ struct shaman_module_t : public module_t
   }
 
   void register_hotfixes() const override {}
+};
+
+// ==========================================================================
+// Shaman Shock Spells
+// ==========================================================================
+
+// Earth Shock
+
+struct earth_shock_t : public spell_t
+{
+  earth_shock_t( shaman_t* player, util::string_view options_str ) :
+    spell_t( "earth_shock", player, player->find_spell( 8044 ) )
+  {
+    parse_options( options_str );
+  }
 };
 
 // ==========================================================================
@@ -117,6 +134,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
 {
   if ( name == "auto_attack" )
     return new shaman_auto_attack_t( this, options_str );
+  if ( name == "earth_shock" )
+    return new earth_shock_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -126,6 +145,7 @@ void shaman_t::init_action_list()
   if ( action_list_str.empty() )
   {
     get_action_priority_list( "default" )->add_action( "auto_attack" );
+    get_action_priority_list( "default" )->add_action( "earth_shock" );
   }
 }
 
