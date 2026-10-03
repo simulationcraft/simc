@@ -1917,12 +1917,12 @@ unsigned util::race_id( race_e race )
 
 // race_mask ================================================================
 
-unsigned util::race_mask( race_e race )
+uint64_t util::race_mask( race_e race )
 {
   uint32_t id = race_id( race );
 
   if ( id > 0 )
-    return ( 1 << ( id - 1 ) );
+    return ( uint64_t( 1 ) << ( id - 1 ) );
 
   return 0x00;
 }

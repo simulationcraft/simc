@@ -214,7 +214,7 @@ int parse_item_quality                ( util::string_view quality );
 bool parse_origin( std::string& region, std::string& server, std::string& name, util::string_view origin );
 int class_id_mask( player_e type );
 int class_id( player_e type );
-unsigned race_mask( race_e race );
+uint64_t race_mask( race_e race );
 unsigned race_id( race_e race );
 unsigned pet_mask( pet_e type );
 unsigned pet_id( pet_e type );
