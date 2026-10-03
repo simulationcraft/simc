@@ -268,8 +268,10 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid' ]
-    _class_masks = [ None,    0x0001,    0x0002,   0x0004,  0x0008,   0x0010,   0x0040, 0x0080,    0x0100,  0x0200 ]
+    # the None placeholders are needed to stay matched up with ChrClasses IDs and needs to have the holes for DK and
+    # Monk even though they aren't in Forever
+    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', None, 'Shaman', 'Mage', 'Warlock', None, 'Druid' ]
+    _class_masks = [ None,    0x0001,    0x0002,   0x0004,  0x0008,   0x0010, None,   0x0040, 0x0080,    0x0100, None,  0x0400 ]
     _race_names  = [ None,
                      'Human', 'Orc', 'Dwarf', 'Night Elf',
                      'Undead', 'Tauren', 'Gnome', 'Troll',
@@ -1355,6 +1357,9 @@ class SpellDataGenerator(DataGenerator):
             ( 453936, 0 ), ( 453943, 0 ), # Incessant Screams
         ),
 
+        # DK - DO NOT DELETE IN FOREVER - This needs to be here to keep positions lined up with class masks
+        (),
+
         # Shaman:
         ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
           ( 114074, 1 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
@@ -1616,6 +1621,9 @@ class SpellDataGenerator(DataGenerator):
           ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
           ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
         ),
+
+        # MONK - DO NOT DELETE IN FOREVER - This needs to be here to keep positions lined up with class masks
+        (),
 
         # Druid:
         (
@@ -2219,7 +2227,7 @@ class SpellDataGenerator(DataGenerator):
 
 
             if class_id > 0:
-                mask_class = DataGenerator._class_masks[class_id]
+                mask_class = DataGenerator._class_masks[class_id] or 0
 
             self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 

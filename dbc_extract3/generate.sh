@@ -31,7 +31,7 @@ GTINPUT=${INPUT_BASE}/${BUILD}/GameTables
 #echo "${OUTPATH},${BUILD},${INPUT_BASE},${CACHE},${PTR}"
 #exit 1
 
-if [ ! -d ${INPUT} ]; then
+if [ ! -d ${DBCINPUT} ]; then
   echo Error: Unable to find input files in ${INPUT}.
   echo "Usage: generate.sh [ptr] <patch> <input_base> [hotfix_file]"
   exit 1
