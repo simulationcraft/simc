@@ -15872,10 +15872,10 @@ Effects          :
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
                    Family Flags: 20
 #4 (id=1357105)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Unseen Blade (441144)
                    Family Flags: 125
-Hotfixed         : NEW EFFECT
+Hotfixed         : PvP Coefficient (0 -> 1)
 
 Name             : Outlaw Rogue (id=1256947) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
