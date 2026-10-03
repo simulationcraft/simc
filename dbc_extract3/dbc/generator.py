@@ -3844,7 +3844,7 @@ class TraitGenerator(DataGenerator):
             self._options.prefix and ('%s_' % self._options.prefix.upper()) or ''))
 
         self._out.write('// TODO (FOREVER) remove\n')
-        self._out.write('static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { { } };\n\n')
+        self._out.write('static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 0> __trait_sub_tree_data { { } };\n\n')
 
 class PermanentEnchantItemGenerator(DataGenerator):
     def filter(self):
