@@ -331,7 +331,7 @@ void print_generic_stats( std::ostream& os, const player_t& p )
       "  Generic Stats: "
       "leech={:.2f}%|{:.2f}%({:.0f})  "
       "runspeed={:.2f}%|{:.2f}%({:.0f})\n",
-      100 * p.composite_leech(), p.composite_leech_rating(),
+      100 * buffed_stats.leech, 100 * p.composite_leech(), p.composite_leech_rating(),
       buffed_stats.run_speed, p.composite_movement_speed(), p.composite_speed_rating() );
 }
 
