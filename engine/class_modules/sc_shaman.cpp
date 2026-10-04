@@ -23,6 +23,9 @@ struct shaman_t final : public player_t
   std::string default_flask() const override    { return shaman_apl::flask( this ); }
   std::string default_food() const override     { return shaman_apl::food( this ); }
 
+  double composite_melee_attack_power() const override;
+  void invalidate_cache( cache_e c ) override;
+
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_action_list() override;
 
@@ -31,6 +34,9 @@ struct shaman_t final : public player_t
     // Enhancement
     // Row 1
     player_talent_t thundering_strikes;
+
+    // Row 2
+    player_talent_t mental_dexterity;
   } talent;
 };
 
@@ -91,6 +97,24 @@ void shaman_t::init_spells()
   player_t::init_spells();
 
   talent.thundering_strikes = find_talent_spell( talent_tree::CLASS, "Thundering Strikes" );
+  talent.mental_dexterity = find_talent_spell( talent_tree::CLASS, "Mental Dexterity" );
+}
+
+double shaman_t::composite_melee_attack_power() const
+{
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += std::floor( talent.mental_dexterity->effectN( 1 ).percent() * cache.intellect() );
+
+  return ap;
+}
+
+void shaman_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_INTELLECT && talent.mental_dexterity.ok() )
+    invalidate_cache( CACHE_ATTACK_POWER );
 }
 
 // ==========================================================================
