@@ -1857,16 +1857,17 @@ int util::class_id( player_e type )
     case MAGE:         return  8;
     case WARLOCK:      return  9;
     case DRUID:        return 11;
-    case PLAYER_SPECIAL_SCALE: return 14;
-    case PLAYER_SPECIAL_SCALE2: return 15;
-    case PLAYER_SPECIAL_SCALE3: return 16;
-    case PLAYER_SPECIAL_SCALE4: return 17;
-    case PLAYER_SPECIAL_SCALE5: return 18;
-    case PLAYER_SPECIAL_SCALE6: return 19;
-    case PLAYER_SPECIAL_SCALE7: return 14;
-    case PLAYER_SPECIAL_SCALE8: return 20;
-    case PLAYER_SPECIAL_SCALE9: return 21;
-    case PLAYER_SPECIAL_SCALE10: return 22;
+    // Forever - fewer classes in __spell_scaling than retail so these IDs are lower.
+    case PLAYER_SPECIAL_SCALE: return 12;
+    case PLAYER_SPECIAL_SCALE2: return 13;
+    case PLAYER_SPECIAL_SCALE3: return 14;
+    case PLAYER_SPECIAL_SCALE4: return 15;
+    case PLAYER_SPECIAL_SCALE5: return 16;
+    case PLAYER_SPECIAL_SCALE6: return 17;
+    case PLAYER_SPECIAL_SCALE7: return 12;
+    case PLAYER_SPECIAL_SCALE8: return 18;
+    case PLAYER_SPECIAL_SCALE9: return 19;
+    case PLAYER_SPECIAL_SCALE10: return 20;
     default:           return 0;
   }
 }
