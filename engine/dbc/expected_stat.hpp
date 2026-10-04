@@ -49,4 +49,20 @@ struct expected_stat_mod_t
   static util::span<const expected_stat_mod_t> data( bool ptr );
 };
 
+struct player_expected_stat_t
+{
+  unsigned class_id;
+  unsigned level;
+  unsigned base_mana;
+  float crit_per_agility;
+  float spell_crit_per_intellect;
+
+  static const player_expected_stat_t& find( unsigned class_id, unsigned level, bool ptr );
+
+  static const player_expected_stat_t& nil()
+  { return dbc::nil<player_expected_stat_t>; }
+
+  static util::span<const player_expected_stat_t> data( bool ptr );
+};
+
 #endif /* EXPECTED_STAT_HPP */

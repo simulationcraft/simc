@@ -3906,6 +3906,30 @@ class ExpectedStatModGenerator(DataGenerator):
 
         self.output_footer()
 
+class PlayerExpectedStatGenerator(DataGenerator):
+    def filter(self):
+        return [ v for v in self.db('PlayerExpectedStat').values() if v.id_content_set == 0 ]
+
+    def generate(self, data = None):
+        data = sorted(data, key = lambda  e: (e.id_class, e.level))
+
+        self.output_header(
+            header = 'Player expected stat by class and level',
+            type = 'player_expected_stat_t',
+            array = 'player_expected_stat',
+            length = len(data))
+
+        for pes in data:
+            self.output_record(pes.field(
+                'id_class',
+                'level',
+                'base_mana',
+                'crit_per_agility',
+                'spell_crit_per_intellect'
+            ))
+
+        self.output_footer()
+
 class EmbellishmentGenerator(DataGenerator):
     def filter(self):
         return EmbellishmentSet(self._options).get()

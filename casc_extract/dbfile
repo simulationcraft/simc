@@ -1283,3 +1283,4 @@
 7570371, DBFilesClient\DataTagXHouseDecorRecord.db2
 7571075, DBFilesClient\EncounterEvent.db2
 7580602, DBFilesClient\DamageMeterOverride.db2
+7667204, DBFilesClient\PlayerExpectedStat.db2

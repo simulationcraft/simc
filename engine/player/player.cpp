@@ -1248,6 +1248,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
   parry_rating_per_crit_rating( 0 ),
+  attack_crit_per_agility( 0 ),
+  spell_crit_per_intellect( 0 ),
   health_per_stamina( 0 ),
   resource_reduction(),
   miss( 0 ),
@@ -1317,6 +1319,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " dodge_per_agility={:.6g}", s.dodge_per_agility );
   fmt::format_to( out, " parry_per_strength={:.6g}", s.parry_per_strength );
   fmt::format_to( out, " parry_rating_per_crit_rating={:.6g}", s.parry_rating_per_crit_rating );
+  fmt::format_to( out, " attack_crit_per_agility={:.6g}", s.attack_crit_per_agility );
+  fmt::format_to( out, " spell_crit_per_intellect={:.6g}", s.spell_crit_per_intellect );
   fmt::format_to( out, " health_per_stamina={:.6g}", s.health_per_stamina );
   // resource_reduction
   fmt::format_to( out, " miss={:.6g}", s.miss );
@@ -1508,6 +1512,10 @@ void player_t::init_base_stats()
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
+
+    const auto& pes = player_expected_stat_t::find( util::class_id( type ), level(), is_ptr() );
+    base.attack_crit_per_agility = pes.crit_per_agility;
+    base.spell_crit_per_intellect = pes.spell_crit_per_intellect;
 
     base.leech          = get_passive_player_value( base.leech, "leech" );
     base.avoidance      = 0.0;
@@ -4504,6 +4512,8 @@ double player_t::composite_melee_crit_chance() const
 {
   double ac = current.attack_crit_chance;
 
+  ac += current.attack_crit_per_agility * cache.agility();
+
   ac += apply_combat_rating_dr( RATING_MELEE_CRIT, composite_melee_crit_rating() / current.rating.attack_crit );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
@@ -4765,6 +4775,8 @@ double player_t::matching_gear_multiplier( attribute_e a ) const
 double player_t::composite_spell_crit_chance() const
 {
   double sc = current.spell_crit_chance;
+
+  sc += current.spell_crit_per_intellect * cache.intellect();
 
   sc += apply_combat_rating_dr( RATING_SPELL_CRIT, composite_spell_crit_rating() / current.rating.spell_crit );
 
@@ -5182,11 +5194,15 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
+      if ( current.attack_crit_per_agility > 0 )
+        invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
 
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
+      if ( current.spell_crit_per_intellect > 0 )
+        invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
       break;
 
     case CACHE_SPELL_POWER:

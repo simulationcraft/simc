@@ -36,3 +36,19 @@ util::span<const expected_stat_mod_t> expected_stat_mod_t::find( unsigned diff, 
 
   return { r.first, r.second };
 }
+
+util::span<const player_expected_stat_t> player_expected_stat_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __player_expected_stat_data, __ptr_player_expected_stat_data, ptr );
+}
+
+const player_expected_stat_t& player_expected_stat_t::find( unsigned class_id, unsigned level, bool ptr )
+{
+  for ( const auto& entry : data( ptr ) )
+  {
+    if ( entry.class_id == class_id && entry.level == level )
+      return entry;
+  }
+
+  return nil();
+}
