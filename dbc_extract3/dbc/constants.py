@@ -44,9 +44,11 @@ CLASS_SKILL_CATEGORIES = [
    795,   # Hunter
    921,   # Rogue
    804,   # Priest
+   0,     # DK Placeholder - do not delete
    924,   # Shaman
    904,   # Mage
    849,   # Warlock
+   0,     # Monk Placeholder - do not delete
    798,   # Druid
 ]
 
@@ -81,7 +83,9 @@ RACE_INFO = [
   { 'id': 84, 'bit': 17, 'name': 'Earthen',            'skill': 2895 },
   { 'id': 85, 'bit': 18, 'name': 'Earthen',            'skill': 2895 },
   { 'id': 86, 'bit': 19, 'name': 'Haranir',            'skill': 2930 },
-  { 'id': 91, 'bit': 20, 'name': 'Haranir',            'skill':	2930 }
+  { 'id': 91, 'bit': 20, 'name': 'Haranir',            'skill': 2930 },
+  { 'id': 95, 'bit': 32, 'name': 'Skyborne',           'skill': 2980 },
+  { 'id': 96, 'bit': 33, 'name': 'Skyborne',           'skill': 2980 }
 ]
 
 CLASS_INFO = [
@@ -96,17 +100,20 @@ CLASS_INFO = [
   { 'id': 11, 'bit': 10, 'name': 'Druid',   'skill':  [134, 573, 574], 'family':   7, 'label':   21 }
 ]
 
+# Not used in Forever - there aren't any skill lines linked to a ChrSpecialization like in retail
 SPEC_SKILL_CATEGORIES = [
   (),
-  (   71,   72,   73,   0 ), # Warrior
-  (   65,   66,   70,   0 ), # Paladin
-  (  254,  255,  256,   0 ), # Hunter
-  (  259,  260,  261,   0 ), # Rogue
-  (  256,  257,  258,   0 ), # Priest
-  (  262,  263,  264,   0 ), # Shaman
-  (   62,   63,   64,   0 ), # Mage
-  (  265,  266,  267,   0 ), # Warlock
-  (  102,  103,  104, 105 )  # Druid
+  (), # Warrior
+  (), # Paladin
+  (), # Hunter
+  (), # Rogue
+  (), # Priest
+  (),                        # DK Placeholder - Do not delete
+  (), # Shaman
+  (), # Mage
+  (), # Warlock
+  (),                        # Monk Placeholder - Do not delete
+  ()  # Druid
 ]
 
 PET_SKILL_CATEGORIES = [
@@ -124,12 +131,16 @@ PET_SKILL_CATEGORIES = [
   ( ),
   # Priest
   ( ),
+  # DK placeholder - do not delete
+  ( ),
   # Shaman
   ( 962, 963, 1748 ),
   # Mage
   ( 805, ),
   # Warlock
   ( 188, 189, 204, 205, 206, 207, 761, 927, 928, 929, 930, 931, 1981, 1982 ),
+  # Monk placeholder - do not delete
+  ( ),
   # Druid
   ( )
 ]
