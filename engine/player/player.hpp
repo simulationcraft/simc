@@ -676,6 +676,7 @@ public:
   bool is_active() const;
   bool in_gcd() const;
   bool recent_cast() const;
+  double mana_regen_from_spirit() const;
   bool dual_wield() const
   { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   bool has_shield_equipped() const;

@@ -1025,7 +1025,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     base(),
     initial(),
     current(),
-    last_cast( 0_ms),
+    last_cast( timespan_t::min() ),
     // Defense Mechanics
     def_dr( diminishing_returns_constants_t() ),
     // Attacks
@@ -1569,9 +1569,9 @@ void player_t::init_base_stats()
       {
         case RESOURCE_HEALTH:
           break;
-        case RESOURCE_MANA:  // 1% of base mana as mana regen per second for all classes.
+        case RESOURCE_MANA: // Forever - regen comes from spirit so base regen is 0
           rt_base = dbc->resource_base( type, level() );
-          rt_regen = dbc->resource_base( type, level() ) * 0.01;
+          rt_regen = 0;
           break;
         case RESOURCE_RUNE:  // rune regeneration is handled in dk module
           rt_base = _data.base();
@@ -2177,6 +2177,13 @@ void player_t::init_special_effect( special_effect_t& /* effect */ )
 
 namespace
 {
+
+// First 20 int give 1 mana each, then it gives 15
+double mana_from_intellect( const player_t* p )
+{
+  double intellect = std::floor( p->intellect() );
+  return std::min( intellect, 20.0 ) + ( 15.0 * std::max( intellect - 20.0, 0.0 ) );
+}
 /**
  * Compute max resource r for an actor, based on their set base resources
  */
@@ -2189,6 +2196,8 @@ double compute_max_resource( player_t* p, resource_e r )
   // re-ordered 2016-06-19 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
   if ( r == RESOURCE_HEALTH )
     value += std::floor( p->stamina() ) * p->current.health_per_stamina;
+  if ( r == RESOURCE_MANA && p->is_player() )
+    value += mana_from_intellect( p );
 
   value *= p->resources.initial_multiplier[ r ];
   value = std::floor( value );
@@ -4138,11 +4147,20 @@ void player_t::min_threshold_trigger()
   if ( i < resource_thresholds.size() )
   {
     double rps = resource_regen_per_second( pres );
+    timespan_t regen_delay = 0_ms;
+
+    // Special handling for the spirit 5-second rule. If the player is within the 5-seconds of 0 regen, we
+    // need to schedule based on the end of that window
+    if ( pres == RESOURCE_MANA && is_player() && recent_cast() )
+    {
+      regen_delay = last_cast + 5_s - sim->current_time();
+      rps         = mana_regen_from_spirit();
+    }
 
     if ( rps > 0 )
     {
       double diff       = threshold - resources.current[ pres ];
-      time_to_threshold = timespan_t::from_seconds( diff / rps );
+      time_to_threshold = regen_delay + timespan_t::from_seconds( diff / rps );
     }
   }
 
@@ -4312,6 +4330,14 @@ int player_t::level() const
 double player_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = resources.base_regen_per_second[ r ];
+
+  if ( r == RESOURCE_MANA && is_player() )
+  {
+    if ( recent_cast() )
+      return 0;
+
+    reg += mana_regen_from_spirit();
+  }
 
   if ( resources.hasted[ r ] )
     reg /= cache.attack_haste();
@@ -5780,7 +5806,7 @@ void player_t::reset()
 {
   sim->print_debug( "Resetting {}.", *this );
 
-  last_cast = timespan_t::zero();
+  last_cast = timespan_t::min();
   gcd_ready = timespan_t::zero();
   off_gcd_ready = timespan_t::min();
   cast_while_casting_ready = timespan_t::min();
@@ -6779,6 +6805,10 @@ void player_t::recalculate_resource_max( resource_e resource_type, gain_t* sourc
         resources.current[ resource_type ] = resources.max[ resource_type ];
       break;
     }
+    case RESOURCE_MANA:
+      if ( is_player() )
+        resources.max[ resource_type ] += mana_from_intellect( this );
+      break;
     default:
       break;
   }
@@ -7050,6 +7080,24 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
       break;
   }
 
+  switch ( stat )
+  {
+    case STAT_ALL:
+    case STAT_INTELLECT:
+    {
+      recalculate_resource_max( RESOURCE_MANA );
+      // Adjust current mana to new max on int gains, if the actor is not in combat
+      if ( !in_combat )
+      {
+        double delta = resources.max[ RESOURCE_MANA ] - resources.current[ RESOURCE_MANA ];
+        resource_gain( RESOURCE_MANA, delta );
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
   if ( sim->debug )
   {
     sim->out_debug.print( "{} stats: {}", name(), current.stats );
@@ -7185,6 +7233,18 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
       double delta = resources.current[ RESOURCE_HEALTH ] - resources.max[ RESOURCE_HEALTH ];
       if ( delta > 0 )
         resource_loss( RESOURCE_HEALTH, delta, gain, action );
+      break;
+    }
+    default:
+      break;
+  }
+
+  switch ( stat )
+  {
+    case STAT_ALL:
+    case STAT_INTELLECT:
+    {
+      recalculate_resource_max( RESOURCE_MANA );
       break;
     }
     default:
@@ -7693,8 +7753,13 @@ void player_t::dismiss_pet( util::string_view pet_name )
 
 bool player_t::recent_cast() const
 {
-  return ( last_cast > timespan_t::zero() ) &&
+  return ( last_cast >= timespan_t::zero() ) &&
          ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim->current_time() );
+}
+
+double player_t::mana_regen_from_spirit() const
+{
+  return 0.25 * cache.spirit();
 }
 
 dot_t* player_t::find_dot( util::string_view name, player_t* source ) const
