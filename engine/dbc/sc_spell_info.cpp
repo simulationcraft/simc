@@ -284,16 +284,18 @@ struct class_map_entry_t
   const char* name;
   player_e pt;
 };
-static constexpr std::array<class_map_entry_t, 15> _class_map { {
+static constexpr std::array<class_map_entry_t, 13> _class_map { {
   { nullptr,        PLAYER_NONE   },  // 0
   { "Warrior",      WARRIOR       },  // 13
   { "Paladin",      PALADIN       },  // 8
   { "Hunter",       HUNTER        },  // 5
   { "Rogue",        ROGUE         },  // 10
   { "Priest",       PRIEST        },  // 9
+  { nullptr,        PLAYER_NONE   },  // DK PLACEHOLDER - DO NOT DELETE
   { "Shaman",       SHAMAN        },  // 11
   { "Mage",         MAGE          },  // 6
   { "Warlock",      WARLOCK       },  // 12
+  { nullptr,        PLAYER_NONE   },  // MONK PLACEHOLDER - DO NOT DELETE
   { "Druid",        DRUID         },  // 3
   { nullptr,        PLAYER_NONE   },  // 0
 } };

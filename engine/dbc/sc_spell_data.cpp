@@ -204,15 +204,17 @@ struct class_info_t {
   int spell_label;
   unsigned class_aura;
 };
-static constexpr std::array<class_info_t, 13> _class_info { {
+static constexpr std::array<class_info_t, 11> _class_info { {
   { "Warrior",       1U <<  0,   4, LABEL_WARRIOR_SPELLS,      137047 },
   { "Paladin",       1U <<  1,  10, LABEL_PALADIN_SPELLS,      137026 },
   { "Hunter",        1U <<  2,   9, LABEL_HUNTER_SPELLS,       137014 },
   { "Rogue",         1U <<  3,   8, LABEL_ROGUE_SPELLS,        137034 },
   { "Priest",        1U <<  4,   6, LABEL_PRIEST_SPELLS,       137030 },
+  { "",                     0, ~0U, -1,                             0 }, // DK Placeholder DO NOT DELETE
   { "Shaman",        1U <<  6,  11, LABEL_SHAMAN_SPELLS,       137038 },
   { "Mage",          1U <<  7,   3, LABEL_MAGE_SPELLS,         137018 },
   { "Warlock",       1U <<  8,   5, LABEL_WARLOCK_SPELLS,      137042 },
+  { "",                     0, ~0U, -1,                             0 }, // Monk Placeholder DO NOT DELETE
   { "Druid",         1U << 10,   7, LABEL_DRUID_SPELLS,        137009 },
 } };
 
@@ -1091,7 +1093,7 @@ unsigned dbc::get_class_aura_id( player_e type )
 {
   auto id = util::class_id( type );
 
-  if ( id <= 0 || id >= MAX_CLASS )
+  if ( id <= 0 || id > as<int>( _class_info.size() ) )
     return -1;
 
   return _class_info[ id - 1 ].class_aura;
@@ -1101,7 +1103,7 @@ int dbc::get_class_spell_family( player_e type )
 {
   auto id = util::class_id( type );
 
-  if ( id <= 0 || id >= MAX_CLASS )
+  if ( id <= 0 || id > as<int>( _class_info.size() ) )
     return -1;
 
   return _class_info[ id - 1 ].spell_family;
@@ -1111,7 +1113,7 @@ int dbc::get_class_spell_label( player_e type )
 {
   auto id = util::class_id( type );
 
-  if ( id <= 0 || id >= MAX_CLASS )
+  if ( id <= 0 || id > as<int>( _class_info.size() ) )
     return -1;
 
   return _class_info[ id - 1 ].spell_label;
