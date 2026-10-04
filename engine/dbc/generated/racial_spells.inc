@@ -1,5 +1,5 @@
 // Racial abilities, wow build 1.60.1.70205
-static constexpr std::array<racial_spell_entry_t, 40> __racial_spell_data { {
+static constexpr std::array<racial_spell_entry_t, 45> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,   20600, "Perception"                         },
   { 0x0000000000000001, 0x00000000,   20597, "Sword Specialization"               },
   { 0x0000000000000001, 0x00000000,   20598, "The Human Spirit"                   },
@@ -40,5 +40,10 @@ static constexpr std::array<racial_spell_entry_t, 40> __racial_spell_data { {
   { 0x0000000000000080, 0xffffffff,   20554, "Berserking"                         },
   { 0x0000000000000080, 0x00000000, 1260270, "Rapid Regeneration"                 },
   { 0x0000000000000080, 0x00000000,   20555, "Regeneration"                       },
+  { 0x0000000300000000, 0x00000000, 1259707, "Elemental Insight"                  },
+  { 0x0000000100000000, 0x00000000, 1259705, "Read Ley Line"                      },
+  { 0x0000000200000000, 0x00000000, 1259686, "Skysight"                           },
+  { 0x0000000300000000, 0x00000000, 1259416, "Walk on Air"                        },
+  { 0x0000000300000000, 0x00000000, 1259710, "Wind Blessed"                       },
 } };
 
