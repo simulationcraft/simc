@@ -8720,7 +8720,7 @@ std::string warrior_t::default_potion() const
 
   std::string protection_pot =
       ( true_level > 80 )
-          ? "potion_of_recklessness_2"
+          ? "liquid_luster_2"
           : ( true_level > 70 )
                 ? "tempered_potion_3"
                 : "disabled";
