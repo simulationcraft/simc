@@ -17,6 +17,7 @@ struct shaman_t final : public player_t
   resource_e primary_resource() const override { return RESOURCE_MANA; }
 
   void init_base_stats() override;
+  void init_spells() override;
 
   std::string default_potion() const override   { return shaman_apl::potion( this ); }
   std::string default_flask() const override    { return shaman_apl::flask( this ); }
@@ -24,6 +25,13 @@ struct shaman_t final : public player_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_action_list() override;
+
+  struct talents_t
+  {
+    // Enhancement
+    // Row 1
+    player_talent_t thundering_strikes;
+  } talent;
 };
 
 // SHAMAN MODULE INTERFACE ==================================================
@@ -69,11 +77,20 @@ void shaman_t::init_base_stats()
 
   base.stats.attack_power = 2.0 * level() - 20.0;
 
+  double thundering_strikes = talent.thundering_strikes->effectN( 1 ).percent();
+
   // original classic crit rates according to
   // * https://github.com/wowsims/classic/blob/master/sim/core/base_stats.go#L84
-  // * https://github.com/ElliotWood/Forever/blob/master/sim/core/base_stats.go#L233
-  base.attack_crit_chance = 0.017;
-  base.spell_crit_chance = 0.023;
+  // TODO: Verify in-game
+  base.attack_crit_chance = 0.017 + thundering_strikes;
+  base.spell_crit_chance = 0.023 + thundering_strikes;
+}
+
+void shaman_t::init_spells()
+{
+  player_t::init_spells();
+
+  talent.thundering_strikes = find_talent_spell( talent_tree::CLASS, "Thundering Strikes" );
 }
 
 // ==========================================================================
