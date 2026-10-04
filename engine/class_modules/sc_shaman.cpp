@@ -68,6 +68,12 @@ void shaman_t::init_base_stats()
   player_t::init_base_stats();
 
   base.stats.attack_power = 2.0 * level() - 20.0;
+
+  // original classic crit rates according to
+  // * https://github.com/wowsims/classic/blob/master/sim/core/base_stats.go#L84
+  // * https://github.com/ElliotWood/Forever/blob/master/sim/core/base_stats.go#L233
+  base.attack_crit_chance = 0.017;
+  base.spell_crit_chance = 0.023;
 }
 
 // ==========================================================================
