@@ -470,6 +470,8 @@ class TraitSet(DataSet):
                     _traits[key]['definition'] = definition
                     _traits[key]['spell'] = definition.ref('id_spell')
                     _traits[key]['class_'] = node_class_id
+                    if node_class_id:
+                        _traits[key]['tree'] = 1
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
