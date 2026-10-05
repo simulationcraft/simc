@@ -18,6 +18,8 @@ struct shaman_t final : public player_t
 
   void init_base_stats() override;
   void init_spells() override;
+  void create_buffs() override;
+  void create_actions() override;
 
   std::string default_potion() const override   { return shaman_apl::potion( this ); }
   std::string default_flask() const override    { return shaman_apl::flask( this ); }
@@ -29,6 +31,11 @@ struct shaman_t final : public player_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_action_list() override;
 
+  struct buffs_t
+  {
+    buff_t* flametongue_weapon = nullptr;
+  } buff;
+
   struct talents_t
   {
     // Enhancement
@@ -38,6 +45,9 @@ struct shaman_t final : public player_t
     // Row 2
     player_talent_t mental_dexterity;
   } talent;
+
+  action_t* flametongue_attack = nullptr;
+
 };
 
 // SHAMAN MODULE INTERFACE ==================================================
@@ -129,6 +139,70 @@ struct earth_shock_t : public spell_t
     spell_t( "earth_shock", player, player->find_spell( 8045 ) )
   {
     parse_options( options_str );
+
+    cooldown           = player->get_cooldown( "shock" );
+    cooldown->duration = data().cooldown();
+  }
+};
+
+// Flame Shock
+
+struct flame_shock_t : public spell_t
+{
+  flame_shock_t( shaman_t* player, util::string_view options_str ) :
+    spell_t( "flame_shock", player, player->find_spell( 8052 ) )
+  {
+    parse_options( options_str );
+
+    // verified in forever beta
+    tick_may_crit = true;
+
+    cooldown           = player->get_cooldown( "shock" );
+    cooldown->duration = data().cooldown();
+  }
+};
+
+// ==========================================================================
+// Shaman Weapon Imbues
+// ==========================================================================
+
+struct flametongue_attack_t : public spell_t
+{
+  flametongue_attack_t( shaman_t* player ) :
+    spell_t( "flametongue_attack", player, player->find_spell( 29470 ) )
+  {
+    background = true;
+
+    double proc_value = player->find_spell( 8028 )->effectN( 1 ).average( player, player->level() );
+    double weapon_speed = player->main_hand_weapon.swing_time.total_seconds();
+
+    base_dd_min = base_dd_max = proc_value * weapon_speed / 100.0;
+  }
+};
+
+struct flametongue_weapon_t : public spell_t
+{
+  flametongue_weapon_t( shaman_t* player, util::string_view options_str ) :
+    spell_t( "flametongue_weapon", player, player->find_spell( 8027 ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    target = player;
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    static_cast<shaman_t*>( player )->buff.flametongue_weapon->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( static_cast<shaman_t*>( player )->buff.flametongue_weapon->check() )
+      return false;
+
+    return spell_t::ready();
   }
 };
 
@@ -158,6 +232,16 @@ struct shaman_melee_t : public melee_attack_t
     may_dodge         = true;
     may_parry         = true;
     special           = false;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    melee_attack_t::impact( state );
+
+    auto p = static_cast<shaman_t*>( player );
+
+    if ( result_is_hit( state->result ) && p->buff.flametongue_weapon->check() )
+      p->flametongue_attack->execute_on_target( state->target );
   }
 };
 
@@ -195,18 +279,41 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
 {
   if ( name == "auto_attack" )
     return new shaman_auto_attack_t( this, options_str );
+
   if ( name == "earth_shock" )
     return new earth_shock_t( this, options_str );
+  if ( name == "flame_shock" )
+    return new flame_shock_t( this, options_str );
+
+  if ( name == "flametongue_weapon" )
+    return new flametongue_weapon_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+void shaman_t::create_buffs()
+{
+  player_t::create_buffs();
+
+  buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 8027 ) );
+}
+
+void shaman_t::create_actions()
+{
+  flametongue_attack = new flametongue_attack_t( this );
+
+  player_t::create_actions();
 }
 
 void shaman_t::init_action_list()
 {
   if ( action_list_str.empty() )
   {
+    get_action_priority_list( "precombat" )->add_action( "flametongue_weapon" );
+
     get_action_priority_list( "default" )->add_action( "auto_attack" );
-    get_action_priority_list( "default" )->add_action( "earth_shock" );
+    get_action_priority_list( "default" )->add_action( "flame_shock,if=!ticking|remains<1" );
+    get_action_priority_list( "default" )->add_action( "earth_shock,if=dot.flame_shock.ticking" );
   }
 }
 

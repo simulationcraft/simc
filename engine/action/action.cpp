@@ -837,10 +837,7 @@ void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect
 
   if ( !item_scaling )
   {
-    if ( !spelleffect_data.sp_coeff() && !spelleffect_data.ap_coeff() )
-    {
-      base_td = spelleffect_data.average( player, player->level() );
-    }
+    base_td = spelleffect_data.average( player, player->level() );
   }
   else
   {
