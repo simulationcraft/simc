@@ -1409,7 +1409,7 @@
       { "data_type": "i", "field": "id_class", "formats": { "cpp": "%2u" } },
       { "data_type": "i", "field": "id_content_set" },
       { "data_type": "i", "field": "base_mana", "formats": { "cpp": "%5u" } },
-      { "data_type": "i", "field": "unk_5" },
+      { "data_type": "i", "field": "hp_per_stamina" },
       { "data_type": "i", "field": "unk_6" },
       { "data_type": "f", "field": "crit_per_agility", "formats": { "cpp": "%.8ff" } },
       { "data_type": "f", "field": "spell_crit_per_intellect", "formats": { "cpp": "%.8ff" } }
