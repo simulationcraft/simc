@@ -884,6 +884,12 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     aoe = spelleffect_data.chain_target();
     chain_multiplier = spelleffect_data.chain_multiplier();
   }
+  // Spells that chain through class module target counts rather than their own chain targets, such as Scourge Strike
+  // with Clawing Shadows, still take passive chain multiplier modifiers without the base spell data value.
+  else if ( auto pct = player->get_passive_value( spelleffect_data, "chain_multiplier" )[ 2 ]; pct != 1.0 )
+  {
+    chain_multiplier = pct;
+  }
 
   switch ( spelleffect_data.type() )
   {
