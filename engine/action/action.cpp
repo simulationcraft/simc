@@ -881,9 +881,15 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   // probably will never happen.
   if ( spelleffect_data.chain_target() > 1 )
   {
-    aoe = spelleffect_data.chain_target();
+    aoe              = spelleffect_data.chain_target();
     chain_multiplier = spelleffect_data.chain_multiplier();
   }
+
+  // handle chain multiplier modifiers. 
+  // Do this outside of the chain target check above as spells can be modified by buffs to have an increased chain_target count.
+  auto chain_mult = player->get_passive_value( spelleffect_data, "chain_multiplier" );
+  chain_multiplier = chain_mult[ 1 ];
+  chain_multiplier = chain_mult[ 2 ];
 
   switch ( spelleffect_data.type() )
   {
