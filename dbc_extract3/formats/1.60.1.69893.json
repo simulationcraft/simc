@@ -435,6 +435,7 @@
       { "data_type": "f", "field": "unk_18" },
       { "data_type": "B", "field": "unk_19" },
       { "data_type": "i", "field": "id_mcr_currency" },
+      { "data_type": "i", "field": "unk_21" },
       { "data_type": "i", "field": "flags", "elements": 2 }
     ]
   },
@@ -2008,6 +2009,20 @@
       { "data_type": "B", "field": "unk_13", "elements": 2 }
     ]
   },
+  "TalentTab": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "background" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "order_index" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "class_mask" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "id_icon_file", "ref": "ManifestInterfaceData" },
+      { "data_type": "i", "field": "unk_8" },
+      { "data_type": "i", "field": "unk_9", "elements": 2 }
+    ]
+  },
   "TradeSkillCategory": {
     "fields": [
       { "data_type": "S", "field": "name" },
@@ -2079,7 +2094,8 @@
       { "data_type": "i", "field": "id_achievement" },
       { "data_type": "i", "field": "player_level" },
       { "data_type": "i", "field": "id_trait_node_entry" },
-      { "data_type": "i", "field": "order_index" }
+      { "data_type": "i", "field": "order_index" },
+      { "data_type": "i", "field": "unk_9" }
     ]
   },
   "TraitDefinition": {
@@ -2264,6 +2280,7 @@
     "fields": [
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "i", "field": "unk_2" },
       { "data_type": "H", "field": "width" },
       { "data_type": "H", "field": "height" },
       { "data_type": "B", "field": "id_ui_canvas" }
