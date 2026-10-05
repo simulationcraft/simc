@@ -148,19 +148,23 @@ spell_t::spell_t( util::string_view token, player_t* p, const spell_data_t* s )
 
 double spell_t::miss_chance( double hit, player_t* t ) const
 {
-  // base spell miss is double base melee miss
-  double miss = t->cache.miss();
-  miss *= 2;
+  // TODO FOREVER - verify these initial numbers
 
-  // 11% level-dependent miss for level+4
-  miss += 0.03 * ( t->level() - player->level() );
+  int level_delta = t->level() - player->level();
 
-  miss += 0.08 * std::max( t->level() - player->level() - 3, 0 );
+  double miss = 0.04;
 
-  // subtract the player's hit and expertise
+  if ( level_delta <= 2 )
+    miss += 0.01 * level_delta;
+  else
+    // accelerates a ton at +3 levels
+    miss += 0.02 + 0.11 * ( level_delta - 2 );
+
   miss -= hit;
 
-  return miss;
+  // TODO FOREVER
+  // always a 1% chance to miss?
+  return std::max( miss, 0.01 );
 }
 
 result_amount_type spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const

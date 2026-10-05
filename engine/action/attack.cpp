@@ -87,11 +87,20 @@ double attack_t::miss_chance( double hit, player_t* t ) const
     return 0.0;
   }
 
-  // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
+  // TODO FOREVER - Definitely needs to be triple checked
+  // Various references that can be looked over for classic baseline
+  // https://www.bluetracker.gg/wow/topic/us-en/185675-bug-hit-tables/ (blizz notes about classic era)
+  // https://wowpedia.fandom.com/wiki/Weapon_skill (more wotlk era)
+  // https://github.com/magey/classic-warrior/issues/5
+  // https://www.reddit.com/r/classicwow/comments/bumoii/blue_post_confirms_8_melee_hit_cap_vs_raid_bosses/
+
+  // cache.miss() contains the target's miss chance (5.0 base in almost all cases)
   double miss = t->cache.miss();
 
-  // add or subtract 1.5% per level difference
-  miss += ( t->level() - player->level() ) * 0.015;
+  // add 1% per level difference - think this works at level 60 for raid bosses but probably isn't
+  // correct for lower level stuff. Brief testing is beta makes it looks like lower level target doesn't reduce the miss
+  // chance
+  miss += ( std::max( t->level() - player->level(), 0 ) ) * 0.01;
 
   // asymmetric hit penalty for npcs attacking higher-level players
   if ( !t->is_enemy() )
@@ -110,11 +119,13 @@ double attack_t::dodge_chance( double expertise, player_t* t ) const
     return 0.0;
   }
 
-  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
+  // cache.dodge() contains the target's dodge chance (5.0 base, plus spec bonuses and rating)
   double dodge = t->cache.dodge();
 
-  // WoD mechanics are unchanged from MoP add or subtract 1.5% per level difference
-  dodge += ( t->level() - player->level() ) * 0.015;
+  // Forever: add or subtract 0.5% per level difference
+  // In Forever beta, dodge does look to decrease on lower level targets
+  // https://www.bluetracker.gg/wow/topic/us-en/185675-bug-hit-tables/
+  dodge += ( t->level() - player->level() ) * 0.005;
 
   // subtract the player's expertise chance
   dodge -= expertise;
@@ -398,13 +409,16 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
     return 0.0;
   }
 
-  // cache.parry() contains the target's parry chance (3.0 base, plus spec
+  // TODO FOREVER - definitely needs to be looked at in detail
+  // miss_chance has a bunch of reference to check
+
+  // cache.parry() contains the target's parry chance (5.0 base, plus spec
   // bonuses and rating)
   double parry = t->cache.parry();
 
-  // WoD mechanics are similar to MoP
-  // add or subtract 1.5% per level difference
-  parry += ( t->level() - player->level() ) * 0.015;
+  // add 1.5% per level difference
+  // brief beta testing looks like parry chance does not reduce for lower level mobs
+  parry += ( std::max(t->level() - player->level(), 0 ) ) * 0.015;
 
   // 3% additional parry for attacking a level+3 or higher NPC
   if ( t->is_enemy() && ( t->level() - player->level() ) > 2 )
@@ -420,6 +434,7 @@ double melee_attack_t::glance_chance( int delta_level ) const
 {
   double glance = 0;
 
+  // TODO FOREVER - Needs research
   // TODO-WOD: Glance chance increase per 4+ level delta?
   if ( delta_level > 3 )
   {
