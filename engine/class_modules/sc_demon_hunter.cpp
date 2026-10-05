@@ -8080,7 +8080,7 @@ struct fracture_t : public voidfall_building_trigger_t<
 
     if ( dh()->buff.metamorphosis->check() )
     {
-      ea += dh()->spec.metamorphosis_buff->effectN( 10 ).resource( RESOURCE_FURY );
+      ea += dh()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
 
     return ea;
