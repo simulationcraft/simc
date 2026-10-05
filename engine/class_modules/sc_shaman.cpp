@@ -155,6 +155,8 @@ struct shaman_melee_t : public melee_attack_t
     repeating         = true;
     may_glance        = true;
     may_crit          = true;
+    may_dodge         = true;
+    may_parry         = true;
     special           = false;
   }
 };
