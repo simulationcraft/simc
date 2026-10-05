@@ -888,8 +888,11 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   // handle chain multiplier modifiers. 
   // Do this outside of the chain target check above as spells can be modified by buffs to have an increased chain_target count.
   auto chain_mult = player->get_passive_value( spelleffect_data, "chain_multiplier" );
-  chain_multiplier = chain_mult[ 1 ];
-  chain_multiplier = chain_mult[ 2 ];
+  if ( chain_multiplier == 1.0 )
+  {
+    chain_multiplier += chain_mult[ 1 ];
+    chain_multiplier *= chain_mult[ 2 ];
+  }
 
   switch ( spelleffect_data.type() )
   {
