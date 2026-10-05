@@ -1602,9 +1602,10 @@ void player_t::init_base_stats()
 
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
-    // players have a base 7.5% hit/exp
-    base.hit       = 0.075;
-    base.expertise = 0.075;
+    // Forever: no base line hit or expertise
+    base.hit       = 0.0;
+    base.expertise = 0.0;
+
     base.expertise = get_passive_player_value( base.expertise, "expertise" );
     base.armor_penetration = get_passive_player_value( base.armor_penetration, "armor_penetration" );
 
@@ -1631,9 +1632,9 @@ void player_t::init_base_stats()
   if ( type == PALADIN || type == WARRIOR )
     base.parry_per_strength = dbc->avoid_per_str_agi_by_level( level() ) / 100.0;
 
-  // All classes get 3% dodge and miss
-  base.dodge = 0.03;
-  base.miss = 0.03;
+  // Forever - base is 5%, higher than retail
+  base.dodge = 0.05;
+  base.miss = 0.05;
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
   if ( base.dodge_per_agility > 0 )
@@ -1671,7 +1672,7 @@ void player_t::init_base_stats()
       break;
     case ENEMY:
     case TANK_DUMMY:
-      base.parry = 0.03;
+      base.parry = 0.05;
       break;
     default:
       break;
@@ -7775,6 +7776,7 @@ bool player_t::recent_cast() const
 
 double player_t::mana_regen_from_spirit() const
 {
+  // TODO FOREVER - rate drops after 50 spirit?
   return 0.25 * cache.spirit();
 }
 
