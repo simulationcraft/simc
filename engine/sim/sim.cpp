@@ -2366,6 +2366,8 @@ void sim_t::init_fight_style()
       // taking about 30 minutes to complete, a safeguard of 1.5 hours should be a safe point to assume something has gone wrong in the sim, either the 
       // input needs to be checked or something got stuck.
       max_time = 45_min;
+      // Ignore the main "dungeon" target as its not a valid target. 
+      ignore_invulnerable_targets = true;
       break;
 
     case FIGHT_STYLE_CLEAVE_ADD:
