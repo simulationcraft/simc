@@ -12502,7 +12502,7 @@ struct sanguinary_burst_t : public death_knight_spell_t
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
   scourge_strike_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : death_knight_melee_attack_t( name, p, spell ), summon_ghoul( nullptr ), errupt_mult( 1.0 )
+    : death_knight_melee_attack_t( name, p, spell ), summon_ghoul( nullptr ), errupt_mult( 1.0 ), max_targets( 0 )
   {
     errupt_mult = p->talent.unholy.scourge_strike->effectN( 2 ).percent();
 
@@ -12511,13 +12511,20 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     weapon = &( player->main_hand_weapon );
     aoe    = 1;
+    max_targets = data().max_targets();
 
     summon_ghoul = p->pet_summon.fs_ghoul;
   }
 
   int n_targets() const override
   {
-    return p()->buffs.clawing_shadows->check() ? aoe + as<int>( p()->buffs.clawing_shadows->check_stack_value() ) : aoe;
+    auto t = aoe;
+
+    if ( p()->talent.unholy.clawing_shadows.ok() )
+      t += as<int>( p()->buffs.clawing_shadows->check_stack_value() );
+
+    // Scourge Strike is hard capped at 5 targets total in its max_targets data for some unknown reason.
+    return std::min( t, max_targets );
   }
 
   std::vector<player_t*>& target_list() const override
@@ -12647,6 +12654,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
 private:
   action_t* summon_ghoul;
+  int max_targets;
 
 public:
   double errupt_mult;
