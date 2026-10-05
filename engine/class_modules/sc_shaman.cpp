@@ -34,6 +34,9 @@ struct shaman_t final : public player_t
   struct buffs_t
   {
     buff_t* flametongue_weapon = nullptr;
+    buff_t* rockbiter_weapon = nullptr;
+
+    buff_t* strength_of_earth = nullptr;
   } buff;
 
   struct talents_t
@@ -194,7 +197,10 @@ struct flametongue_weapon_t : public spell_t
   {
     spell_t::execute();
 
-    static_cast<shaman_t*>( player )->buff.flametongue_weapon->trigger();
+    auto p = static_cast<shaman_t*>( player );
+
+    p->buff.rockbiter_weapon->expire();
+    p->buff.flametongue_weapon->trigger();
   }
 
   bool ready() override
@@ -203,6 +209,57 @@ struct flametongue_weapon_t : public spell_t
       return false;
 
     return spell_t::ready();
+  }
+};
+
+struct rockbiter_weapon_t : public spell_t
+{
+  rockbiter_weapon_t( shaman_t* player, util::string_view options_str ) :
+    spell_t( "rockbiter_weapon", player, player->find_spell( 8019 ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    target = player;
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    auto p = static_cast<shaman_t*>( player );
+
+    p->buff.flametongue_weapon->expire();
+    p->buff.rockbiter_weapon->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( static_cast<shaman_t*>( player )->buff.rockbiter_weapon->check() )
+      return false;
+
+    return spell_t::ready();
+  }
+};
+
+// ==========================================================================
+// Shaman Totems
+// ==========================================================================
+
+struct strength_of_earth_totem_t : public spell_t
+{
+  strength_of_earth_totem_t( shaman_t* player, util::string_view options_str ) :
+    spell_t( "strength_of_earth_totem", player, player->find_spell( 8075 ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    target = player;
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    static_cast<shaman_t*>( player )->buff.strength_of_earth->trigger();
   }
 };
 
@@ -287,6 +344,11 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
 
   if ( name == "flametongue_weapon" )
     return new flametongue_weapon_t( this, options_str );
+  if ( name == "rockbiter_weapon" )
+    return new rockbiter_weapon_t( this, options_str );
+
+  if ( name == "strength_of_earth_totem" )
+    return new strength_of_earth_totem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -296,6 +358,10 @@ void shaman_t::create_buffs()
   player_t::create_buffs();
 
   buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 8027 ) );
+  buff.rockbiter_weapon = make_buff<stat_buff_t>( this, "rockbiter_weapon", find_spell( 15568 ) );
+
+  buff.strength_of_earth = make_buff<stat_buff_t>( this, "strength_of_earth", find_spell( 8076 ) )
+    ->set_duration( find_spell( 8075 )->duration() );
 }
 
 void shaman_t::create_actions()
@@ -310,8 +376,10 @@ void shaman_t::init_action_list()
   if ( action_list_str.empty() )
   {
     get_action_priority_list( "precombat" )->add_action( "flametongue_weapon" );
+    get_action_priority_list( "precombat" )->add_action( "strength_of_earth_totem" );
 
     get_action_priority_list( "default" )->add_action( "auto_attack" );
+    get_action_priority_list( "default" )->add_action( "strength_of_earth_totem,if=!buff.strength_of_earth.up" );
     get_action_priority_list( "default" )->add_action( "flame_shock,if=!ticking|remains<1" );
     get_action_priority_list( "default" )->add_action( "earth_shock,if=dot.flame_shock.ticking" );
   }
