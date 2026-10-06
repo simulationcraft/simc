@@ -1178,9 +1178,10 @@ Effects          :
 #4 (id=739365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
 #5 (id=1203568)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 400 | Scaled Value: 400 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+Hotfixed         : Base Value (400 -> 450)
 #6 (id=1203569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
@@ -1954,8 +1955,9 @@ Effects          :
                    Family Flags: 12, 36, 73, 78, 86, 91
 #6 (id=1226056)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 12, 36, 73, 78, 86, 91
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), A Murder of Crows (131900), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 12, 36, 73, 78, 86, 91, 99
+Hotfixed         : Affects Spells
 #7 (id=1257982)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
@@ -18154,13 +18156,15 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1226884)  : Apply Aura (6) | Modify Min Speed% (305)
-                   Base Value: 90 | Scaled Value: 90 | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
+Hotfixed         : Base Value (90 -> 100)
 #3 (id=1226885)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
 #4 (id=1226886)  : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | Value Multiplier: 1 | Target: Self (1)
 #5 (id=1226887)  : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : Period (1000 -> 1500)
 #6 (id=1246445)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : You sacrifice $s5% of your health every $t5 sec and in exchange you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks. Lasts $d.
@@ -21222,7 +21226,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1285178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 200), PvP Coefficient (0.5 -> 0.25)
+Hotfixed         : Base Value (200 -> 100)
 #3 (id=1293674)  : Apply Aura (6) | Proc Trigger Spell (42): Blightfall
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1271975 | Target: Self (1)
 Description      : Dark Transformation grants access to Blightfall.
