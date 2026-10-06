@@ -17695,12 +17695,14 @@ struct death_knight_module_t : public module_t
   
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Death Knight", "2026-10-2", "Blightfall reverted to 100%.", 1285178,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
         .modifier( 100 )
         .verification_value( 200 );
+    */
   }
 
   void register_actor_initializers( sim_t* ) const override
