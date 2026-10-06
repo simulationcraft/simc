@@ -1358,13 +1358,14 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 737
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Lightning Strikes (384451 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Totemic Momentum (1260644 effect#2), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Lightning Strikes (384451 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2, #14), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Totemic Momentum (1260644 effect#2), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Ashen Catalyst (390371)
 Family Flags     : 39, 56, 66, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.38717 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.22268 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.38717 -> 3.22268)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -2325,7 +2326,8 @@ Family Flags     : 97
 Attributes       : Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), Normal Melee Attack (345), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127209)   : Weapon Damage% (31)
-                   Base Value: 416 | Scaled Value: 4.16 | Target: Targeted Enemy (6)
+                   Base Value: 433 | Scaled Value: 4.33 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (416 -> 433)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Windlash Off-Hand (id=114093) [Spell Family (11)] 
@@ -2342,7 +2344,8 @@ Family Flags     : 97
 Attributes       : Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Not In Spellbook (143), Normal Melee Attack (345), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127218)   : Weapon Damage% (31)
-                   Base Value: 416 | Scaled Value: 4.16 | Target: Targeted Enemy (6)
+                   Base Value: 433 | Scaled Value: 4.33 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (416 -> 433)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Ancestral Guidance (id=114911) [Spell Family (11)] 
@@ -2917,19 +2920,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
+Hotfixed         : Base Value (20 -> 25)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
+Hotfixed         : Base Value (20 -> 25)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 25)
 #4 (id=191040)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 25)
 #5 (id=191041)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 401 | Scaled Value: 401 | Target: Self (1)
+                   Base Value: 421 | Scaled Value: 421 | Target: Self (1)
+Hotfixed         : Base Value (401 -> 421)
 #6 (id=261007)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | Target: Self (1)
 #7 (id=261008)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -10926,13 +10934,15 @@ Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1013208)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.334 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 1.334)
 #2 (id=1013209)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1013210)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.67 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 2.67 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : PvP Coefficient (1.67 -> 2.67)
 Description      : Earth Shield reduces damage taken by $s3% and its healing is increased by up to $s1% as its target's health decreases. Maximum benefit is reached below $s2% health.
 
 Name             : Earthliving Weapon (id=382021) [Spell Family (11)] 
@@ -16712,15 +16722,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1196250)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
-Hotfixed         : Base Value (5 -> 8)
+Hotfixed         : Base Value (8 -> 4)
 #2 (id=1196251)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
-Hotfixed         : Base Value (5 -> 8)
+Hotfixed         : Base Value (8 -> 4)
 #3 (id=1196252)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 5 | Misc Value 2: 4046 (Label) | Target: Self (1)
 #4 (id=1196253)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -16759,6 +16769,11 @@ Hotfixed         : Base Value (5 -> 8)
                    Base Value: -13 | Scaled Value: -13 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
+#14 (id=1361476) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -26 | Scaled Value: -26 | Target: Self (1)
+                   Affected Spells: Lava Lash (60103)
+                   Family Flags: 66
+Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -17511,9 +17526,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1247572)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 30000 | Scaled Value: 30000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 20000 | Scaled Value: 20000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Nature's Swiftness (378081), Ancestral Swiftness (443454)
                    Family Flags: 65
+Hotfixed         : Base Value (30000 -> 20000)
 Description      : Nature's Swiftness now also affects Hex, but its cooldown is increased by ${$s1/1000} sec.
 
 Name             : Windfury Attack (id=1247053) [Spell Family (11)] 
@@ -17901,9 +17917,10 @@ Effects          :
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #10 (id=1266438) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
+Hotfixed         : Base Value (20 -> 38)
 #11 (id=1266439) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 55 | Scaled Value: 55 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)

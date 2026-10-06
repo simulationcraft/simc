@@ -12926,8 +12926,8 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1192725)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4 | PvP Coefficient: 1.45 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (3.15 -> 3.4), PvP Coefficient (1.56 -> 1.45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.67 | PvP Coefficient: 1.34 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (3.4 -> 3.67), PvP Coefficient (1.45 -> 1.34)
 Description      : Drain the essence from your target, dealing $s1 Cosmic damage.
 
 Castable while moving.
@@ -13392,8 +13392,8 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4 | PvP Coefficient: 1.45 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (3.15 -> 3.4), PvP Coefficient (1.56 -> 1.45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.67 | PvP Coefficient: 1.34 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (3.4 -> 3.67), PvP Coefficient (1.45 -> 1.34)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -13483,8 +13483,8 @@ Effects          :
 #1 (id=1207505)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #2 (id=1290193)  : Dummy (3)
-                   Base Value: 54 | Scaled Value: 54
-Hotfixed         : Base Value (75 -> 54)
+                   Base Value: 50 | Scaled Value: 50
+Hotfixed         : Base Value (54 -> 50)
 Description      : Channel an immense amount of void energy into a single, cataclysmic blast, $?a1242486[critically striking for ${$1221162s1*2}][dealing $1221162s1] Cosmic damage to your target and $?a1242486[${2*($1221162s1*($s2/100))}][${$1221162s1*($s2/100)}] Cosmic damage to all nearby enemies. Damage reduced beyond $s1 targets.
 
 While casting Collapsing Star, your Fury drain is significantly reduced.$?a1240204[
@@ -13505,8 +13505,8 @@ Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.81 | PvP Coefficient: 0.8 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : SP Coefficient (6.3 -> 11.81), PvP Coefficient (1 -> 0.8)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.741 | Radius: 8 yards | Target: at Enemy in Area (16)
+Hotfixed         : SP Coefficient (11.81 -> 12.755), PvP Coefficient (0.8 -> 0.741)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
@@ -13708,7 +13708,8 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.57 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.0156 | PvP Coefficient: 0.526 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (5.57 -> 6.0156), PvP Coefficient (0.568 -> 0.526)
 Description      : $@spelldesc1226019
 
 Name             : Eradicate (id=1225826) [Spell Family (107)] 
@@ -13728,7 +13729,8 @@ Family Flags     : 32, 102
 Attributes       : No Aura Icon (60), Can Proc From Procs (122), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Unknown (467)
 Effects          :
 #1 (id=1215274)  : Dummy (3)
-                   Base Value: 90 | Scaled Value: 90 | Target: Targeted Enemy (6)
+                   Base Value: 83 | Scaled Value: 83 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (90 -> 83)
 #2 (id=1215655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Slam your Scythe to the ground, dealing $?a1217607[$1279200s1][$1225827s1] Cosmic damage to your primary target and $?a1217607[${$1279200s1*($s1/100)}][${$1225827s1*($s1/100)}] to all other enemies within a $s2 yd cone in front of you. Damage reduced beyond $1226033s1 targets.
@@ -13752,7 +13754,8 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.57 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.0156 | PvP Coefficient: 0.526 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+Hotfixed         : SP Coefficient (5.57 -> 6.0156), PvP Coefficient (0.568 -> 0.526)
 Description      : $@spelldesc1225826
 
 Name             : Reap (id=1226019) [Spell Family (107)] 
@@ -14828,7 +14831,8 @@ Effects          :
 #1 (id=1246442)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=1246443)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.25 | PvP Coefficient: 1.38 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.475 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (2.25 -> 2.475), PvP Coefficient (1.38 -> 1.25)
 #3 (id=1246444)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Duty Eternal (1246562 effect#2)
@@ -14876,7 +14880,8 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.163 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.736 | PvP Coefficient: 0.526 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (7.163 -> 7.736), PvP Coefficient (0.568 -> 0.526)
 Description      : $@spelldesc1245453
 
 Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
@@ -15207,7 +15212,8 @@ Family Flags     : 43, 82, 95
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow Cast While Casting (135), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1247657)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.6 | PvP Coefficient: 0.77 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (6 -> 6.6), PvP Coefficient (0.85 -> 0.77)
 #2 (id=1247658)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=1247659)  : Trigger Spell (64): The Hunt
@@ -17481,7 +17487,8 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.163 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.736 | PvP Coefficient: 0.526 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+Hotfixed         : SP Coefficient (7.163 -> 7.736), PvP Coefficient (0.568 -> 0.526)
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 
