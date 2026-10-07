@@ -3162,7 +3162,7 @@ struct mass_acceleration_trigger_t : public BASE
     switch ( BASE::dh()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        BASE::dh()->cooldown.reap->reset( false );
+        BASE::dh()->cooldown.reap->reset( false, -1 );
         break;
       case DEMON_HUNTER_VENGEANCE:
         BASE::dh()->cooldown.spirit_bomb->reset( true );
