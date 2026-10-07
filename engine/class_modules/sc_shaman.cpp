@@ -250,9 +250,6 @@ struct flame_shock_t : public spell_t
   {
     parse_options( options_str );
 
-    // verified in forever beta
-    tick_may_crit = true;
-
     cooldown           = player->get_cooldown( "shock" );
     cooldown->duration = data().cooldown();
   }
