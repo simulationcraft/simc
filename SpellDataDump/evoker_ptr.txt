@@ -7863,6 +7863,7 @@ Effects          :
 Description      : Each time Blistering Scales explodes it deals $410256s1% more damage for $410256d, stacking $410256u times.
 
 Name             : Temporal Wound (desc=Bronze) (id=409560) [Spell Family (224)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -7877,7 +7878,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2)
 Triggered By     : Breath of Eons (403755), Breath of Eons (442204)
 Family Flags     : 56, 67, 71
-Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Taps immediately (215), No Target Duration Mod (225), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Taps immediately (215), No Target Duration Mod (225), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Disconnect (42), Enter Instance (43)
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Front in Area (78) -> at Enemy in Area (16)
@@ -7935,6 +7937,7 @@ Description      : $@spelldesc409676
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Temporal Wound (desc=Bronze) (id=409722) [Spell Family (224)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -7944,7 +7947,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Disconnect (42), Enter Instance (43)
 Effects          :
 #1 (id=1074767)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -8080,6 +8084,7 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Temporal Wound (desc=Bronze) (id=409992) [Spell Family (224)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8089,7 +8094,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Disconnect (42), Enter Instance (43)
 Effects          :
 #1 (id=1075265)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -8097,6 +8103,7 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409993) [Spell Family (224)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8106,7 +8113,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Disconnect (42), Enter Instance (43)
 Effects          :
 #1 (id=1075267)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -8114,6 +8122,7 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409994) [Spell Family (224)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8123,7 +8132,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Disconnect (42), Enter Instance (43)
 Effects          :
 #1 (id=1075269)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
