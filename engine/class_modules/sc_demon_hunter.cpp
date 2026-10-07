@@ -5546,11 +5546,9 @@ struct the_hunt_base_t
 
       if ( s->chain_target == 0 && dh()->specialization() == DEMON_HUNTER_DEVOURER &&
            dh()->talent.scarred.violent_transformation->ok() )
-      {
         // only resets one charge of Soul Immo
-        if ( sim->dbc->wowv() < wowv_t( 12, 1, 5 ) )
-          dh()->cooldown.soul_immolation->reset( false, 1 );
-      }
+        // 10/06/2026 still refunds one charge on 12.1.5 even though developer notes say it should not
+        dh()->cooldown.soul_immolation->reset( false, 1 );
     }
   };
 
