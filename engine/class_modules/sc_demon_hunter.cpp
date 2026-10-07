@@ -3162,7 +3162,7 @@ struct mass_acceleration_trigger_t : public BASE
     switch ( BASE::dh()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        BASE::dh()->cooldown.reap->reset( false );
+        BASE::dh()->cooldown.reap->reset( false, -1 );
         break;
       case DEMON_HUNTER_VENGEANCE:
         BASE::dh()->cooldown.spirit_bomb->reset( true );
@@ -5552,11 +5552,9 @@ struct the_hunt_base_t
 
       if ( s->chain_target == 0 && dh()->specialization() == DEMON_HUNTER_DEVOURER &&
            dh()->talent.scarred.violent_transformation->ok() )
-      {
         // only resets one charge of Soul Immo
-        if ( sim->dbc->wowv() < wowv_t( 12, 1, 5 ) )
-          dh()->cooldown.soul_immolation->reset( false, 1 );
-      }
+        // 10/06/2026 still refunds one charge on 12.1.5 even though developer notes say it should not
+        dh()->cooldown.soul_immolation->reset( false, 1 );
     }
   };
 
