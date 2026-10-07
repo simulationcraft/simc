@@ -7776,8 +7776,11 @@ bool player_t::recent_cast() const
 
 double player_t::mana_regen_from_spirit() const
 {
-  // TODO FOREVER - rate drops after 50 spirit?
-  return 0.25 * cache.spirit();
+  // TODO FOREVER - verify this across classes. This was observed on a level 19 shaman
+  double spirit = cache.spirit();
+
+  // first 50 spirit are more effective
+  return 0.25 * std::min( spirit, 50.0 ) + 0.125 * std::max( spirit - 50.0, 0.0 );
 }
 
 dot_t* player_t::find_dot( util::string_view name, player_t* source ) const
