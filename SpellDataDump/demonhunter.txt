@@ -7546,9 +7546,10 @@ Effects          :
 #1 (id=891975)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 6 | Target: Self (1)
 #2 (id=891976)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Darkness (196718)
                    Family Flags: 77
+Hotfixed         : Base Value (2000 -> 4000)
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 Name             : Eye Beam (desc=Offensive) (id=362177) [Spell Family (227)] 

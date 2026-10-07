@@ -2950,7 +2950,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=116796)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 20, 44, 58, 65, 106, 121
                    Modified By: Stonebark (197061 effect#1)
 Description      : The target's skin becomes as tough as Ironwood, reducing damage taken by $s1%$?a197061[ and increasing healing from your heal over time effects by $s2%][] for $d.$?a392116[
@@ -4183,7 +4183,7 @@ Effects          :
                    Family Flags: 33
 #17 (id=1080970) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #18 (id=1088946) : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -4260,7 +4260,7 @@ Effects          :
                    Family Flags: 33
 #10 (id=1032347) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 213 | Scaled Value: 213 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #11 (id=1032348) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 119 | Scaled Value: 119 | Target: Self (1)
@@ -4379,7 +4379,7 @@ Hotfixed         : Base Value (4 -> 8)
                    Family Flags: 4
 #22 (id=1099906) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 44 | Scaled Value: 44 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 #23 (id=1099956) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
@@ -4445,7 +4445,7 @@ Effects          :
                    Family Flags: 6
 #11 (id=1088945) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 185 | Scaled Value: 185 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #12 (id=1177983) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
@@ -5633,7 +5633,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Wild Growth (48438), Typhoon (61391), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Grove Guardians (102693), Ursol's Vortex (102793), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Fury of Elune (365640), Celestial Alignment (383410), Fury of Elune (394111), Nourish (422090), Nourish (423618), Remove Corruption (440015), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Efflorescence (1232285), Regrowth (1264664), Starsurge (1271222), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Overgrowth (1301989)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Wild Growth (48438), Typhoon (61391), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Grove Guardians (102693), Ursol's Vortex (102793), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Fury of Elune (365640), Celestial Alignment (383410), Fury of Elune (394111), Nourish (422090), Nourish (423618), Remove Corruption (440015), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Mass Blooming (474149), Efflorescence (1232285), Regrowth (1264664), Starsurge (1271222), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Overgrowth (1301989)
                    Family Flags: 0, 2, 3, 4, 5, 6, 9, 21, 22, 23, 28, 33, 36, 37, 41, 49, 53, 54, 56, 58, 63, 66, 73, 79, 81, 82, 87, 88, 89, 90, 102, 103, 104, 105, 106, 110, 111, 113, 115, 117, 120
                    Modified By: Oath of the Elder Druid (338608 effect#1)
 #2 (id=314659)   : Apply Aura (6) | Modify Auto Attack Range (153)
@@ -6307,7 +6307,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore
 Effects          :
 #1 (id=300415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550)
+                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149)
                    Family Flags: 4, 36, 44, 58
 Description      : $@spelldesc203651
 
@@ -6798,7 +6798,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
 Effects          :
 #1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Lifebloom (188550), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 4, 6, 44, 58, 106
 #2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
@@ -7012,7 +7012,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=312074)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Starfall (50286), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Grove Guardians (102693), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Infected Wounds (354571), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Raze (400254), Thrash (405233), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Remove Corruption (440015), Ravage (441591), Ravage (441605), Efflorescence (1232285), Meteorites (1240913), Dire Echo (1253489), Solar Bolt (1261573), Lunar Bolt (1263137), Regrowth (1264664), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243), Starfall (1286247), Starfall (1301742), Starfall (1301747), Overgrowth (1301989)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Starfall (50286), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Grove Guardians (102693), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Infected Wounds (354571), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Raze (400254), Thrash (405233), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Remove Corruption (440015), Ravage (441591), Ravage (441605), Mass Blooming (474149), Efflorescence (1232285), Meteorites (1240913), Dire Echo (1253489), Solar Bolt (1261573), Lunar Bolt (1263137), Regrowth (1264664), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243), Starfall (1286247), Starfall (1301742), Starfall (1301747), Overgrowth (1301989)
                    Family Flags: 0, 2, 4, 5, 6, 9, 11, 12, 13, 15, 18, 21, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 52, 53, 54, 55, 56, 58, 64, 66, 68, 69, 73, 74, 79, 82, 85, 87, 89, 90, 91, 99, 102, 104, 105, 106, 108, 110, 111, 115, 120, 123, 126
 #2 (id=312249)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -9729,7 +9729,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.2625 | Target: Current Target (25)
 #2 (id=816652)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Target: Current Target (25)
-                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Tranquility (1236573), Overgrowth (1301989)
+                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Mass Blooming (474149), Tranquility (1236573), Overgrowth (1301989)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
                    Modified By: Restoration Druid (137012 effect#9)
 Description      : $@spelldesc325727
@@ -10022,7 +10022,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=819839)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth heals $s1 additional $ltarget:targets;.
 
@@ -13850,7 +13850,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1032724)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Tranquility (1236573)
+                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Mass Blooming (474149), Tranquility (1236573)
                    Family Flags: 4, 7, 44, 58, 65
 Description      : Rejuvenation, Lifebloom, Wild Growth, Efflorescence, and Tranquility chance to critically heal is increased by $s1%.
 
@@ -15283,7 +15283,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Comba
 Effects          :
 #1 (id=1072743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20.65 | Scaled Value: -20.65 | PvP Coefficient: 0.5 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 8, 44, 58, 106
 #2 (id=1072744)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -20.65 | Scaled Value: -20.65 | PvP Coefficient: 0.5 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
@@ -16227,7 +16227,7 @@ Effects          :
                    Affected Spells (Category): Swiftmend (18562)
 #3 (id=1256778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : $?a137013[Force of Nature cooldown reduced by ${$s1/-1000} sec.][Swiftmend and Wild Growth cooldowns reduced by ${$s2/-1000} sec.]
 
@@ -16307,11 +16307,11 @@ Effects          :
                    Family Flags: 0, 2
 #2 (id=1113584)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 #3 (id=1113585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 Description      : Wrath and Starfire damage increased by $s1%. 
 
@@ -17094,7 +17094,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1133456)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Adaptive Swarm (325733), Adaptive Swarm (325748), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Adaptive Swarm (325733), Adaptive Swarm (325748), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 8, 20, 22, 44, 58, 65, 106, 121
 #2 (id=1214835)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Misc Value 2: 3246 (Label) | Target: Self (1)
@@ -18714,11 +18714,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1155669)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 #2 (id=1158198)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 Description      : Regrowth, Wild Growth, and Swiftmend healing increased by $s1%.
 
@@ -19382,6 +19382,7 @@ Description      : $@spelldesc473909
 Tooltip          : Encased in a Protective Bark, absorbing $w1 damage. Breaking this bark cancels $@auracaster's Ancient Form.
 
 Name             : Mass Blooming (desc=PvP Talent) (id=474149) [Spell Family (7)] 
+Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -19394,16 +19395,19 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
                  : 4216: Astral Influence (197524 effect#8)
-Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2), Genesis (1302255 effect#1)
-Family Flags     : 118
+Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #22), Balance Druid (137013 effect#11), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Druid Restoration Class Set 2pc (393639 effect#1), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Early Spring (428937 effect#3), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Strategic Infusion (439890 effect#1), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Druid Restoration 12.0 Class Set 2pc (1264817 effect#1), Druid Restoration 12.0 Class Set 4pc (1264818 effect#2), Patient Custodian (1270592 effect#3), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2), Genesis (1302255 effect#1)
+Family Flags     : 58, 118
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1193590)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Ally (21)
-#2 (id=1193591)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.137 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-#3 (id=1193592)  : Dummy (3)
+#2 (id=1193591)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+Hotfixed         : Type (10 -> 3), SP Coefficient (7.137 -> 0), Base Value (0 -> 5), Target 1 (132 -> 0), Target 2 (31 -> 0)
+                   Modified By: Improved Wild Growth (328025 effect#1)
+#3 (id=1193592)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.27 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+Hotfixed         : Type (3 -> 10), SP Coefficient (0 -> 9.27), Base Value (5 -> 0), Target 1 (0 -> 132), Target 2 (0 -> 31)
 Description      : Heals $s3 allies for $s2 and applies $s1 missing heal over time $Leffect:effects;.
 
 Name             : Grievous Wounds (id=474526) [Spell Family (7), Passive] 
@@ -21431,6 +21435,9 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#4 (id=1360774)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 7333 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Ascendant Eclipses (id=1261564) [Spell Family (7), Passive] 
 Talent Entry     : Balance [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=0]
@@ -22379,7 +22386,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1276423)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth healing increased by $s1%.
 
@@ -22397,7 +22404,7 @@ Effects          :
                    Affected Spells (Category): Wild Growth (48438)
 #2 (id=1281532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth cooldown reduced by ${$s1/-1000} sec, and mana cost reduced by $s2%.
 
@@ -22728,7 +22735,7 @@ Hotfixed         : Base Value (8 -> 10), PvP Coefficient (1 -> 0.8)
 Hotfixed         : Base Value (8 -> 10), PvP Coefficient (1 -> 0.8)
 #3 (id=1282737)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Frenzied Regeneration (22842), Lifebloom (33763), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Frenzied Regeneration (22842), Lifebloom (33763), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 4, 6, 44, 58, 62
 #4 (id=1282738)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Misc Value 2: 3246 (Label) | Target: Self (1)
