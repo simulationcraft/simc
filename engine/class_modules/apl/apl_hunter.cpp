@@ -451,7 +451,8 @@ void survival( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  cds->add_action( "use_item,name=font_of_venomous_rage,if=!buff.takedown.up&!cooldown.takedown.ready|fight_remains<3" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!equipped.font_of_venomous_rage" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)" );
   cds->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown" );
@@ -531,7 +532,8 @@ void survival_ptr( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  cds->add_action( "use_item,name=font_of_venomous_rage,if=!buff.takedown.up&!cooldown.takedown.ready|fight_remains<3" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!equipped.font_of_venomous_rage" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)" );
   cds->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown" );
