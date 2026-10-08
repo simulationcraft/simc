@@ -190,14 +190,16 @@ namespace pets {
       imp_pet_t( sim_t* sim, warlock_t* owner ) :
         warlock_pet_t( sim, owner, "imp" )
       {
-        // from level 6 imp character sheet
+        // from level 6-10 imp character sheet
         owner_coeff.armor = 0.35;
         owner_coeff.ap_from_sp = 0.17;
 
-        // TODO: Figure out the real answer, this is a placeholder
+        // TODO: Imp HP looks to come from a table
         owner_coeff.health = 1.5;
+        stamina_per_owner = 0;
 
-        intellect_per_owner = 0;
+        // matches in-game stats but int might not actually do anything on the pet
+        intellect_per_owner = 0.3;
       }
 
       resource_e primary_resource() const override { return RESOURCE_MANA; }
@@ -230,7 +232,7 @@ namespace pets {
       void init_action_list() override
       {
         action_list_str = "firebolt";
-        pet_t::init_action_list();
+        warlock_pet_t::init_action_list();
       }
 
       action_t* create_action( std::string_view, std::string_view ) override;
