@@ -3700,11 +3700,6 @@ struct consume_soul_t : public demon_hunter_heal_t
       }
     }
 
-    // Warblade's hunger currently applies an additional stack on first buff application
-    if ( !dh()->buff.warblades_hunger->up() )
-    {
-      dh()->buff.warblades_hunger->trigger();
-    }
     dh()->buff.warblades_hunger->trigger();
 
     if ( type == soul_fragment::GREATER_DEMON )
@@ -10149,7 +10144,7 @@ void demon_hunter_t::create_buffs()
 
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
-  buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff )->set_max_stack( 6 );
+  buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
   buff.thrill_of_the_fight_haste =
       make_buff( this, "thrill_of_the_fight_haste", hero_spec.thrill_of_the_fight_haste_buff )
           ->set_default_value_from_effect_type( A_HASTE_ALL )
