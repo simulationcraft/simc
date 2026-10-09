@@ -125,7 +125,10 @@ variable_t::variable_t( player_t* player, std::string_view options_str )
   }
 
   if ( operation == OPERATION_REPORT )
+  {
     var->report = true;
+    background = true;
+  }
 }
 
 void variable_t::init_finished()
@@ -326,6 +329,8 @@ void variable_t::execute()
         var->current_value_ = value_expression->eval();
       else
         var->current_value_ = value_else_expression->eval();
+      break;
+    case OPERATION_REPORT:
       break;
     default:
       assert( 0 );
