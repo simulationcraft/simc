@@ -33,6 +33,7 @@ Win64OpenSSL_Light-*
 /simc
 engine/simc
 engine/sc_rng
+engine/build/
 cli/simc
 
 #SimulationCraft executables
