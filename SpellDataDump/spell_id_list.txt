@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 1.60.1.70205
+Class Spell ID List, wow build 1.60.1.70334
 
 Druid
 99       Demoralizing Roar
@@ -598,7 +598,7 @@ Druid
 1223081  Genesis
 1223082  Nature's Majesty
 1223083  Nature's Splendor
-1223242  Predatory Instincts
+1223242  Natural Instinct
 1226032 *S03 - Item - Scarlet Enclave - Druid - Restoration 2P Bonus
 1226035 *Swiftbloom
 1226038 *Rejuvenating
@@ -645,8 +645,6 @@ Druid
 1262307 *The Quick and the Dead
 1262636 *Reagent Economy
 1270470 *Clever Shapeshifter
-1270650 *Lunar Fire
-1270651 *Umbral Fire
 1278759  Hurricane
 1278965  Hurricane
 1278968  Hurricane
@@ -716,7 +714,7 @@ Hunter
 3044     Arcane Shot
 3045     Rapid Fire
 3111     Mend Pet
-3355     Freezing Trap Effect
+3355     Freezing Trap
 3661     Mend Pet
 3662     Mend Pet
 5116     Concussive Shot
@@ -742,9 +740,9 @@ Hunter
 13554    Serpent Sting
 13555    Serpent Sting
 13795    Immolation Trap
-13797    Immolation Trap Effect
+13797    Immolation Trap
 13809    Frost Trap
-13810    Frost Trap Aura
+13810    Frost Trap
 13812    Explosive Trap Effect
 13813    Explosive Trap
 14207    OLDFrost Trap Effect
@@ -774,16 +772,16 @@ Hunter
 14287    Arcane Shot
 14294    Volley
 14295    Volley
-14298    Immolation Trap Effect
-14299    Immolation Trap Effect
-14300    Immolation Trap Effect
-14301    Immolation Trap Effect
+14298    Immolation Trap
+14299    Immolation Trap
+14300    Immolation Trap
+14301    Immolation Trap
 14302    Immolation Trap
 14303    Immolation Trap
 14304    Immolation Trap
 14305    Immolation Trap
-14308    Freezing Trap Effect
-14309    Freezing Trap Effect
+14308    Freezing Trap
+14309    Freezing Trap
 14310    Freezing Trap
 14311    Freezing Trap
 14314    Explosive Trap Effect
@@ -3962,7 +3960,7 @@ Shaman
 8170     Disease Cleansing Totem
 8171     Disease Cleansing Totem Effect
 8177     Grounding Totem
-8178     Grounding Totem Effect
+8178     Grounding Totem
 8179     Grounding Totem Passive
 8181     Frost Resistance Totem
 8182     Frost Resistance
@@ -5344,7 +5342,7 @@ Warrior
 12945    Improved Shield Block
 12963    Improved Overpower
 12975    Last Stand
-13490   *Howling Blade
+13490    Howling Blade
 13730   *Demoralizing Shout
 13847   *Recklessness
 14895   *Overpower
