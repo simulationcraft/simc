@@ -1114,15 +1114,15 @@ public:
 
   // Various default values for the actor
   virtual std::string default_potion() const
-  { return ""; }
+  { return "disabled"; }
   virtual std::string default_flask() const
-  { return ""; }
+  { return "disabled"; }
   virtual std::string default_food() const
-  { return ""; }
+  { return "disabled"; }
   virtual std::string default_rune() const
-  { return ""; }
+  { return "disabled"; }
   virtual std::string default_temporary_enchant() const
-  { return ""; }
+  { return "disabled"; }
 
   /**
    * Default attack power type to use for value computation.
