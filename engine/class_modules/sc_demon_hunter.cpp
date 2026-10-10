@@ -9130,7 +9130,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       case DEMON_HUNTER_HAVOC:
         demon_hunter_buff_t::set_default_value_from_effect_type( A_HASTE_ALL );
         add_invalidate( CACHE_HASTE );
-        add_invalidate( CACHE_LEECH );
         break;
       case DEMON_HUNTER_VENGEANCE:
         demon_hunter_buff_t::set_default_value_from_effect_type( A_INCREASE_HEALTH_PCT );
@@ -12747,7 +12746,6 @@ void demon_hunter_t::parse_player_effects()
   }
 
   // Aldrachi Reaver
-  parse_effects( buff.thrill_of_the_fight_haste );
 
   // Annihilator
   parse_effects( buff.voidfall_building );
