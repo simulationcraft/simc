@@ -1,4 +1,4 @@
-// Expected stat for levels 1-133, wow build 1.60.1.70334
+// Expected stat for levels 1-133, wow build 1.60.1.70338
 static constexpr std::array<expected_stat_t, 133> __expected_stat_data { {
   {   1,      42.00000f,       0.77037f,      20.00000f,      20.00000f,       0.00000f,     485.00000f,      36.00000f },
   {   2,      55.00000f,       1.15746f,      21.00000f,      22.00000f,       0.00000f,     570.00000f,      53.00000f },
@@ -135,7 +135,7 @@ static constexpr std::array<expected_stat_t, 133> __expected_stat_data { {
   { 133, 1611235.00000f,   77451.71094f,   42857.00000f,   47013.97656f,   23119.88867f,  100000.00000f, 3485327.00000f },
 } };
 
-// Expected stat mods, wow build 1.60.1.70334
+// Expected stat mods, wow build 1.60.1.70338
 static constexpr std::array<expected_stat_mod_t, 5> __expected_stat_mod_data { {
   {   1, 1.000000f, 0.730000f, 0.510000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 0 },
   {   2, 1.000000f, 0.930000f, 0.810000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 0 },
@@ -144,7 +144,7 @@ static constexpr std::array<expected_stat_mod_t, 5> __expected_stat_mod_data { {
   { 489, 1.000000f, 1.200000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.200000f, 0 },
 } };
 
-// Player expected stat by class and level, wow build 1.60.1.70334
+// Player expected stat by class and level, wow build 1.60.1.70338
 static constexpr std::array<player_expected_stat_t, 1107> __player_expected_stat_data { {
   {  1,   1,     0, 0.00250000f, 0.00000000f },
   {  1,   2,     0, 0.00238100f, 0.00000000f },

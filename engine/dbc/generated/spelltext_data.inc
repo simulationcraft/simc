@@ -1,4 +1,4 @@
-// Spell text, wow build 1.60.1.70334
+// Spell text, wow build 1.60.1.70338
 static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   {      10, "Ice shards pelt the target area doing ${$1279976m1*$d*$<frostdamage>} Frost damage over $d.", "$1279976s1 Frost damage every $t3 $lsecond:seconds;.", "Rank 1" },
   {      17, "Draws on the soul of the party member to shield them, absorbing $?a14748[${$s1*(1+$14748s1/100)}][$s1] damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage.", "Rank 1" },
@@ -7118,11 +7118,11 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   { 1324578, "Reduces the hit chance of Fear effects against you by $s1%.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 1.60.1.70334
+// spelltext hotfix entries, wow build 1.60.1.70338
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 1.60.1.70334
+// Spell description variables, wow build 1.60.1.70338
 static constexpr std::array<spelldesc_vars_data_t, 116> __spelldesc_vars_data { {
   {      10, "$power=${13.828124+0.018012*$PL+0.044141*$PL*$PL}\r\n$healpower=${38.258376+0.904195*$PL+0.161311*$PL*$PL}\r\n$frostdamage1=$?s11151[${1.02}][${1.0}]\r\n$frostdamage2=$?s12952[${1.04}][${$<frostdamage1>}]\r\n$frostdamage=$?s12953[${1.06}][${$<frostdamage2>}]" },
   {     116, "$power=${13.828124+0.018012*$PL+0.044141*$PL*$PL}\r\n$healpower=${38.258376+0.904195*$PL+0.161311*$PL*$PL}\r\n$frostdamage1=$?s11151[${1.02}][${1.0}]\r\n$frostdamage2=$?s12952[${1.04}][${$<frostdamage1>}]\r\n$frostdamage=$?s12953[${1.06}][${$<frostdamage2>}]" },
@@ -7242,7 +7242,7 @@ static constexpr std::array<spelldesc_vars_data_t, 116> __spelldesc_vars_data { 
   { 1293696, "$shadowMult=$?a23761[${1.1}][${1}]\r\n$fireMult=$?a23759[${1.1}][${1}]\r\n$petMult=$?a18769[${1.1}][${1}]\r\n$mult=${$<fireMult>*$<petMult>*$<shadowMult>}\r\n$sps=${$SPS}\r\n$spfi=${$SPFI}\r\n$which=${$cond($gt($<spfi>,$<sps>), $<spfi>,$<sps>)}\r\n$minDam=${((($pl-26)*1.5)+14+(0.078*$<which>))}\r\n$maxDam=${((($pl-26)*1.5)+17+(0.078*$<which>))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 1.60.1.70334
+// spelldesc_vars hotfix entries, wow build 1.60.1.70338
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
