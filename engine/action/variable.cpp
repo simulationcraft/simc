@@ -327,6 +327,9 @@ void variable_t::execute()
       else
         var->current_value_ = value_else_expression->eval();
       break;
+    case OPERATION_REPORT:
+      // does nothing but prevent assertions on debug
+      break;
     default:
       assert( 0 );
       break;
