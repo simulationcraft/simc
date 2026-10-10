@@ -2323,8 +2323,13 @@ public:
   {
     BASE::impact( s );
 
-    if ( BASE::rng().roll( gore_chance() ) )
-      BASE::p()->buff.gore->trigger( this );
+     if ( BASE::rng().roll( gore_chance() ) )
+     {
+        BASE::p()->buff.gore->trigger( this );
+
+        if ( BASE::p()->cooldown.mangle )
+          BASE::p()->cooldown.mangle->reset( true );
+     }
   }
 };
 
