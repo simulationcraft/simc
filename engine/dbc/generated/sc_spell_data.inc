@@ -1,4 +1,4 @@
-// 8608 spells, wow build level 1.60.1.70334
+// 8608 spells, wow build level 1.60.1.70338
 static spell_data_t __spell_data[8608] = {
   { "Blizzard"                          ,      10, 16, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000080, 0, 0, 0, 20, 25, 0, 0.000000, 30.000000,       0, 1500, 0, 0, 0, 0, 0, 2518, 1, 0, 0.000000, 0.000000, 8000, 0, 100, 0, 0x0000000000000000, 0, 0.000000,  0, 0x00000000, 0x00000000, 0, { 65536, 268435520, 4325376, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 0, 8192, 0 }, { 524416, 0, 0, 0 }, 3, { 0, 0 }, { 31756, 0 }, 0x00000000, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 1 }, /* 678988, 1292631, 1292632 */
   { "Power Word: Shield"                ,      17, 2, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000010, 0, 0, 0, 6, 11, 0, 0.000000, 40.000000,    4000, 1500, 4000, 0, 0, 0, 0,   56, 1, 0, 0.000000, 0.000000, 30000, 0, 0, 0, 0x0000000000000000, 0, 0.000000,  0, 0x00000000, 0x00000000, 0, { 329728, 0, 2621440, 0, 1048576, 0, 0, 0, 4096, 0, 0, 0, 0, 0, 0, 8192, 16 }, { 1, 0, 0, 0 }, 6, { 0, 0 }, { 0, 0 }, 0x08000000, 19, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1 }, /* 687563 */
@@ -8610,7 +8610,7 @@ static spell_data_t __spell_data[8608] = {
   { "Resist Fear 02"                    , 1324578, 1, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000000, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000,       0, 0, 0, 0, 0, 0, 0,    0, 0, 0, 0.000000, 0.000000, 0, 0, 0, 0, 0x0000000000000000, 0, 0.000000,  0, 0x00000000, 0x00000000, 0, { 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8192, 0 }, { 0, 0, 0, 0 }, 0, { 0, 0 }, { 0, 0 }, 0x00000000, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, /* 1361449 */
 };
 
-// 11691 effects, wow build level 1.60.1.70334
+// 11691 effects, wow build level 1.60.1.70338
 static spelleffect_data_t __spelleffect_data[11691] = {
   {  678988,      10,  0,   3,   0, 0, 0x00000000, 0.000000, 0.000000, 0.000000, 0.030000, 0.000000, 0, 8.000000, 8.000000,      0.0000, 0, 0, { 0, 0, 0, 0 }, 0, 1.000000, 0.000000, 0.300000, 0,   0, 87, 16, 0.000000, 1.000000, 0, 0 },
   { 1292631,      10,  1, 179,   0, 0, 0x00000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0.000000, 8.000000,      0.0000, 41261, 0, { 0, 0, 0, 0 }, 0, 1.000000, 0.000000, 0.000000, 0,   0, 87, 16, 0.000000, 1.000000, 0, 0 },
@@ -21754,7 +21754,7 @@ static const std::array<uint16_t, 11568> __spelleffect_id_index { {
    1719,  1744,  1848,   285,   858,  2385,  2387,  2389,
 } };
 
-// Spell powers, wow build 1.60.1.70334
+// Spell powers, wow build 1.60.1.70338
 static constexpr std::array<spellpower_data_t, 1867> __spellpower_data { {
   { 169192,      10,       0,   0,   320,    0, 0,   0.000,   0.000,   0.000 },
   { 176617,      17,       0,   0,    45,    0, 0,   0.000,   0.000,   0.000 },
@@ -23862,7 +23862,7 @@ static const std::array<uint16_t, 1867> __spellpower_id_index { {
    1864,  1865,  1866,
 } };
 
-// Spell labels, wow build 1.60.1.70334
+// Spell labels, wow build 1.60.1.70338
 static constexpr std::array<spelllabel_data_t, 3763> __spelllabel_data { {
   {      10,   17 },
   {      17,   18 },
@@ -27629,17 +27629,17 @@ static constexpr std::array<spelllabel_data_t, 3763> __spelllabel_data { {
   { 1323966,   25 },
 } };
 
-// spell hotfix entries, wow build 1.60.1.70334
+// spell hotfix entries, wow build 1.60.1.70338
 static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spell_hotfix_data { {
   { 1231579, 35, hotfix::client_hotfix_entry_t::flags_value_t{}, hotfix::client_hotfix_entry_t::flags_value_t{} },
   { 1231580, 35, hotfix::client_hotfix_entry_t::flags_value_t{}, hotfix::client_hotfix_entry_t::flags_value_t{} },
 } };
 
-// effect hotfix entries, wow build 1.60.1.70334
+// effect hotfix entries, wow build 1.60.1.70338
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __effect_hotfix_data { {
 } };
 
-// power hotfix entries, wow build 1.60.1.70334
+// power hotfix entries, wow build 1.60.1.70338
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __power_hotfix_data { {
 } };
 

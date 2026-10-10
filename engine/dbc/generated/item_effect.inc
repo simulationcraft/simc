@@ -1,4 +1,4 @@
-// Item effects, wow build 1.60.1.70334
+// Item effects, wow build 1.60.1.70338
 static constexpr std::array<item_effect_t, 1280> __item_effect_data { {
   { 212548, 1241821,      0,   0,   0,    0,      -1,      -1 }, // Stock Ore
   { 213334,  13669,      0,   0,   1,    0,      -1,      -1 }, // Increased Dodge 1
