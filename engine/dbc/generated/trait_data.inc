@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 1.60.1.70205
+// Player trait definitions, wow build 1.60.1.70334
 static constexpr std::array<trait_data_t, 469> __trait_data_data { {
   { 1,  1, 130656, 105926, 2,  0, 135457,   20504,      0,      0,  5,  8, 100,                     "Improved Intercept", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1,  1, 130657, 105927, 1,  0, 135458,   12328,      0,      0,  5,  6, 100,                             "Death Wish", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
@@ -458,7 +458,7 @@ static constexpr std::array<trait_data_t, 469> __trait_data_data { {
   { 1, 11, 129607, 104947, 2,  0, 134408,   16958,      0,      0,  4,  8, 100,                           "Blood Frenzy", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1, 11, 129608, 104948, 2,  0, 134409,   16998,      0,      0,  3,  6, 100,                            "Savage Fury", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1, 11, 129609, 104949, 1,  0, 134410,  407995,      0,      0,  4,  6, 100,                            "Primal Bite", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
-  { 1, 11, 129610, 104950, 2,  0, 134411, 1223242,      0,      0,  5,  8, 100,                    "Predatory Instincts", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
+  { 1, 11, 129610, 104950, 2,  0, 134411, 1223242,      0,      0,  5,  8, 100,                       "Natural Instinct", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1, 11, 129611, 104951, 1,  0, 134412, 1322605,      0,      0,  4,  5, 100,                         "Shifting Power", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1, 11, 129612, 104952, 3,  0, 134413,   16972,      0,      0,  4,  7, 100,                      "Predatory Strikes", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
   { 1, 11, 129613, 104953, 5,  0, 134414, 1223246,      0,      0,  6,  7, 100,                          "Rend and Tear", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
@@ -471,8 +471,8 @@ static constexpr std::array<trait_data_t, 469> __trait_data_data { {
   { 1, 11, 141188, 113563, 2,  0, 145859, 1322670,      0,      0,  5,  5, 100,                "Improved Shifting Power", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
 } };
 
-// Player trait definition effect entries, wow build 1.60.1.70205
-static constexpr std::array<trait_definition_effect_entry_t, 521> __trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 1.60.1.70334
+static constexpr std::array<trait_definition_effect_entry_t, 523> __trait_definition_effect_data { {
   { 134186, 0, 0, 85323 },
   { 134186, 1, 0, 87379 },
   { 134188, 0, 0, 85322 },
@@ -580,6 +580,7 @@ static constexpr std::array<trait_definition_effect_entry_t, 521> __trait_defini
   { 134409, 0, 0, 85347 },
   { 134409, 1, 0, 110556 },
   { 134411, 0, 0, 85354 },
+  { 134411, 1, 0, 125352 },
   { 134413, 0, 0, 85353 },
   { 134414, 0, 0, 85357 },
   { 134415, 0, 0, 85359 },
@@ -857,6 +858,7 @@ static constexpr std::array<trait_definition_effect_entry_t, 521> __trait_defini
   { 135410, 1, 0, 83180 },
   { 135410, 2, 0, 103096 },
   { 135412, 0, 0, 83179 },
+  { 135412, 1, 0, 125544 },
   { 135413, 0, 0, 83182 },
   { 135414, 0, 0, 83183 },
   { 135416, 0, 0, 83187 },

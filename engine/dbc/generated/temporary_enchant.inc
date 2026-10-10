@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 1.60.1.70205
-static constexpr std::array<temporary_enchant_entry_t, 314> __temporary_enchant_data { {
+// Temporary item enchants, wow build 1.60.1.70334
+static constexpr std::array<temporary_enchant_entry_t, 317> __temporary_enchant_data { {
   {  6749,  0,  402857, "anodyne_epiphany"             },
   {  6749,  0,  402857, "aperitive_epiphany"           },
   {  6747,  0,  402855, "apocryphal_epiphany"          },
@@ -25,6 +25,7 @@ static constexpr std::array<temporary_enchant_entry_t, 314> __temporary_enchant_
   {  6882,  0,  410103, "echo_of_the_alpha"            },
   {  6877,  0,  410099, "echo_of_the_ancestors"        },
   {  2506,  0,   22756, "elemental_sharpening_stone"   },
+  {  2506,  0,   22756, "elemental_sharpening_stone"   },
   {  6863,  0,  410023, "ferocious_idol"               },
   {    64,  0,    7451, "formula_imbue_chest__minor_spirit" },
   {    64,  0,    7451, "formula_imbue_chest__spirit"  },
@@ -42,6 +43,7 @@ static constexpr std::array<temporary_enchant_entry_t, 314> __temporary_enchant_
   {  6745,  0,  402853, "jubilant_epiphany"            },
   {  6883,  0,  410095, "kajaric_icon"                 },
   {  2625,  0,   25120, "lesser_mana_oil"              },
+  {  2626,  0,   25119, "lesser_wizard_oil"            },
   {  2626,  0,   25119, "lesser_wizard_oil"            },
   {  6965,  0,  416037, "libram_of_banishment"         },
   {  7040,  0,  425618, "libram_of_blessings"          },
@@ -82,6 +84,7 @@ static constexpr std::array<temporary_enchant_entry_t, 314> __temporary_enchant_
   {  7110,  0,  431663, "psychosophic_epiphany"        },
   {  6740,  0,  402848, "reciprocal_epiphany"          },
   {  7109,  0,  431650, "resolute_epiphany"            },
+  {    40,  0,    2828, "rough_sharpening_stone"       },
   {    40,  0,    2828, "rough_sharpening_stone"       },
   {    19,  0,    3112, "rough_weightstone"            },
   {  7041,  0,  425619, "rune_of_aegis"                },
