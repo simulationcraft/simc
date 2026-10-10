@@ -1,4 +1,4 @@
-// Power types, wow build 1.60.1.70205
+// Power types, wow build 1.60.1.70334
 static constexpr std::array<power_type_data_t, 28> __power_type_data { {
   {  0,               "Mana",     0,     0,   1.0,     0,    0.0,    0.0, 0x000070c0, 0x05d6 },
   {  1,               "Rage",     0,  1000,  10.0,     0,    0.0,  -12.5, 0x00002000, 0x0401 },
