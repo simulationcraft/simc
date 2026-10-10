@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70338 Live
 bonus_id={ 12672 }, effects={ Stock Ore (id=1241821, index=0, type=use) }
 bonus_id={ 12688 }, suffix={ of Intellect }, stats={ 100% Int [0.6000] }
 bonus_id={ 12689 }, suffix={ of Spirit }, stats={ 100% Spi [0.6000] }
