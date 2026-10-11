@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace warlock_apl
+namespace warrior_apl
 {
 std::string potion( const player_t* );
 std::string flask( const player_t* );

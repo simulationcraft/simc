@@ -889,10 +889,13 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       normalize_weapon_speed = true;
       SC_FALLTHROUGH;
     case E_WEAPON_DAMAGE:
+    case E_WEAPON_DAMAGE_NOSCHOOL:
       if ( weapon == nullptr )
       {
         weapon = &( player->equipped_weapons[ SLOT_MAIN_HAND ] );
       }
+      if ( weapon_multiplier == 0 )
+        weapon_multiplier = 1;
       base_dd_min = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player->level() );
       base_dd_max = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player->level() );
       radius      = spelleffect_data.radius_max();
