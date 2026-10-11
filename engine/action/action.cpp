@@ -698,11 +698,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   // Default Weapon Assignment
   if ( spell_data.flags( spell_attribute::SX_REQ_MAIN_HAND ) )
   {
-    weapon = &( player->main_hand_weapon );
+    weapon = &( player->equipped_weapons[ SLOT_MAIN_HAND ] );
   }
   else if ( spell_data.flags( spell_attribute::SX_REQ_OFF_HAND ) )
   {
-    weapon = &( player->off_hand_weapon );
+    weapon = &( player->equipped_weapons[ SLOT_OFF_HAND ] );
   }
 
   if ( spell_data.charge_cooldown() > timespan_t::zero() )
@@ -891,7 +891,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_WEAPON_DAMAGE:
       if ( weapon == nullptr )
       {
-        weapon = &( player->main_hand_weapon );
+        weapon = &( player->equipped_weapons[ SLOT_MAIN_HAND ] );
       }
       base_dd_min = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player->level() );
       base_dd_max = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player->level() );
@@ -901,7 +901,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_WEAPON_PERCENT_DAMAGE:
       if ( weapon == nullptr )
       {
-        weapon = &( player->main_hand_weapon );
+        weapon = &( player->equipped_weapons[ SLOT_MAIN_HAND ] );
       }
       weapon_multiplier = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player->level() );
       radius            = spelleffect_data.radius_max();
@@ -1135,18 +1135,18 @@ bool action_t::verify_actor_weapon() const
 
   const unsigned mask = data().equipped_subclass_mask();
   if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
-       !( mask & ( 1U << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->equipped_weapons[ SLOT_MAIN_HAND ].type ) ) ) )
   {
     sim->error( "{} attempting to use {} with invalid main-hand weapon type '{}'.", *player, *this,
-                util::weapon_subclass_string( util::translate_weapon( player->main_hand_weapon.type ) ) );
+                util::weapon_subclass_string( util::translate_weapon( player->equipped_weapons[ SLOT_MAIN_HAND ].type ) ) );
     return false;
   }
 
   if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
-       !( mask & ( 1U << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
+       !( mask & ( 1U << util::translate_weapon( player->equipped_weapons[ SLOT_OFF_HAND ].type ) ) ) )
   {
     sim->error( "{} attempting to use {} with invalid off-hand weapon type '{}'.", *player, *this,
-                util::weapon_subclass_string( util::translate_weapon( player->off_hand_weapon.type ) ) );
+                util::weapon_subclass_string( util::translate_weapon( player->equipped_weapons[ SLOT_OFF_HAND ].type ) ) );
     return false;
   }
 

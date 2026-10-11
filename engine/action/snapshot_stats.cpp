@@ -105,8 +105,9 @@ void snapshot_stats_t::execute()
 
   buffed_stats.attack_power = static_cast<int>( p->cache.attack_power() * p->composite_attack_power_multiplier() );
   buffed_stats.attack_hit = p->cache.attack_hit();
-  buffed_stats.mh_attack_expertise = p->composite_melee_expertise( &( p->main_hand_weapon ) );
-  buffed_stats.oh_attack_expertise = p->composite_melee_expertise( &( p->off_hand_weapon ) );
+  buffed_stats.mh_attack_expertise = p->composite_melee_expertise( &( p->equipped_weapons[ SLOT_MAIN_HAND ] ) );
+  buffed_stats.oh_attack_expertise = p->composite_melee_expertise( &( p->equipped_weapons[ SLOT_OFF_HAND ] ) );
+  // TODO (FOREVER): do we need ranged weapon attack expertise? if so, possibly turn this into a map?
   buffed_stats.attack_crit_chance = p->cache.attack_crit_chance();
 
   buffed_stats.armor = p->composite_armor();

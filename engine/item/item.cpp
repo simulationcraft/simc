@@ -115,6 +115,7 @@ item_t::item_t( player_t* p, util::string_view o ) :
   unique( false ),
   unique_addon( false ),
   is_ptr( p -> dbc->ptr ),
+  weapon( nullptr ),
   parsed(),
   options_str( o ), option_initial_cd( 0 )
 {
@@ -322,20 +323,18 @@ std::string item_t::item_stats_str() const
 
 std::string item_t::weapon_stats_str() const
 {
-  if ( ! weapon() )
+  if ( !weapon )
   {
     return {};
   }
 
   std::ostringstream s;
 
-  weapon_t* w = weapon();
-  s << w -> min_dmg;
+  s << weapon->min_dmg;
   s << " - ";
-  s << w -> max_dmg;
-
+  s << weapon->max_dmg;
   s << ", ";
-  s << w -> swing_time.total_seconds();
+  s << weapon->swing_time.total_seconds();
 
   return s.str();
 }
@@ -461,9 +460,8 @@ void sc_format_to( const item_t& item, fmt::format_context::iterator out )
 
   if ( is_weapon )
   {
-    weapon_t* w = item.weapon();
     fmt::format_to( out, " damage={{ {} - {} }} speed={}",
-      w -> min_dmg, w -> max_dmg, w -> swing_time );
+      item.weapon -> min_dmg, item.weapon -> max_dmg, item.weapon -> swing_time );
   }
 
   if ( !item.parsed.enchant_stats.empty() && item.parsed.encoded_enchant.empty() )
@@ -636,17 +634,6 @@ const char* item_t::slot_name() const
   return util::slot_type_string( slot );
 }
 
-// item_t::slot_name ========================================================
-
-// item_t::weapon ===========================================================
-
-weapon_t* item_t::weapon() const
-{
-  if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
-  if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );
-  return nullptr;
-}
-
 // item_t::dbc_inventory_type ===============================================
 
 inventory_type item_t::dbc_inventory_type() const
@@ -676,8 +663,9 @@ inventory_type item_t::dbc_inventory_type() const
     // Note, can't strictly be figured out from non-item data info,
     // so just return a one-hand or two-hand invtype in this case
     case SLOT_MAIN_HAND:
+    case SLOT_OFF_HAND:
     {
-      switch ( player->main_hand_weapon.type )
+      switch ( player->equipped_weapons[ slot ].type )
       {
         case WEAPON_DAGGER:
         case WEAPON_SMALL:
@@ -697,37 +685,18 @@ inventory_type item_t::dbc_inventory_type() const
         case WEAPON_THROWN:
           return INVTYPE_THROWN;
         default:
-          return INVTYPE_NON_EQUIP;
-      }
-    }
-    case SLOT_OFF_HAND:
-    {
-      switch ( player->off_hand_weapon.type )
-      {
-        case WEAPON_DAGGER:
-        case WEAPON_SMALL:
-        case WEAPON_SWORD:
-        case WEAPON_MACE:
-        case WEAPON_AXE:
-        case WEAPON_FIST:
-        case WEAPON_WARGLAIVE:
-          return INVTYPE_WEAPON;
-        case WEAPON_THROWN:
-          return INVTYPE_THROWN;
-        default:
         {
           if ( parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-          {
             return INVTYPE_SHIELD;
-          }
-          else
-          {
+          else if ( slot == SLOT_MAIN_HAND )
+            return INVTYPE_NON_EQUIP;
+          else if ( slot == SLOT_OFF_HAND )
             return INVTYPE_HOLDABLE;
-          }
         }
       }
     }
-    case SLOT_RANGED: return INVTYPE_RANGED;
+    case SLOT_RANGED:
+      return INVTYPE_RANGED;
     case SLOT_TABARD: return INVTYPE_TABARD;
 
     default: return INVTYPE_NON_EQUIP;
@@ -786,7 +755,7 @@ int item_t::dbc_item_subclass() const
     case ITEM_CLASS_ARMOR:return parsed.data.item_subclass;
     case ITEM_CLASS_WEAPON:
     {
-      switch( weapon()->type )
+      switch( weapon->type )
       {
         case WEAPON_DAGGER: return ITEM_SUBCLASS_WEAPON_DAGGER;
         case WEAPON_SWORD: return ITEM_SUBCLASS_WEAPON_SWORD;
@@ -1914,8 +1883,7 @@ void item_t::decode_addon()
 
 void item_t::decode_weapon()
 {
-  weapon_t* w = weapon();
-  if ( ! w )
+  if ( slot < SLOT_MAIN_HAND || slot > SLOT_RANGED )
     return;
 
   // Custom weapon stats cant be unloaded to the "proxy" item data at all,
@@ -1930,16 +1898,18 @@ void item_t::decode_weapon()
     if ( wc == WEAPON_NONE )
       return;
 
-    w -> type = wc;
-    w -> swing_time = timespan_t::from_millis( parsed.data.delay );
-    w -> dps = player->dbc->weapon_dps( parsed.data, item_level() );
-    w -> damage = player->dbc->weapon_dps( parsed.data, item_level() ) * parsed.data.delay / 1000.0;
-    w -> min_dmg = item_database::weapon_dmg_min( *this );
-    w -> max_dmg = item_database::weapon_dmg_max( *this );
+    weapon = &( player->equipped_weapons[ slot ] );
+    weapon -> type = wc;
+    weapon -> swing_time = timespan_t::from_millis( parsed.data.delay );
+    weapon -> dps = player->dbc->weapon_dps( parsed.data, item_level() );
+    weapon -> damage = player->dbc->weapon_dps( parsed.data, item_level() ) * parsed.data.delay / 1000.0;
+    weapon -> min_dmg = item_database::weapon_dmg_min( *this );
+    weapon -> max_dmg = item_database::weapon_dmg_max( *this );
   }
   else
   {
     auto tokens = item_database::parse_tokens( option_weapon_str );
+    weapon = &( player->equipped_weapons[ slot ] );
 
     bool dps_set = false;
     bool dmg_set = false;
@@ -1953,61 +1923,61 @@ void item_t::decode_weapon()
 
       if ( ( type = util::parse_weapon_type( t.name ) ) != WEAPON_NONE )
       {
-        w -> type = type;
+        weapon -> type = type;
       }
       else if ( ( school = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
       {
-        w -> school = school;
+        weapon -> school = school;
       }
       else if ( t.name == "dps" )
       {
         if ( ! dmg_set )
         {
-          w -> dps = t.value;
+          weapon -> dps = t.value;
           dps_set = true;
         }
       }
       else if ( t.name == "damage" || t.name == "dmg" )
       {
-        w -> damage  = t.value;
-        w -> min_dmg = t.value;
-        w -> max_dmg = t.value;
+        weapon -> damage  = t.value;
+        weapon -> min_dmg = t.value;
+        weapon -> max_dmg = t.value;
         dmg_set = true;
       }
       else if ( t.name == "speed" || t.name == "spd" )
       {
-        w -> swing_time = timespan_t::from_seconds( t.value );
+        weapon -> swing_time = timespan_t::from_seconds( t.value );
       }
       else if ( t.name == "min" )
       {
-        w -> min_dmg = t.value;
+        weapon -> min_dmg = t.value;
         min_set = true;
 
         if ( max_set )
         {
           dmg_set = true;
           dps_set = false;
-          w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+          weapon -> damage = ( weapon -> min_dmg + weapon -> max_dmg ) / 2;
         }
         else
         {
-          w -> max_dmg = w -> min_dmg;
+          weapon -> max_dmg = weapon -> min_dmg;
         }
       }
       else if ( t.name == "max" )
       {
-        w -> max_dmg = t.value;
+        weapon -> max_dmg = t.value;
         max_set = true;
 
         if ( min_set )
         {
           dmg_set = true;
           dps_set = false;
-          w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+          weapon -> damage = ( weapon -> min_dmg + weapon -> max_dmg ) / 2;
         }
         else
         {
-          w -> min_dmg = w -> max_dmg;
+          weapon -> min_dmg = weapon -> max_dmg;
         }
       }
       else
@@ -2017,25 +1987,25 @@ void item_t::decode_weapon()
     }
 
     parsed.data.item_class = ITEM_CLASS_WEAPON;
-    parsed.data.item_subclass = util::translate_weapon( w -> type );
-    parsed.data.delay = static_cast<float>( w -> swing_time.total_millis() );
+    parsed.data.item_subclass = util::translate_weapon( weapon -> type );
+    parsed.data.delay = static_cast<float>( weapon -> swing_time.total_millis() );
     if ( dps_set && min_set )
-      parsed.data.dmg_range = static_cast<float>( 2 - 2 * w -> min_dmg / ( w -> dps * parsed.data.delay ) );
+      parsed.data.dmg_range = static_cast<float>( 2 - 2 * weapon -> min_dmg / ( weapon -> dps * parsed.data.delay ) );
 
-    if ( dps_set ) w -> damage = w -> dps    * w -> swing_time.total_seconds();
-    if ( dmg_set ) w -> dps    = w -> damage / w -> swing_time.total_seconds();
+    if ( dps_set ) weapon -> damage = weapon -> dps    * weapon -> swing_time.total_seconds();
+    if ( dmg_set ) weapon -> dps    = weapon -> damage / weapon -> swing_time.total_seconds();
 
     if ( ! max_set || ! min_set )
     {
-      w -> max_dmg = w -> damage;
-      w -> min_dmg = w -> damage;
+      weapon -> max_dmg = weapon -> damage;
+      weapon -> min_dmg = weapon -> damage;
     }
 
     // Approximate gear upgrades for user given strings too. Data source based
     // weapon stats will automatically be handled by the upgraded ilevel for
     // the item.
-    w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
-    w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
+    weapon -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
+    weapon -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
 }
 

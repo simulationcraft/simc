@@ -502,7 +502,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     // Warns about invalid slots and kindly notices if an item is missing an enchant
     if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND || slot == SLOT_LEGS ||
          // Make sure offhand enchants are only on regular weapons, not shields or off-hand stat sticks
-         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE )
+         ( slot == SLOT_OFF_HAND && item.weapon->type != weapon_e::WEAPON_NONE )
         )
     {
       if ( item.option_enchant_str.empty() && item.option_enchant_id_str.empty() )

@@ -826,7 +826,7 @@ int item_database::random_suffix_type( const dbc_item_data_t& item )
 
 int item_database::random_suffix_type( item_t& item )
 {
-  weapon_t* w = item.weapon();
+  weapon_t* w = item.weapon;
   if ( w && w -> type != WEAPON_NONE )
   {
     switch ( w -> type )

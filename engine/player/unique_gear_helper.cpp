@@ -45,10 +45,10 @@ action_t* unique_gear_pet_t::create_action( std::string_view name, std::string_v
   {
     auto_attack_t( unique_gear_pet_t* p ) : melee_attack_t( "main_hand", p )
     {
-      assert( p->main_hand_weapon.type != WEAPON_NONE );
+      assert( p->equipped_weapons[ SLOT_MAIN_HAND ].type != WEAPON_NONE );
       p->main_hand_attack                    = p->create_auto_attack();
-      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
-      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+      p->main_hand_attack->weapon            = &( p->equipped_weapons[ SLOT_MAIN_HAND ] );
+      p->main_hand_attack->base_execute_time = p->equipped_weapons[ SLOT_MAIN_HAND ].swing_time;
 
       ignore_false_positive = true;
       trigger_gcd           = 0_ms;

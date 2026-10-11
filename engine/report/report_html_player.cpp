@@ -1620,8 +1620,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
                    "<td>{:.0f}</td></tr>\n",
                    100 * buffed_stats.mh_attack_expertise,
                    100 * buffed_stats.oh_attack_expertise,
-                   100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
-                   100 * p.composite_melee_expertise( &( p.off_hand_weapon ) ),
+                   100 * p.composite_melee_expertise( &( p.equipped_weapons.at( SLOT_MAIN_HAND ) ) ),
+                   100 * p.composite_melee_expertise( &( p.equipped_weapons.at( SLOT_OFF_HAND ) ) ),
                    p.composite_expertise_rating() );
       }
       else
@@ -1633,7 +1633,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
                    "<td>{:.2f}%</td>"
                    "<td>{:.0f}</td></tr>\n",
                    100 * buffed_stats.mh_attack_expertise,
-                   100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
+                   100 * p.composite_melee_expertise( &( p.equipped_weapons.at( SLOT_MAIN_HAND ) ) ),
                    p.composite_expertise_rating() );
       }
     }

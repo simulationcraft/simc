@@ -87,6 +87,7 @@ struct item_t
   player_t* player;
   slot_e slot, parent_slot;
   bool unique, unique_addon, is_ptr;
+  weapon_t* weapon;
 
   // Structure contains the "parsed form" of this specific item, be the data
   // from user options, or a data source such as the Blizzard API, or Wowhead
@@ -183,7 +184,6 @@ struct item_t
   const char* name() const;
   std::string full_name() const;
   const char* slot_name() const;
-  weapon_t* weapon() const;
   void init();
   void parse_options();
   bool initialize_data(); // Initializes item data from a data source

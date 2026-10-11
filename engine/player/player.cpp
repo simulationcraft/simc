@@ -1028,6 +1028,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     last_cast( timespan_t::min() ),
     // Defense Mechanics
     def_dr( diminishing_returns_constants_t() ),
+    // Weapons
+    equipped_weapons(),
     // Attacks
     main_hand_attack( nullptr ),
     off_hand_attack( nullptr ),
@@ -1206,8 +1208,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     }
   }
 
-  main_hand_weapon.slot = SLOT_MAIN_HAND;
-  off_hand_weapon.slot  = SLOT_OFF_HAND;
+  for ( slot_e slot = SLOT_MAIN_HAND; slot < SLOT_TABARD; slot++ )
+    equipped_weapons[ slot ].slot = slot;
 
   if ( reaction.stddev == 0_ms )
     reaction.stddev = reaction.mean * 0.2;
@@ -2015,8 +2017,13 @@ void player_t::init_items()
   }
 
   // these initialize the weapons, but don't have a return value (yet?)
-  init_weapon( main_hand_weapon );
-  init_weapon( off_hand_weapon );
+  for ( const item_t& item : items )
+  {
+    if ( !item.weapon )
+      continue;
+    assert( item.slot >= SLOT_MAIN_HAND && item.slot <= SLOT_RANGED && "Weapon found in unexpected slot!" );
+    init_weapon( equipped_weapons[ item.slot ] );
+  }
 }
 
 void player_t::init_position()
@@ -2098,9 +2105,9 @@ void player_t::init_weapon( weapon_t& w )
     return;
 
   if ( w.slot == SLOT_MAIN_HAND )
-    assert( w.type >= WEAPON_NONE && w.type < WEAPON_RANGED );
+    assert( w.type > WEAPON_NONE && w.type < WEAPON_RANGED );
   if ( w.slot == SLOT_OFF_HAND )
-    assert( w.type >= WEAPON_NONE && w.type < WEAPON_2H );
+    assert( w.type > WEAPON_NONE && w.type < WEAPON_2H );
 }
 
 void player_t::create_special_effects()
@@ -3495,25 +3502,29 @@ void player_t::init_scaling()
           break;
 
         case STAT_WEAPON_DPS:
-          if ( main_hand_weapon.damage > 0 )
+        {
+          auto mh = equipped_weapons[ SLOT_MAIN_HAND ];
+          if ( mh.damage > 0 )
           {
-            add_stat( main_hand_weapon.damage, main_hand_weapon.swing_time.total_seconds() * v, 1 );
-            add_stat( main_hand_weapon.dps, v, 1 );
-            add_stat( main_hand_weapon.min_dmg, main_hand_weapon.swing_time.total_seconds() * v, 1 );
-            add_stat( main_hand_weapon.max_dmg, main_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( mh.damage, mh.swing_time.total_seconds() * v, 1 );
+            add_stat( mh.dps, v, 1 );
+            add_stat( mh.min_dmg, mh.swing_time.total_seconds() * v, 1 );
+            add_stat( mh.max_dmg, mh.swing_time.total_seconds() * v, 1 );
           }
           break;
-
+        }
         case STAT_WEAPON_OFFHAND_DPS:
-          if ( off_hand_weapon.damage > 0 )
+        {
+          auto oh = equipped_weapons[ SLOT_OFF_HAND ];
+          if ( oh.damage > 0 )
           {
-            add_stat( off_hand_weapon.damage, off_hand_weapon.swing_time.total_seconds() * v, 1 );
-            add_stat( off_hand_weapon.dps, v, 1 );
-            add_stat( off_hand_weapon.min_dmg, off_hand_weapon.swing_time.total_seconds() * v, 1 );
-            add_stat( off_hand_weapon.max_dmg, off_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( oh.damage, oh.swing_time.total_seconds() * v, 1 );
+            add_stat( oh.dps, v, 1 );
+            add_stat( oh.min_dmg, oh.swing_time.total_seconds() * v, 1 );
+            add_stat( oh.max_dmg, oh.swing_time.total_seconds() * v, 1 );
           }
           break;
-
+        }
         case STAT_ARMOR:
           add_stat( initial.stats.armor, v, 0 );
           break;
@@ -4416,39 +4427,34 @@ double player_t::composite_melee_attack_power() const
 double player_t::composite_weapon_attack_power_by_type( attack_power_type ap_type ) const
 {
   double wdps = 0;
-  bool has_mh = main_hand_weapon.type != WEAPON_NONE;
-  bool has_oh = off_hand_weapon.type != WEAPON_NONE;
+  slot_e slot = SLOT_INVALID;
 
   switch ( ap_type )
   {
     case attack_power_type::WEAPON_MAINHAND:
-      if ( has_mh )
+      slot = SLOT_MAIN_HAND;
+    case attack_power_type::WEAPON_OFFHAND:
+      slot = SLOT_OFF_HAND;
+      if ( equipped_weapons.at( slot ).type != WEAPON_NONE )
       {
-        wdps = main_hand_weapon.dps;
+        wdps = equipped_weapons.at( slot ).dps;
       }
       else  // Unarmed is apparently a 0.5 dps weapon, Bruce Lee would be ashamed.
       {
         wdps = .5;
       }
       break;
-
-    case attack_power_type::WEAPON_OFFHAND:
-      if ( has_oh )
-      {
-        wdps = off_hand_weapon.dps;
-      }
-      else
-      {
-        wdps = .5;
-      }
-      break;
-
     case attack_power_type::WEAPON_BOTH:
+    {
       // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
-      wdps = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;
+      bool has_mh = equipped_weapons.at( SLOT_MAIN_HAND ).type != WEAPON_NONE;
+      bool has_oh = equipped_weapons.at( SLOT_MAIN_HAND ).type != WEAPON_NONE;
+      double mh = has_mh ? equipped_weapons.at( SLOT_MAIN_HAND ).dps : 0.5;
+      double oh = has_oh ? equipped_weapons.at( SLOT_OFF_HAND ).dps : 0.5;
+      wdps      = mh + oh / 2.0;
       wdps *= 2.0 / 3.0;
       break;
-
+    }
     default:  // Nohand, just base AP then
       break;
   }
@@ -4458,18 +4464,23 @@ double player_t::composite_weapon_attack_power_by_type( attack_power_type ap_typ
   //               Aura type 530 does not apply to this, as it is only added to the result of white hits
   if ( auto_attack_base_modifier > 0 )
   {
-    if ( ap_type == attack_power_type::WEAPON_MAINHAND )
+    switch ( ap_type )
     {
-      wdps += auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds();
-    }
-    else if ( ap_type == attack_power_type::WEAPON_OFFHAND )
-    {
-      wdps += auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds();
-    }
-    else if ( ap_type == attack_power_type::WEAPON_BOTH )
-    {
-      wdps += ( auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds()
-              + auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
+      case attack_power_type::WEAPON_MAINHAND:
+      case attack_power_type::WEAPON_OFFHAND:
+        wdps += auto_attack_base_modifier / equipped_weapons.at( slot ).swing_time.total_seconds();
+        break;
+      case attack_power_type::WEAPON_BOTH:
+      {
+        double mh  = equipped_weapons.at( SLOT_MAIN_HAND ).swing_time.total_seconds();
+        double oh  = equipped_weapons.at( SLOT_OFF_HAND ).swing_time.total_seconds();
+        double inc = mh + oh / 2.0;
+        inc *= 2.0 / 3.0;
+
+        wdps += inc;
+      }
+      default:
+        break;
     }
   }
 
@@ -5877,13 +5888,12 @@ void player_t::reset()
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
 
-  main_hand_weapon.buff_type  = 0;
-  main_hand_weapon.buff_value = 0;
-  main_hand_weapon.bonus_dmg  = 0;
-
-  off_hand_weapon.buff_type  = 0;
-  off_hand_weapon.buff_value = 0;
-  off_hand_weapon.bonus_dmg  = 0;
+  for ( slot_e slot = SLOT_MAIN_HAND; slot < SLOT_TABARD; slot++ )
+  {
+    equipped_weapons[ slot ].buff_type = 0;
+    equipped_weapons[ slot ].buff_value = 0;
+    equipped_weapons[ slot ].bonus_dmg = 0;
+  }
 
   assert( default_x_position != std::numeric_limits<decltype(default_x_position)>::lowest() );
   assert( default_y_position != std::numeric_limits<decltype(default_y_position)>::lowest() );
@@ -11096,33 +11106,39 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
     {
       double weapon_status = -1;
+      slot_e slot = SLOT_INVALID;
+      weapon_e weapon = WEAPON_NONE;
 
-      if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+      if ( splits[ 0 ] == "main_hand" )
+        slot = SLOT_MAIN_HAND;
+      else if ( splits[ 0 ] == "off_hand" )
+        slot = SLOT_OFF_HAND;
+      else if ( splits[ 0 ] == "ranged" )
+        slot = SLOT_RANGED;
+      else
+        slot = SLOT_INVALID;
+
+      if ( util::str_compare_ci( splits[ 1 ], "2h" ) )
+        weapon = WEAPON_2H;
+      else if ( util::str_compare_ci( splits[ 1 ], "1h" ) )
+        weapon = WEAPON_1H;
+      else
+        weapon = WEAPON_NONE;
+
+      assert( slot != SLOT_INVALID );
+
+      if ( weapon != WEAPON_NONE )
       {
-        weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
-      }
-      else if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
-      {
-        weapon_status =
-            static_cast<double>( main_hand_weapon.group() == WEAPON_1H || main_hand_weapon.group() == WEAPON_SMALL );
-      }
-      else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
-      {
-        weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_2H );
-      }
-      else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
-      {
-        weapon_status =
-            static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
+        bool _ws = equipped_weapons[ slot ].group() == weapon;
+        if ( weapon == WEAPON_1H )
+            _ws |= equipped_weapons[ slot ].group() == WEAPON_SMALL;
+        weapon_status = static_cast<double>( _ws );
       }
       else
       {
-        weapon_e weapon_type = util::parse_weapon_type( splits[ 1 ] );
-        if ( weapon_type != WEAPON_NONE )
-        {
-          weapon_status = static_cast<double>( ( splits[ 0 ] == "main_hand" ?
-                                                 main_hand_weapon.type : off_hand_weapon.type ) == weapon_type );
-        }
+        weapon = util::parse_weapon_type( splits[ 1 ] );
+        if ( weapon != WEAPON_NONE )
+          weapon_status = static_cast<double>( equipped_weapons[ slot ].type == weapon );
       }
 
       if ( weapon_status > -1 )

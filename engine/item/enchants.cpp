@@ -170,10 +170,10 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
 
         if ( value != 0 )
         {
-          item.weapon()->min_dmg += value;
-          item.weapon()->max_dmg += value;
-          item.weapon()->dps += value / item.weapon()->swing_time.total_seconds();
-          item.weapon()->damage += value;
+          item.weapon->min_dmg += value;
+          item.weapon->max_dmg += value;
+          item.weapon->dps += value / item.weapon->swing_time.total_seconds();
+          item.weapon->damage += value;
         }
         break;
       }

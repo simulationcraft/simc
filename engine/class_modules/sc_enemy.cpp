@@ -512,7 +512,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
     for ( auto* t : target_list )
     {
       melee_t* mh = new melee_t( "melee_main_hand", p, this, options_str );
-      mh->weapon  = &( p->main_hand_weapon );
+      mh->weapon  = &( p->equipped_weapons[ SLOT_MAIN_HAND ] );
       mh->target  = t;
       mh_list.push_back( mh );
     }
@@ -605,7 +605,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
     for ( auto* t : target_list )
     {
       melee_t* oh = new melee_t( "melee_off_hand", player, this, options_str );
-      oh->weapon  = &( player->off_hand_weapon );
+      oh->weapon  = &( player->equipped_weapons[ SLOT_OFF_HAND ] );
       oh->target  = t;
       oh_list.push_back( oh );
     }

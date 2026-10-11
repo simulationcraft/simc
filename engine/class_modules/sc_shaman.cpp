@@ -269,7 +269,7 @@ struct flametongue_attack_t : public spell_t
     auto rank = max_rank( player, flametongue_weapon_ranks );
 
     double proc_value = player->find_spell( rank.driver_id )->effectN( 1 ).average( player, player->level() );
-    double weapon_speed = player->main_hand_weapon.swing_time.total_seconds();
+    double weapon_speed = player->equipped_weapons[ SLOT_MAIN_HAND ].swing_time.total_seconds();
 
     base_dd_min = base_dd_max = proc_value * weapon_speed / 100.0;
   }
@@ -408,9 +408,9 @@ struct shaman_auto_attack_t : public melee_attack_t
     trigger_gcd           = 0_ms;
     ignore_false_positive = true;
 
-    assert( p->main_hand_weapon.type != WEAPON_NONE );
+    assert( p->equipped_weapons[ SLOT_MAIN_HAND ].type != WEAPON_NONE );
 
-    p->main_hand_attack = new shaman_melee_t( "melee", p, &p->main_hand_weapon );
+    p->main_hand_attack = new shaman_melee_t( "melee", p, &p->equipped_weapons[ SLOT_MAIN_HAND ] );
   }
 
   void execute() override

@@ -317,7 +317,7 @@ void dbc_proc_callback_t::initialize()
 
   if ( effect.weapon_proc && effect.item )
   {
-    weapon = effect.item->weapon();
+    weapon = effect.item->weapon;
   }
 
   if ( proc_buff && effect.expire_on_max_stack != -1 )

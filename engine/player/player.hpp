@@ -258,10 +258,12 @@ struct player_t : public actor_t
   } def_dr;
 
   // Weapons
-  weapon_t main_hand_weapon;
-  weapon_t off_hand_weapon;
+  std::map<slot_e, weapon_t> equipped_weapons;
+  // weapon_t main_hand_weapon;
+  // weapon_t off_hand_weapon;
 
   // Main, offhand, and ranged attacks
+  std::map<slot_e, action_t*> melee_attacks;
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
 
@@ -679,7 +681,7 @@ public:
   bool recent_cast() const;
   double mana_regen_from_spirit() const;
   bool dual_wield() const
-  { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  { return equipped_weapons.at( SLOT_MAIN_HAND ).type != WEAPON_NONE && equipped_weapons.at( SLOT_OFF_HAND ).type != WEAPON_NONE; }
   bool has_shield_equipped() const;
   specialization_e specialization() const
   { return _spec; }
