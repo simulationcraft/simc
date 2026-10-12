@@ -144,12 +144,12 @@ struct warrior_t : public player_t
 };
 
 template <class Base>
-struct warrior_action_t : public Base
+struct warrior_action_t : public parse_action_effects_t<Base>
 {
-  using base_t = Base;
+  using base_t = parse_action_effects_t<Base>;
 
   template <typename... Args>
-  warrior_action_t( Args&&... args ) : Base( std::forward<Args>( args )... ) {}
+  warrior_action_t( Args&&... args ) : base_t( std::forward<Args>( args )... ) {}
 
   warrior_t* p()
   { return debug_cast<warrior_t*>( this->player ); }
@@ -187,7 +187,6 @@ struct warrior_action_t : public Base
 
 using warrior_attack_t = warrior_action_t<melee_attack_t>;
 using warrior_spell_t  = warrior_action_t<spell_t>;
-using warrior_other_t  = warrior_action_t<action_t>;
 
 // TODO: Party buff version
 struct battle_shout_t : public warrior_spell_t
@@ -364,10 +363,10 @@ struct rend_t : public warrior_attack_t
 // wasn't consumed mid-swing
 // TODO: Is there a better way to handle On Next Swing?
 // TODO: look into generalizing this pattern for cleave, hunter (raptor strike), and druid (maul)
-struct heroic_strike_queue_t : public warrior_other_t
+struct heroic_strike_queue_t : public action_t
 {
   heroic_strike_queue_t( warrior_t* p, util::string_view options_str )
-    : warrior_other_t( ACTION_OTHER, "heroic_strike_queue", p )
+    : action_t( ACTION_OTHER, "heroic_strike_queue", p )
   {
     parse_options( options_str );
 
@@ -375,6 +374,9 @@ struct heroic_strike_queue_t : public warrior_other_t
     harmful = false;
     ignore_false_positive = true;
   }
+
+  warrior_t* p() const
+  { return debug_cast<warrior_t*>( player ); }
 
   bool ready() override
   {
@@ -493,6 +495,7 @@ void warrior_t::create_buffs()
 
   buff.battle_shout = make_buff<stat_buff_t>( this, "battle_shout",
                         find_spell( max_rank( this, battle_shout_ranks ).spell_id ) );
+
   buff.bloodrage = make_buff<stat_buff_t>( this, "bloodrage",
                         find_spell( max_rank( this, bloodrage_ranks ).buff_id ) )
                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
