@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -7863,7 +7863,6 @@ Effects          :
 Description      : Each time Blistering Scales explodes it deals $410256s1% more damage for $410256d, stacking $410256u times.
 
 Name             : Temporal Wound (desc=Bronze) (id=409560) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -7937,7 +7936,6 @@ Description      : $@spelldesc409676
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Temporal Wound (desc=Bronze) (id=409722) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8084,7 +8082,6 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Temporal Wound (desc=Bronze) (id=409992) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8103,7 +8100,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409993) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8122,7 +8118,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409994) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -11105,7 +11100,6 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 290 | Scaled Value: 290 | PvP Coefficient: 0.7 | Target: Self (1)
-Hotfixed         : Base Value (240 -> 290)
 #7 (id=1317269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
 Description      : $?c1[Disintegrate consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
@@ -12664,11 +12658,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264707)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
 #2 (id=1266465)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
 #3 (id=1266466)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)

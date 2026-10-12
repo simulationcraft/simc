@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -262245,7 +262245,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1347203)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 81780.24 (coefficient=639.8906) | Target: Self (1)
-Hotfixed         : Coefficient (319.945282 -> 639.890625)
 #2 (id=1353548)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to strike a nearby enemy target, dealing $s1 Nature damage. Each strike has a $s2% chance to hit its target again.
