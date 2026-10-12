@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2077,7 +2077,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 #2 (id=1286688)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
-Hotfixed         : Sub Type (4 -> 79)
 #3 (id=1356090)  : Remove Aura (203): Arcane Intellect Highlight
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271907 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
@@ -29469,7 +29468,7 @@ Effects          :
 #4 (id=739365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
 #5 (id=1203568)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 400 | Scaled Value: 400 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 #6 (id=1203569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -34717,13 +34716,13 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 737
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Lightning Strikes (384451 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Totemic Momentum (1260644 effect#2), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Lightning Strikes (384451 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2, #14), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Totemic Momentum (1260644 effect#2), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Ashen Catalyst (390371)
 Family Flags     : 39, 56, 66, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.38717 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.22268 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -41945,8 +41944,8 @@ Effects          :
                    Family Flags: 12, 36, 73, 78, 86, 91
 #6 (id=1226056)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 12, 36, 73, 78, 86, 91
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), A Murder of Crows (131900), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 12, 36, 73, 78, 86, 91, 99
 #7 (id=1257982)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
@@ -52248,7 +52247,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=116796)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 20, 44, 58, 65, 106, 121
                    Modified By: Stonebark (197061 effect#1)
 Description      : The target's skin becomes as tough as Ironwood, reducing damage taken by $s1%$?a197061[ and increasing healing from your heal over time effects by $s2%][] for $d.$?a392116[
@@ -60018,7 +60017,7 @@ Family Flags     : 97
 Attributes       : Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), Normal Melee Attack (345), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127209)   : Weapon Damage% (31)
-                   Base Value: 416 | Scaled Value: 4.16 | Target: Targeted Enemy (6)
+                   Base Value: 433 | Scaled Value: 4.33 | Target: Targeted Enemy (6)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Windlash Off-Hand (id=114093) [Spell Family (11)] 
@@ -60035,7 +60034,7 @@ Family Flags     : 97
 Attributes       : Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Not In Spellbook (143), Normal Melee Attack (345), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127218)   : Weapon Damage% (31)
-                   Base Value: 416 | Scaled Value: 4.16 | Target: Targeted Enemy (6)
+                   Base Value: 433 | Scaled Value: 4.33 | Target: Targeted Enemy (6)
 Description      : A massive gust of air that deals $s1 Physical damage.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -69070,14 +69069,14 @@ Family Flags     : 48, 67, 79
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.248 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4352 | Target: Targeted Ally (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Way of the Crane (389325), Way of the Crane (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48, 102
                    Modified By: Mist Wrap (197900 effect#1)
 #3 (id=874900)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.488 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.6112 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds.][]
@@ -73559,7 +73558,7 @@ Travel Time      : 1.5 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Eagletalon's True Focus (336851 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #3, #6), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Eagletalon's True Focus (336851 effect#4), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 99, 106
 Attributes       : Not Shapeshifted (16), No Active Defense (21), Allow Cast While Dead (23), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Ignore Damage Cancels Aura Interrupt (394), Allow Class Ability Procs (416)
 Effects          :
@@ -75072,7 +75071,7 @@ Effects          :
                    Family Flags: 33
 #17 (id=1080970) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #18 (id=1088946) : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -75153,7 +75152,7 @@ Effects          :
                    Family Flags: 33
 #10 (id=1032347) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 213 | Scaled Value: 213 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #11 (id=1032348) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 119 | Scaled Value: 119 | Target: Self (1)
@@ -75270,7 +75269,7 @@ Effects          :
                    Family Flags: 4
 #22 (id=1099906) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 44 | Scaled Value: 44 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 #23 (id=1099956) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
@@ -75336,7 +75335,7 @@ Effects          :
                    Family Flags: 6
 #11 (id=1088945) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 185 | Scaled Value: 185 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777), Mass Blooming (474149)
                    Family Flags: 4, 58
 #12 (id=1177983) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
@@ -76622,7 +76621,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 6419 (Label) | Target: Self (1)
                    Affected Spells (Label): Momentum of Despair (457115)
 #15 (id=1312894) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
+                   Base Value: 107 | Scaled Value: 107 | Target: Self (1)
                    Affected Spells: Unseen Blade (441144)
                    Family Flags: 125
 #16 (id=1312895) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -76635,6 +76634,12 @@ Effects          :
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Smoke Bomb (76577), Smoke Bomb (88611), Smoke Bomb (212183)
                    Family Flags: 63
+#19 (id=1361425) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 3301 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fazed (441224)
+#20 (id=1361426) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3301 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fazed (441224)
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -76938,19 +76943,19 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #4 (id=191040)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 401 | Scaled Value: 401 | Target: Self (1)
+                   Base Value: 421 | Scaled Value: 421 | Target: Self (1)
 #6 (id=261007)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | Target: Self (1)
 #7 (id=261008)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -112302,7 +112307,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Wild Growth (48438), Typhoon (61391), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Grove Guardians (102693), Ursol's Vortex (102793), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Fury of Elune (365640), Celestial Alignment (383410), Fury of Elune (394111), Nourish (422090), Nourish (423618), Remove Corruption (440015), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Efflorescence (1232285), Regrowth (1264664), Starsurge (1271222), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Overgrowth (1301989)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Wild Growth (48438), Typhoon (61391), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Grove Guardians (102693), Ursol's Vortex (102793), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Fury of Elune (365640), Celestial Alignment (383410), Fury of Elune (394111), Nourish (422090), Nourish (423618), Remove Corruption (440015), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Mass Blooming (474149), Efflorescence (1232285), Regrowth (1264664), Starsurge (1271222), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Overgrowth (1301989)
                    Family Flags: 0, 2, 3, 4, 5, 6, 9, 21, 22, 23, 28, 33, 36, 37, 41, 49, 53, 54, 56, 58, 63, 66, 73, 79, 81, 82, 87, 88, 89, 90, 102, 103, 104, 105, 106, 110, 111, 113, 115, 117, 120
                    Modified By: Oath of the Elder Druid (338608 effect#1)
 #2 (id=314659)   : Apply Aura (6) | Modify Auto Attack Range (153)
@@ -118597,7 +118602,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore
 Effects          :
 #1 (id=300415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550)
+                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149)
                    Family Flags: 4, 36, 44, 58
 Description      : $@spelldesc203651
 
@@ -124119,7 +124124,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
 Effects          :
 #1 (id=308116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Lifebloom (188550), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 4, 6, 44, 58, 106
 #2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
@@ -126665,7 +126670,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=312074)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Starfall (50286), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Grove Guardians (102693), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Infected Wounds (354571), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Raze (400254), Thrash (405233), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Remove Corruption (440015), Ravage (441591), Ravage (441605), Efflorescence (1232285), Meteorites (1240913), Dire Echo (1253489), Solar Bolt (1261573), Lunar Bolt (1263137), Regrowth (1264664), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243), Starfall (1286247), Starfall (1301742), Starfall (1301747), Overgrowth (1301989)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Starfall (50286), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Grove Guardians (102693), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Infected Wounds (354571), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Goldrinn's Fang (394047), Fury of Elune (394111), Raze (400254), Thrash (405233), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Remove Corruption (440015), Ravage (441591), Ravage (441605), Mass Blooming (474149), Efflorescence (1232285), Meteorites (1240913), Dire Echo (1253489), Solar Bolt (1261573), Lunar Bolt (1263137), Regrowth (1264664), Starsurge (1271222), Shooting Stars (1272339), Sunseeker Mushroom (1280212), Fungal Growth (1280213), Starfall (1286243), Starfall (1286247), Starfall (1301742), Starfall (1301747), Overgrowth (1301989)
                    Family Flags: 0, 2, 4, 5, 6, 9, 11, 12, 13, 15, 18, 21, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 52, 53, 54, 55, 56, 58, 64, 66, 68, 69, 73, 74, 79, 82, 85, 87, 89, 90, 91, 99, 102, 104, 105, 106, 108, 110, 111, 115, 120, 123, 126
 #2 (id=312249)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -135565,7 +135570,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 29
 Range            : 50000 yards
-Duration         : 6 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -135575,8 +135580,8 @@ Effects          :
 #1 (id=330698)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
-#2 (id=887252)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Trigger Spell: 221630
+#2 (id=887252)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 221630
 Description      : $@spelldesc57934
 Tooltip          : All threat transferred from the Rogue to the target.$?$w1>0[ Damage increased by $w1%.][]
 
@@ -172439,7 +172444,6 @@ Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Ran
 Effects          :
 #1 (id=718207)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.252 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.20988 -> 0.252)
 Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -179199,11 +179203,11 @@ Family Flags     : 48
 Attributes       : Do Not Display Range (126), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.488 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.6112 | Target: Targeted Ally (21)
 #2 (id=893187)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=893188)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.488 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.6112 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : $@spelldesc116680
 
 Name             : Glacial Contagion (id=274070) [Spell Family (15), Passive] 
@@ -233925,7 +233929,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.2625 | Target: Current Target (25)
 #2 (id=816652)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Target: Current Target (25)
-                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Tranquility (1236573), Overgrowth (1301989)
+                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Mass Blooming (474149), Tranquility (1236573), Overgrowth (1301989)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
                    Modified By: Restoration Druid (137012 effect#9)
 Description      : $@spelldesc325727
@@ -236609,7 +236613,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=819839)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth heals $s1 additional $ltarget:targets;.
 
@@ -262090,7 +262094,7 @@ Effects          :
 #1 (id=891975)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 6 | Target: Self (1)
 #2 (id=891976)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Darkness (196718)
                    Family Flags: 77
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
@@ -290049,11 +290053,11 @@ Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1013208)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.334 | Target: Self (1)
 #2 (id=1013209)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1013210)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.67 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 2.67 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
 Description      : Earth Shield reduces damage taken by $s3% and its healing is increased by up to $s1% as its target's health decreases. Maximum benefit is reached below $s2% health.
@@ -292377,7 +292381,6 @@ Effects          :
 Description      : Vanish grants you a shield for $386165d, absorbing damage equal to $s1% of your maximum health.
 
 Name             : Deeper Daggers (id=382517) [Spell Family (8), Passive] 
-Hotfixed         : Description
 Talent Entry     : Subtlety [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
@@ -306555,7 +306558,7 @@ Proc Chance      : 101%
 Attributes       : Passive (6), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1024228)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 383764 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Trigger Spell: 383764 | Target: Self (1)
 #2 (id=1024229)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Purify $s1% of your Staggered damage each time you gain $s2 sec of Shuffle duration.
@@ -317993,7 +317996,7 @@ Name             : Pretense of Instability (id=393515) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -318447,7 +318450,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1032724)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Tranquility (1236573)
+                   Affected Spells: Rejuvenation (774), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Mass Blooming (474149), Tranquility (1236573)
                    Family Flags: 4, 7, 44, 58, 65
 Description      : Rejuvenation, Lifebloom, Wild Growth, Efflorescence, and Tranquility chance to critically heal is increased by $s1%.
 
@@ -341035,7 +341038,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Comba
 Effects          :
 #1 (id=1072743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20.65 | Scaled Value: -20.65 | PvP Coefficient: 0.5 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 8, 44, 58, 106
 #2 (id=1072744)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -20.65 | Scaled Value: -20.65 | PvP Coefficient: 0.5 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
@@ -342230,7 +342233,6 @@ Description      : $@spelldesc405558
 Tooltip          : Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.
 
 Name             : Temporal Wound (desc=Bronze) (id=409560) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -342531,7 +342533,6 @@ Description      : $@spelldesc405574
 Tooltip          : The flames of Ruvaraad burn within, increasing damage done by $s1%.
 
 Name             : Temporal Wound (desc=Bronze) (id=409722) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -342978,7 +342979,6 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Temporal Wound (desc=Bronze) (id=409992) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -342997,7 +342997,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409993) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -343016,7 +343015,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409994) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -354638,7 +354636,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1103894)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.2318 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.71657 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : $@spelldesc274586
 Tooltip          : $@spelldesc274586
@@ -358390,7 +358388,7 @@ Effects          :
                    Affected Spells (Category): Swiftmend (18562)
 #3 (id=1256778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : $?a137013[Force of Nature cooldown reduced by ${$s1/-1000} sec.][Swiftmend and Wild Growth cooldowns reduced by ${$s2/-1000} sec.]
 
@@ -359085,11 +359083,11 @@ Effects          :
                    Family Flags: 0, 2
 #2 (id=1113584)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 #3 (id=1113585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 Description      : Wrath and Starfire damage increased by $s1%. 
 
@@ -372545,7 +372543,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1133456)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Adaptive Swarm (325733), Adaptive Swarm (325748), Tranquility (1236573), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Grove Tending (279793), Adaptive Swarm (325733), Adaptive Swarm (325748), Mass Blooming (474149), Tranquility (1236573), Regrowth (1264664)
                    Family Flags: 4, 6, 7, 8, 20, 22, 44, 58, 65, 106, 121
 #2 (id=1214835)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Misc Value 2: 3246 (Label) | Target: Self (1)
@@ -374684,7 +374682,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 1387: Avoid CC Targets
-                 : 3301: Smoke (441247 effect#1), Surprising Strikes (441273 effect#1), No Scruples (441398 effect#1), Smokescreen (441640 effect#2), Hoodwink (1276626 effect#1), Hoodwink (1276626 effect#2)
+                 : 3301: Subtlety Rogue (137035 effect#19), Subtlety Rogue (137035 effect#20), Smoke (441247 effect#1), Surprising Strikes (441273 effect#1), No Scruples (441398 effect#1), Smokescreen (441640 effect#2), Hoodwink (1276626 effect#1), Hoodwink (1276626 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -374693,10 +374691,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
                    Family Flags: 54
-                   Modified By: Hoodwink (1276626 effect#1)
+                   Modified By: Subtlety Rogue (137035 effect#19), Hoodwink (1276626 effect#1)
 #2 (id=1135559)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
-                   Modified By: Hoodwink (1276626 effect#2)
+                   Modified By: Subtlety Rogue (137035 effect#20), Hoodwink (1276626 effect#2)
 #3 (id=1135582)  : Apply Aura (6) | Modify Damage Done% to Caster (269) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
@@ -381771,7 +381769,6 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 290 | Scaled Value: 290 | PvP Coefficient: 0.7 | Target: Self (1)
-Hotfixed         : Base Value (240 -> 290)
 #7 (id=1317269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
 Description      : $?c1[Disintegrate consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
@@ -400948,11 +400945,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1155669)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 #2 (id=1158198)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Regrowth (1264664)
+                   Affected Spells: Regrowth (8936), Swiftmend (18562), Wild Growth (48438), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 6, 33, 58
 Description      : Regrowth, Wild Growth, and Swiftmend healing increased by $s1%.
 
@@ -420060,7 +420057,7 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171851)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.122 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.134 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
@@ -420079,7 +420076,7 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171852)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.122 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.134 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
@@ -420098,7 +420095,7 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171853)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.243 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.267 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
@@ -420117,7 +420114,7 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171854)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.122 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.134 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
@@ -420136,7 +420133,7 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171857)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.122 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.134 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
@@ -420155,7 +420152,7 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171858)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.243 | PvP Coefficient: 1.058 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.267 | PvP Coefficient: 0.962 | Target: Targeted Enemy (6)
 Description      : $@spelldesc196819
 
 Name             : Cyrce's Circlet (id=462342) [Passive, Hidden] 
@@ -429963,7 +429960,7 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1192725)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4 | PvP Coefficient: 1.45 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.67 | PvP Coefficient: 1.34 | Target: Targeted Enemy (6)
 Description      : Drain the essence from your target, dealing $s1 Cosmic damage.
 
 Castable while moving.
@@ -430326,16 +430323,17 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
                  : 4216: Astral Influence (197524 effect#8)
-Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2), Genesis (1302255 effect#1)
-Family Flags     : 118
+Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #22), Balance Druid (137013 effect#11), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Call of the Elder Druid (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Druid Restoration Class Set 2pc (393639 effect#1), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Early Spring (428937 effect#3), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Strategic Infusion (439890 effect#1), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Restoration Druid (1256995 effects: #1, #2), Druid Restoration 12.0 Class Set 2pc (1264817 effect#1), Druid Restoration 12.0 Class Set 4pc (1264818 effect#2), Patient Custodian (1270592 effect#3), Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283649 effects: #1, #2), Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283650 effects: #1, #2), Genesis (1302255 effect#1)
+Family Flags     : 58, 118
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1193590)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Ally (21)
-#2 (id=1193591)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.137 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-#3 (id=1193592)  : Dummy (3)
+#2 (id=1193591)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Improved Wild Growth (328025 effect#1)
+#3 (id=1193592)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.27 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : Heals $s3 allies for $s2 and applies $s1 missing heal over time $Leffect:effects;.
 
 Name             : On Target (id=474257) [Spell Family (9)] 
@@ -432310,11 +432308,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1196250)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #2 (id=1196251)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Chain Lightning (211094), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #3 (id=1196252)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
@@ -432355,6 +432353,10 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
+#14 (id=1361476) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -26 | Scaled Value: -26 | Target: Self (1)
+                   Affected Spells: Lava Lash (60103)
+                   Family Flags: 66
 
 Name             : Shard of Porcelain Arrowhead Idol (id=1214336) 
 School           : Physical
@@ -438994,7 +438996,7 @@ Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4 | PvP Coefficient: 1.45 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.67 | PvP Coefficient: 1.34 | Target: Targeted Enemy (6)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -441314,7 +441316,7 @@ Effects          :
 #1 (id=1207505)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #2 (id=1290193)  : Dummy (3)
-                   Base Value: 54 | Scaled Value: 54
+                   Base Value: 50 | Scaled Value: 50
 Description      : Channel an immense amount of void energy into a single, cataclysmic blast, $?a1242486[critically striking for ${$1221162s1*2}][dealing $1221162s1] Cosmic damage to your target and $?a1242486[${2*($1221162s1*($s2/100))}][${$1221162s1*($s2/100)}] Cosmic damage to all nearby enemies. Damage reduced beyond $s1 targets.
 
 While casting Collapsing Star, your Fury drain is significantly reduced.$?a1240204[
@@ -441347,7 +441349,7 @@ Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.81 | PvP Coefficient: 0.8 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.741 | Radius: 8 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
@@ -444066,7 +444068,7 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.57 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.0156 | PvP Coefficient: 0.526 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1226019
 
 Name             : Eradicate (id=1225826) [Spell Family (107)] 
@@ -444086,7 +444088,7 @@ Family Flags     : 32, 102
 Attributes       : No Aura Icon (60), Can Proc From Procs (122), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Unknown (467)
 Effects          :
 #1 (id=1215274)  : Dummy (3)
-                   Base Value: 90 | Scaled Value: 90 | Target: Targeted Enemy (6)
+                   Base Value: 83 | Scaled Value: 83 | Target: Targeted Enemy (6)
 #2 (id=1215655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Slam your Scythe to the ground, dealing $?a1217607[$1279200s1][$1225827s1] Cosmic damage to your primary target and $?a1217607[${$1279200s1*($s1/100)}][${$1225827s1*($s1/100)}] to all other enemies within a $s2 yd cone in front of you. Damage reduced beyond $1226033s1 targets.
@@ -444110,7 +444112,7 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.57 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.0156 | PvP Coefficient: 0.526 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc1225826
 
 Name             : Lightbloom Energy (id=1225830) 
@@ -450486,7 +450488,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1226884)  : Apply Aura (6) | Modify Min Speed% (305)
-                   Base Value: 90 | Scaled Value: 90 | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=1226885)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
 #4 (id=1226886)  : Apply Aura (6) | Resist Forced Movement% (485)
@@ -464926,7 +464928,7 @@ Effects          :
 #1 (id=1246442)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=1246443)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.25 | PvP Coefficient: 1.38 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.475 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
 #3 (id=1246444)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Duty Eternal (1246562 effect#2)
@@ -465001,7 +465003,7 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.163 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.736 | PvP Coefficient: 0.526 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1245453
 
 Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
@@ -465446,7 +465448,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1247572)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 30000 | Scaled Value: 30000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 20000 | Scaled Value: 20000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Nature's Swiftness (378081), Ancestral Swiftness (443454)
                    Family Flags: 65
 Description      : Nature's Swiftness now also affects Hex, but its cooldown is increased by ${$s1/1000} sec.
@@ -465579,7 +465581,7 @@ Family Flags     : 43, 82, 95
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow Cast While Casting (135), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1247657)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.6 | PvP Coefficient: 0.77 | Target: Targeted Enemy (6)
 #2 (id=1247658)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=1247659)  : Trigger Spell (64): The Hunt
@@ -476738,11 +476740,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264707)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
 #2 (id=1266465)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
 #3 (id=1266466)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -476852,7 +476854,7 @@ Effects          :
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #10 (id=1266438) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #11 (id=1266439) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -476897,10 +476899,9 @@ Effects          :
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
                    Family Flags: 20
 #4 (id=1357105)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
+                   Base Value: -42 | Scaled Value: -42 | Target: Self (1)
                    Affected Spells: Unseen Blade (441144)
                    Family Flags: 125
-Hotfixed         : PvP Coefficient (0 -> 1)
 
 Name             : Outlaw Rogue (id=1256947) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -476912,11 +476913,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264713)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -1 | Scaled Value: -1 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
                    Family Flags: 54
 #2 (id=1266728)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
                    Family Flags: 54
 #3 (id=1266729)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -477188,6 +477189,8 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#4 (id=1360774)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 7333 (Label) | Target: Self (1)
 
 Name             : Vulnerability (id=1257011) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
@@ -488307,7 +488310,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1276423)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth healing increased by $s1%.
 
@@ -488325,7 +488328,7 @@ Effects          :
                    Affected Spells (Category): Wild Growth (48438)
 #2 (id=1281532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Wild Growth (48438)
+                   Affected Spells: Wild Growth (48438), Mass Blooming (474149)
                    Family Flags: 58
 Description      : Wild Growth cooldown reduced by ${$s1/-1000} sec, and mana cost reduced by $s2%.
 
@@ -496406,7 +496409,7 @@ Effects          :
                    Affected Spells (Label): Bloodseeker Vines (439531)
 #3 (id=1282737)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Frenzied Regeneration (22842), Lifebloom (33763), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Regrowth (1264664)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Frenzied Regeneration (22842), Lifebloom (33763), Wild Growth (48438), Rejuvenation (Germination) (155777), Lifebloom (188550), Mass Blooming (474149), Regrowth (1264664)
                    Family Flags: 4, 6, 44, 58, 62
 #4 (id=1282738)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Misc Value 2: 3246 (Label) | Target: Self (1)
@@ -498248,7 +498251,7 @@ Effects          :
 #1 (id=1284994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1285178)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1293674)  : Apply Aura (6) | Proc Trigger Spell (42): Blightfall
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1271975 | Target: Self (1)
 Description      : Dark Transformation grants access to Blightfall.
@@ -501673,7 +501676,7 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.163 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.736 | PvP Coefficient: 0.526 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 
@@ -518290,7 +518293,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1347203)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 81780.24 (coefficient=639.8906) | Target: Self (1)
-Hotfixed         : Coefficient (319.945282 -> 639.890625)
 #2 (id=1353548)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to strike a nearby enemy target, dealing $s1 Nature damage. Each strike has a $s2% chance to hit its target again.
