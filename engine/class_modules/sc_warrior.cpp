@@ -529,20 +529,16 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
 
 void warrior_t::init_action_list()
 {
-  if ( action_list_str.empty() )
+  if ( !action_list_str.empty() )
   {
-    get_action_priority_list( "precombat" )->add_action( "bloodrage" );
-    get_action_priority_list( "precombat" )->add_action( "battle_shout" );
-    get_action_priority_list( "precombat" )->add_action( "charge" );
-
-    get_action_priority_list( "default" )->add_action( "auto_attack" );
-
-    get_action_priority_list( "default" )->add_action( "battle_shout,if=!buff.battle_shout.up" );
-    get_action_priority_list( "default" )->add_action( "bloodrage,if=rage<80" );
-    get_action_priority_list( "default" )->add_action( "rend,if=!ticking" );
-    get_action_priority_list( "default" )->add_action( "thunder_clap,if=spell_targets>=2" );
-    get_action_priority_list( "default" )->add_action( "heroic_strike,if=rage>=20" );
+    player_t::init_action_list();
+    return;
   }
+
+  clear_action_priority_lists();
+  warrior_apl::warrior( this );
+  use_default_action_list = true;
+  player_t::init_action_list();
 }
 
 struct warrior_module_t : public module_t
