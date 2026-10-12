@@ -1,5 +1,5 @@
 // Spell text, wow build 1.60.1.70338
-static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 7117> __spelltext_data { {
   {      10, "Ice shards pelt the target area doing ${$1279976m1*$d*$<frostdamage>} Frost damage over $d.", "$1279976s1 Frost damage every $t3 $lsecond:seconds;.", "Rank 1" },
   {      17, "Draws on the soul of the party member to shield them, absorbing $?a14748[${$s1*(1+$14748s1/100)}][$s1] damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage.", "Rank 1" },
   {      53, "Backstab the target, causing $s2% weapon damage plus $s1 to the target.  Must be behind the target.  Requires a dagger in the main hand.  Awards $s3 combo $lpoint:points;.", 0, "Rank 1" },
@@ -1738,6 +1738,7 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   {   13439, "Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.", "Movement slowed by $s1%.", 0 },
   {   13440, "Sends a shadowy bolt at the enemy causing $s1 Shadow damage.", 0, 0 },
   {   13441, "Blasts a target for $s1 Fire damage.", 0, 0 },
+  {   13442, "Blasts a target for $s1 Fire damage.", 0, 0 },
   {   13464, "Permanently enchant a shield to increase its armor by 30.", 0, 0 },
   {   13480, "Sends a shadowy bolt at the enemy causing $s1 Shadow damage.", 0, 0 },
   {   13482, "Blasts a target for $s1 Nature damage.", 0, "Rank 1" },
