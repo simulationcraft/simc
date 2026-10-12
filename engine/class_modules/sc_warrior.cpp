@@ -180,7 +180,7 @@ struct warrior_action_t : public parse_action_effects_t<Base>
     }
     else
     {
-      melee_attack_t::consume_resource();
+      base_t::consume_resource();
     }
   }
 };
