@@ -94,6 +94,7 @@ constexpr std::array thunder_clap_ranks {
   spell_rank_t{ 11581 },
 };
 
+
 struct warrior_t : public player_t
 {
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -142,31 +143,40 @@ struct warrior_t : public player_t
   action_t* heroic_strike = nullptr;
 };
 
-struct warrior_attack_t : public melee_attack_t
+template <class Base>
+struct warrior_action_t : public Base
 {
-  warrior_attack_t( util::string_view name, warrior_t* p, const spell_data_t* s )
-    : melee_attack_t( name, p, s ) {}
+  using base_t = Base;
+
+  template <typename... Args>
+  warrior_action_t( Args&&... args ) : Base( std::forward<Args>( args )... ) {}
+
+  warrior_t* p()
+  { return debug_cast<warrior_t*>( this->player ); }
+
+  const warrior_t* p() const
+  { return debug_cast<const warrior_t*>( this->player ); }
 
   void consume_resource() override
   {
-    resource_e cr = current_resource();
+    resource_e cr = this->current_resource();
 
-    auto discountOnMiss = data().flags( spell_attribute::SX_DISCOUNT_ON_MISS );
+    auto discountOnMiss = this->data().flags( spell_attribute::SX_DISCOUNT_ON_MISS );
 
     if (
         cr == RESOURCE_RAGE
-        && cost() > 0
+        && this->cost() > 0
         && discountOnMiss
-        && !proc
-        && !result_is_hit( execute_state->result ) )
+        && !this->proc
+        && !this->result_is_hit( this->execute_state->result ) )
     {
-      last_resource_cost = 0.2 * cost();
+      this->last_resource_cost = 0.2 * this->cost();
 
-      player->resource_loss( cr, last_resource_cost, nullptr, this );
-      stats->consume_resource( cr, last_resource_cost );
+      this->player->resource_loss( cr, this->last_resource_cost, nullptr, this );
+      this->stats->consume_resource( cr, this->last_resource_cost );
 
-      sim->print_log("{} consumes {} {} for {} ({})",
-          *player, last_resource_cost, cr, *this, player->resources.current[ cr ] );
+      this->sim->print_log("{} consumes {} {} for {} ({})",
+          *this->player, this->last_resource_cost, cr, *this, this->player->resources.current[ cr ] );
     }
     else
     {
@@ -175,11 +185,15 @@ struct warrior_attack_t : public melee_attack_t
   }
 };
 
+using warrior_attack_t = warrior_action_t<melee_attack_t>;
+using warrior_spell_t  = warrior_action_t<spell_t>;
+using warrior_other_t  = warrior_action_t<action_t>;
+
 // TODO: Party buff version
-struct battle_shout_t : public spell_t
+struct battle_shout_t : public warrior_spell_t
 {
   battle_shout_t( warrior_t* player, util::string_view options_str ) :
-    spell_t( "battle_shout", player, player->find_spell( max_rank( player, battle_shout_ranks ).spell_id ) )
+    warrior_spell_t( "battle_shout", player, player->find_spell( max_rank( player, battle_shout_ranks ).spell_id ) )
   {
     parse_options( options_str );
 
@@ -191,18 +205,18 @@ struct battle_shout_t : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    warrior_spell_t::execute();
 
     // TODO: Legacy talent "Permanence" can extend the duration
 
-    static_cast<warrior_t*>( player )->buff.battle_shout->trigger();
+    p()->buff.battle_shout->trigger();
   }
 };
 
-struct bloodrage_t : public spell_t
+struct bloodrage_t : public warrior_spell_t
 {
   bloodrage_t( warrior_t* player, util::string_view options_str ) :
-    spell_t( "bloodrage", player, player->find_spell( max_rank( player, bloodrage_ranks ).spell_id ) )
+    warrior_spell_t( "bloodrage", player, player->find_spell( max_rank( player, bloodrage_ranks ).spell_id ) )
   {
     parse_options( options_str );
 
@@ -214,12 +228,10 @@ struct bloodrage_t : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    warrior_spell_t::execute();
 
-    auto p = static_cast<warrior_t*>( player );
-
-    p->buff.bloodrage->trigger();
-    p->resource_loss( RESOURCE_HEALTH, 100 * data().cost( POWER_HEALTH ), nullptr, this );
+    p()->buff.bloodrage->trigger();
+    p()->resource_loss( RESOURCE_HEALTH, 100 * data().cost( POWER_HEALTH ), nullptr, this );
   }
 };
 
@@ -229,10 +241,10 @@ struct bloodrage_t : public spell_t
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-struct warrior_melee_t : public melee_attack_t
+struct warrior_melee_t : public warrior_attack_t
 {
   warrior_melee_t( util::string_view name, warrior_t* player, weapon_t* w )
-    : melee_attack_t( name, player, spell_data_t::nil() )
+    : warrior_attack_t( name, player, spell_data_t::nil() )
   {
     weapon            = w;
     weapon_multiplier = 1.0;
@@ -251,44 +263,40 @@ struct warrior_melee_t : public melee_attack_t
 
   void execute() override
   {
-    auto p = static_cast<warrior_t*>( player );
-
     // try to trigger a queued heroic strike
-    if ( p->buff.heroic_strike_queued->check() )
+    if ( p()->buff.heroic_strike_queued->check() )
     {
-      if ( p->resource_available( RESOURCE_RAGE, p->heroic_strike->cost() ) )
+      if ( p()->resource_available( RESOURCE_RAGE, p()->heroic_strike->cost() ) )
       {
         // TODO: figure out if we should track the target at queue time. I assume this hits the current target which
         // could be different.
-        p->heroic_strike->execute_on_target( target );
+        p()->heroic_strike->execute_on_target( target );
         schedule_execute();
         return;
       }
       // didn't have enough rage, cancel the tracking queue buff
-      p->buff.heroic_strike_queued->expire();
+      p()->buff.heroic_strike_queued->expire();
     }
 
-    melee_attack_t::execute();
+    warrior_attack_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
-    melee_attack_t::impact( s );
-
-    auto p = static_cast<warrior_t*>( player );
+    warrior_attack_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
       double mult = s->result == RESULT_CRIT ? 2.0 : 1.0;
-      p->resource_gain( RESOURCE_RAGE, mult * p->rage_per_swing( *weapon ), p->gain.melee, this );
+      p()->resource_gain( RESOURCE_RAGE, mult * p()->rage_per_swing( *weapon ), p()->gain.melee, this );
     }
   }
 };
 
-struct warrior_auto_attack_t : public melee_attack_t
+struct warrior_auto_attack_t : public warrior_attack_t
 {
   warrior_auto_attack_t( warrior_t* p, util::string_view options_str )
-    : melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+    : warrior_attack_t( "auto_attack", p, spell_data_t::nil() )
   {
     parse_options( options_str );
     trigger_gcd           = 0_ms;
@@ -356,10 +364,10 @@ struct rend_t : public warrior_attack_t
 // wasn't consumed mid-swing
 // TODO: Is there a better way to handle On Next Swing?
 // TODO: look into generalizing this pattern for cleave, hunter (raptor strike), and druid (maul)
-struct heroic_strike_queue_t : public action_t
+struct heroic_strike_queue_t : public warrior_other_t
 {
   heroic_strike_queue_t( warrior_t* p, util::string_view options_str )
-    : action_t( ACTION_OTHER, "heroic_strike_queue", p )
+    : warrior_other_t( ACTION_OTHER, "heroic_strike_queue", p )
   {
     parse_options( options_str );
 
@@ -370,14 +378,12 @@ struct heroic_strike_queue_t : public action_t
 
   bool ready() override
   {
-    auto p = static_cast<warrior_t*>( player );
-
     // already queued
-    if ( p->buff.heroic_strike_queued->check() )
+    if ( p()->buff.heroic_strike_queued->check() )
       return false;
 
     // not enough rage
-    if ( !p->resource_available( RESOURCE_RAGE, p->heroic_strike->cost() ) )
+    if ( !p()->resource_available( RESOURCE_RAGE, p()->heroic_strike->cost() ) )
       return false;
 
     return action_t::ready();
@@ -385,7 +391,7 @@ struct heroic_strike_queue_t : public action_t
 
   void execute() override
   {
-    static_cast<warrior_t*>( player )->buff.heroic_strike_queued->trigger();
+    p()->buff.heroic_strike_queued->trigger();
   }
 };
 
@@ -403,7 +409,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    static_cast<warrior_t*>( player )->buff.heroic_strike_queued->expire();
+    p()->buff.heroic_strike_queued->expire();
   }
 };
 
