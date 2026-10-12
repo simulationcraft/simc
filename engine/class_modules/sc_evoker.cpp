@@ -11377,12 +11377,12 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       default:
         target = rng().range( helper );
 
-        bool in_dungeon = ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ||
+/*        bool in_dungeon = ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ||
                             sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || option.patchwerk_in_dungeon );
         // Roll again if it picks a tank, a healer, or you. These are not likely outcomes if played well.
         if ( ( target == this || target->primary_role() == ROLE_TANK || target->primary_role() == ROLE_HEAL ) &&
              !in_dungeon )
-          target = rng().range( helper );
+          target = rng().range( helper );*/
         break;
     }
   }
