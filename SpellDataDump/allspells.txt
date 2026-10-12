@@ -34508,6 +34508,20 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 (delta=0.333333) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Fire damage.
 
+Name             : Firebolt (id=13442) 
+School           : Fire
+Spell Type       : Magic
+Resource         : 18 Base Mana (0) (id=179478)
+Spell Level      : 30
+Range            : 30 yards
+Cast Time        : 3 seconds
+Velocity         : 19 yards/sec
+Attributes       : Unknown (493)
+Effects          :
+#1 (id=691018)   : School Damage (2): fire
+                   Base Value: 90 | Scaled Value: 90 | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Fire damage.
+
 Name             : Minor Blocking (id=13462) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
