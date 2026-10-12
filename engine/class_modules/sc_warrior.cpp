@@ -489,7 +489,7 @@ void warrior_t::create_actions()
 
 void warrior_t::create_buffs()
 {
-  buff.heroic_strike_queued = new buff_t( this, "heroic_strike_queued" );
+  buff.heroic_strike_queued = make_buff( this, "heroic_strike_queued" );
 
   buff.battle_shout = make_buff<stat_buff_t>( this, "battle_shout",
                         find_spell( max_rank( this, battle_shout_ranks ).spell_id ) );
