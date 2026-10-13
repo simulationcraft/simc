@@ -2628,6 +2628,13 @@ public:
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
+  double cost_flat_modifier() const override
+  {
+     double c = ab::cost_flat_modifier();
+
+     return c;
+  }
+
   double cost_pct_multiplier() const override
   {
     double c = ab::cost_pct_multiplier();
@@ -3988,6 +3995,19 @@ struct blade_flurry_t : public rogue_attack_t
       if ( !instant_attack->target_list().empty() )
         instant_attack->execute();
     }
+  }
+
+  double cost_flat_modifier() const override
+  {
+    double c = rogue_attack_t::cost_flat_modifier();
+
+    if ( p()->talent.outlaw.deft_maneuvers->ok() )
+    {
+      c += std::min( instant_attack->target_list().size() * p()->talent.outlaw.deft_maneuvers->effectN( 3 ).base_value(), 
+                                                            p()->talent.outlaw.deft_maneuvers->effectN( 4 ).base_value() );
+    }
+
+    return c;
   }
 
   bool breaks_stealth() const override
