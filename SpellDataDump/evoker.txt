@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -456,12 +456,10 @@ Effects          :
                    Base Value: 71 | Scaled Value: 71 | PvP Coefficient: 0.89 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
-Hotfixed         : Base Value (63 -> 71), PvP Coefficient (1 -> 0.89)
 #13 (id=1046957) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 71 | Scaled Value: 71 | PvP Coefficient: 0.89 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
-Hotfixed         : Base Value (63 -> 71), PvP Coefficient (1 -> 0.89)
 #14 (id=1050506) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Living Flame (361500)
@@ -493,7 +491,6 @@ Hotfixed         : Base Value (63 -> 71), PvP Coefficient (1 -> 0.89)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Azure Strike (362969), Azure Sweep (1265872)
                    Family Flags: 12
-Hotfixed         : Base Value (33 -> 100), PvP Coefficient (1 -> 0.33)
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -848,7 +845,6 @@ Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), A
 Effects          :
 #1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.84 | PvP Coefficient: 0.91 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (4.4 -> 4.84), PvP Coefficient (1 -> 0.91)
 Description      : $@spelldesc357211
 
 Name             : Hover (id=357302) [Spell Family (224)] 
@@ -1298,7 +1294,6 @@ Effects          :
 Description      : Cleanses harmful effects from the target, removing all Magic and Poison effects.
 
 Name             : Blistering Scales (desc=Black) (id=360827) [Spell Family (224)] 
-Hotfixed         : Variables
 Talent Entry     : Augmentation [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Firestorm
@@ -4725,7 +4720,8 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Family Flags     : 75
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67, 75
 Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
@@ -6345,11 +6341,9 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter 
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.5 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : PvP Coefficient (1.25 -> 1.5)
                    Modified By: Close as Clutchmates (396043 effect#1), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : PvP Coefficient (1.25 -> 1)
 #3 (id=1248097)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Increase all damage dealing allies' primary stat by $<amount>% of your own and increase your own damage by $395296s1% for $d.
@@ -6409,7 +6403,6 @@ Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Pr
 Effects          :
 #1 (id=1035409)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.22 | PvP Coefficient: 1.4375 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (2.8 -> 3.22)
 Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[
 
 Increases the duration of your active Ebon Might effects by ${$395153s1/1000}.1 sec.][]
@@ -6547,12 +6540,13 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
 #19 (id=1357087) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
+#20 (id=1357605) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Misc Value 2: 7277 (Label) | Target: Self (1)
+                   Affected Spells (Label): Melt Armor (441172)
 
 Name             : Essence Burst (id=396187) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=2, col=5, max_rank=1, req_points=0]
@@ -6630,7 +6624,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1037395)  : School Damage (2): firestorm | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.02 | Radius: 0 - 2 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (4.3 -> 6.02)
 #3 (id=1052932)  : Directional Knockback (144)
                    Base Value: 120 | Scaled Value: 120 (delta=0.2) | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Knockback | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=1053498)  : Directional Knockback (144)
@@ -7262,10 +7255,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.272 | Target: Self (1)
 #2 (id=1082679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Spatial Paradox (406789), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Chrono Ward (409678), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984), Ebon Might (426404), Perilous Fate (439606)
+                   Affected Spells: Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Burnout (375802), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Spatial Paradox (406789), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Chrono Ward (409678), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984), Ebon Might (426404), Temporal Burst (431698), Temporality (431872), Time Convergence (431991), Motes of Acceleration (432061), Perilous Fate (439606), Imminent Destruction (459574), Magnified Fate (1297728)
                    Family Flags: 67
 #3 (id=1083344)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 413984 | Target: Self (1)
+#4 (id=1357546)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5 | Misc Value: 19 | Misc Value 2: 7276 (Label) | Target: Self (1)
+                   Affected Spells (Label): Temporal Burst (431698), Temporality (431872)
 Description      : Casting an empower spell grants Shifting Sands to $s3 $Lally:allies;, preferring damage dealers, increasing their Versatility by ${$413984s1}.1% for $413984d.
 
 The durations of Shifting Sands, Breath of Eons, and your other helpful auras are increased by ${$s2}.1%.
@@ -7867,7 +7863,6 @@ Effects          :
 Description      : Each time Blistering Scales explodes it deals $410256s1% more damage for $410256d, stacking $410256u times.
 
 Name             : Temporal Wound (desc=Bronze) (id=409560) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -7941,7 +7936,6 @@ Description      : $@spelldesc409676
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Temporal Wound (desc=Bronze) (id=409722) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8088,7 +8082,6 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Temporal Wound (desc=Bronze) (id=409992) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8107,7 +8100,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409993) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8126,7 +8118,6 @@ Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
 Name             : Temporal Wound (desc=Bronze) (id=409994) [Spell Family (224)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -9832,8 +9823,11 @@ Spell Level      : 10
 Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 292
+                 : 7276: Mastery: Timewalker (406380 effect#4)
 Stacks           : 30 maximum
 Proc Chance      : 101%
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -9917,7 +9911,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Prescience (409311)
                    Family Flags: 73
-Description      : $?c2[Temporal Anomaly mana cost reduced by $s1% and cooldown reduced by ${$s2/-1000} sec.][Prescience cooldown reduced by ${$s3/-1000} sec and it grants $s4% additional critical strike chance.]
+Description      : $?c2[Temporal Anomaly's mana cost is reduced by $s1% and its cooldown is reduced by ${$s2/-1000} sec.][Prescience's cooldown is reduced by ${$s3/-1000} sec and it grants $s4% additional critical strike chance.]
 
 Name             : Thread of Fate (desc=Bronze) (id=431716) [Spell Family (224)] 
 Class            : Evoker
@@ -9949,6 +9943,9 @@ Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 292
+                 : 7276: Mastery: Timewalker (406380 effect#4)
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1120027)  : Apply Aura (6) | Modify Damage Taken% (87)
@@ -10056,6 +10053,8 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
@@ -10122,6 +10121,8 @@ Range            : 50000 yards
 Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 292
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Allow Cast While Dead (23), Ignore Line of Sight (66), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
 Effects          :
@@ -10588,6 +10589,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
+                 : 7277: Augmentation Evoker (396186 effect#20)
 Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #17, #18), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2, #17), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Strafing Run (1266151 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3), Evoker - Midnight PrePatch - 11.2 Class Set 2pc (1283651 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc (1283652 effects: #1, #2)
 Family Flags     : 0, 34
 Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -11097,8 +11099,7 @@ Effects          :
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 240 | Scaled Value: 240 | PvP Coefficient: 0.7 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
+                   Base Value: 290 | Scaled Value: 290 | PvP Coefficient: 0.7 | Target: Self (1)
 #7 (id=1317269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
 Description      : $?c1[Disintegrate consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
@@ -11291,7 +11292,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 3022
-Attributes       : Allow Cast While Dead (23), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Allow Cast While Dead (23), Allow Cast While Casting (135), Ignore Healing Modifiers (219), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1142384)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -11714,6 +11715,8 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166492)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
@@ -12551,7 +12554,7 @@ Name             : Merithra's Blessing (id=1256579) [Spell Family (224)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Duration         : 60 seconds
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -12568,7 +12571,7 @@ Tooltip          : Reversion is upgraded to Merithra's Blessing.
 
 Name             : Merithra's Blessing (desc=Green) (id=1256581) [Spell Family (224)] 
 Class            : Evoker
-School           : Nature
+School           : Arcane
 Spell Type       : None
 Resource         : 1.54% Base Mana (0) (id=313278)
 Range            : 30 yards
@@ -12587,7 +12590,7 @@ Attributes       : Allow Cast While Dead (23), Bouncy Chain Missiles (146), Trea
 Effects          :
 #1 (id=1264151)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=1264152)  : Direct Heal (10)
+#2 (id=1264152)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | PvP Coefficient: 1.4 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Chain Heal Ally (45)
 #3 (id=1308097)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
@@ -12658,12 +12661,10 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
-Hotfixed         : Base Value (30 -> 40)
 #2 (id=1266465)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Unbound Flame (1292322)
                    Family Flags: 0
-Hotfixed         : Base Value (30 -> 40)
 #3 (id=1266466)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 2840 (Label) | Target: Self (1)
 #4 (id=1266467)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
@@ -13153,7 +13154,6 @@ Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Poi
 Effects          :
 #1 (id=1277783)  : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.91 | PvP Coefficient: 0.91 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.73645 -> 1.91), PvP Coefficient (1 -> 0.91)
 Description      : Exhale a bolt of concentrated power from your mouth at the target for $s2 Spellfrost damage.
 
 Name             : Star Salvo (id=1265826) [Spell Family (224), Passive] 
@@ -13852,7 +13852,6 @@ Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), A
 Effects          :
 #1 (id=1312298)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (8 -> 10), PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc1292321
 
 Name             : Unbound Flame (id=1292323) [Spell Family (224)] 
@@ -14009,6 +14008,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 6656
+Affecting Spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1321065)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -920,13 +920,13 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Family Flags     : 48, 60
 Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
-#1 (id=129071)   : Direct Heal (10)
+#1 (id=129071)   : Direct Heal (10) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 59.8828 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
-#2 (id=140011)   : Dispel (38)
+#2 (id=140011)   : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
-#3 (id=155430)   : Dispel (38)
+#3 (id=155430)   : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
-#4 (id=155431)   : Dummy (3)
+#4 (id=155431)   : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
 #5 (id=1045034)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -2572,7 +2572,6 @@ Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In 
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4352 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (1.248 -> 1.4352)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Way of the Crane (389325), Way of the Crane (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
@@ -2580,7 +2579,6 @@ Hotfixed         : SP Coefficient (1.248 -> 1.4352)
                    Modified By: Mist Wrap (197900 effect#1)
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.6112 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (7.488 -> 8.6112)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds.][]
@@ -3123,12 +3121,10 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-10 -> -5)
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-10 -> -5)
 #3 (id=191105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
@@ -3147,7 +3143,6 @@ Hotfixed         : Base Value (-10 -> -5)
                    Base Value: 121 | Scaled Value: 121 | PvP Coefficient: 0.77 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-Hotfixed         : Base Value (92 -> 121), PvP Coefficient (1 -> 0.77)
 #9 (id=260830)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2930 (Label) | Target: Self (1)
                    Affected Spells (Label): Invigorating Mists (425804)
@@ -3207,7 +3202,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191103)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 461 | Scaled Value: 461 | PvP Coefficient: 0.758 | Target: Self (1)
-Hotfixed         : Base Value (349 -> 461), PvP Coefficient (1 -> 0.758)
 #6 (id=260817)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260818)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
@@ -3245,7 +3239,6 @@ Hotfixed         : Base Value (349 -> 461), PvP Coefficient (1 -> 0.758)
                    Base Value: 211 | Scaled Value: 211 | PvP Coefficient: 1.234 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-Hotfixed         : Base Value (188 -> 211), PvP Coefficient (1.385 -> 1.234)
 #16 (id=984572)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
@@ -5839,12 +5832,10 @@ Attributes       : Do Not Display Range (126), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.6112 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (7.488 -> 8.6112)
 #2 (id=893187)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=893188)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.6112 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (7.488 -> 8.6112)
 Description      : $@spelldesc116680
 
 Name             : Invigorating Mists (id=274586) [Spell Family (53), Passive] 
@@ -10477,7 +10468,6 @@ Attributes       : Passive (6), No Aura Icon (60), Do Not Display Range (126), N
 Effects          :
 #1 (id=1024228)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 383764 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 8)
 #2 (id=1024229)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Purify $s1% of your Staggered damage each time you gain $s2 sec of Shuffle duration.
@@ -10659,11 +10649,11 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Family Flags     : 48, 60
 Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Reset cooldown upon ending an encounter (333), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
-#1 (id=1024408)  : Direct Heal (10)
+#1 (id=1024408)  : Direct Heal (10) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 59.8828 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
-#2 (id=1024409)  : Dispel (38)
+#2 (id=1024409)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
-#3 (id=1024410)  : Dispel (38)
+#3 (id=1024410)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
 #4 (id=1045181)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
@@ -12324,7 +12314,6 @@ Attributes       : Doesn't Reset Swing Timer if Instant (217), Aura Points On Cl
 Effects          :
 #1 (id=1043545)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.79504 | PvP Coefficient: 0.869 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (4.1696 -> 4.79504), PvP Coefficient (0.8 -> 0.869)
 #2 (id=1043548)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Modified By: Legacy of Wisdom (404408 effect#1), Emperor's Favor (471761 effect#1)
@@ -13080,7 +13069,6 @@ Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (
 Effects          :
 #1 (id=1103894)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.71657 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (3.2318 -> 3.71657)
                    Modified By: Devout Spirit (319919 effect#1)
 Description      : $@spelldesc274586
 Tooltip          : $@spelldesc274586
@@ -13134,12 +13122,10 @@ Effects          :
                    Base Value: -29 | Scaled Value: -29 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-25 -> -29)
 #2 (id=1108338)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -29 | Scaled Value: -29 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-25 -> -29)
 #3 (id=1109279)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
@@ -16133,7 +16119,6 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152602)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.81256 | PvP Coefficient: 0.8333 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.8438 -> 5.81256), PvP Coefficient (1 -> 0.8333)
 Description      : $@spelldesc451823
 
 Name             : Knowledge of the Broken Temple (id=451859) [Spell Family (53)] 
@@ -17917,13 +17902,10 @@ Effects          :
                    Family Flags: 39
 #8 (id=1357276)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3441 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (218 -> 649)
 #9 (id=1357280)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Misc Value 2: 3560 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (218 -> 649)
 #10 (id=1357281) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Misc Value 2: 5669 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (218 -> 649)
 
 Name             : Luck of the Draw! (id=1226058) [Spell Family (53)] 
 Class            : Monk
@@ -18381,7 +18363,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251829)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
