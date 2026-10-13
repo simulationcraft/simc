@@ -4082,48 +4082,30 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
 struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
 {
-  abyssal_gaze_t( demon_hunter_t* p ) : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, "" )
+  abyssal_gaze_t( demon_hunter_t* p, util::string_view options_str )
+    : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, options_str )
   {
   }
+
+  void init() override
+  {
+    base_t::init();
+
+    if ( action_t* parent = player->find_action( "eye_beam" ); parent )
+      parent->add_child( this );
+  }
+
+  bool ready() override
+  {
+    return dh()->buff.demonsurge_demonic_intensity->up() && base_t::ready();
+  };
 };
 
 struct eye_beam_t : public eye_beam_base_t
 {
-  abyssal_gaze_t* abyssal_gaze;
-  double abyssal_gaze_cost;
-
   eye_beam_t( demon_hunter_t* p, util::string_view options_str )
-    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str ),
-      abyssal_gaze( nullptr ),
-      abyssal_gaze_cost( 0 )
+    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str )
   {
-    if ( p->talent.scarred.demonic_intensity->ok() )
-    {
-      abyssal_gaze      = new abyssal_gaze_t( p );
-      abyssal_gaze_cost = abyssal_gaze->data().cost( POWER_FURY );
-      add_child( abyssal_gaze );
-    }
-  }
-
-  double cost() const override
-  {
-    if ( dh()->buff.demonsurge_demonic_intensity->check() )
-    {
-      return abyssal_gaze_cost;
-    }
-    return eye_beam_base_t::cost();
-  }
-
-  void execute() override
-  {
-    if ( dh()->buff.demonsurge_demonic_intensity->check() )
-    {
-      abyssal_gaze->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    eye_beam_base_t::execute();
   }
 };
 
@@ -9742,6 +9724,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new disrupt_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
+  if ( name == "abyssal_gaze" )
+    return new abyssal_gaze_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )
