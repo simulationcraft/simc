@@ -261540,6 +261540,7 @@ Effects          :
 Description      : $@spelldesc1310208
 
 Name             : Luminescent Phoenixblade (id=1310252) [Passive] 
+Hotfixed         : Description
 School           : Holyfire
 Spell Type       : None
 Proc Chance      : 101%
@@ -261552,7 +261553,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2372.571 (coefficient=18.56422) | Target: Self (1)
 #2 (id=1339621)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1129.765 (coefficient=8.839864) | Target: Self (1)
-Description      : Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s1 Radiant damage, and damaging spells will heal a nearby ally for $s2 health.
+Description      : Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s2 Radiant damage, and damaging spells will heal a nearby ally for $s1 health.
 
 Name             : Luminescent Phoenixblade (id=1310255) 
 School           : Holyfire
