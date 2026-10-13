@@ -86,6 +86,7 @@ struct warlock_t final : public player_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
   void init_action_list() override;
   void init_base_stats() override;
+  void init_spells() override;
 
   void create_pets() override;
 
@@ -114,12 +115,33 @@ struct warlock_module_t : public module_t
   void register_actor_initializers( sim_t* ) const override {}
 };
 
+template <class Base>
+struct warlock_action_t : public parse_action_effects_t<Base>
+{
+private:
+  using ab = parse_action_effects_t<Base>;
+
+public:
+  using base_t = warlock_action_t<Base>;
+
+  template <typename... Args>
+  warlock_action_t( Args&&... args ) : ab( std::forward<Args>( args )... ) {}
+
+  warlock_t* p()
+  { return debug_cast<warlock_t*>( this->player ); }
+
+  const warlock_t* p() const
+  { return debug_cast<const warlock_t*>( this->player ); }
+};
+
+using warlock_spell_t  = warlock_action_t<spell_t>;
+
 // Shadow Bolt
 
-struct shadow_bolt_t : public spell_t
+struct shadow_bolt_t : public warlock_spell_t
 {
   shadow_bolt_t( warlock_t* player, util::string_view options_str ) :
-    spell_t( "shadow_bolt", player, player->find_spell( max_rank( player, shadow_bolt_ranks ).spell_id ) )
+    warlock_spell_t( "shadow_bolt", player, player->find_spell( max_rank( player, shadow_bolt_ranks ).spell_id ) )
   {
     parse_options( options_str );
   }
@@ -127,10 +149,10 @@ struct shadow_bolt_t : public spell_t
 
 // Immolate
 
-struct immolate_t : public spell_t
+struct immolate_t : public warlock_spell_t
 {
   immolate_t( warlock_t* player, util::string_view options_str ) :
-    spell_t( "immolate", player, player->find_spell( max_rank( player, immolate_ranks ).spell_id ) )
+    warlock_spell_t( "immolate", player, player->find_spell( max_rank( player, immolate_ranks ).spell_id ) )
   {
     parse_options( options_str );
   }
@@ -138,19 +160,19 @@ struct immolate_t : public spell_t
 
 // Corruption
 
-struct corruption_t : public spell_t
+struct corruption_t : public warlock_spell_t
 {
   corruption_t( warlock_t* player, util::string_view options_str ) :
-    spell_t( "corruption", player, player->find_spell( max_rank( player, corruption_ranks ).spell_id ) )
+    warlock_spell_t( "corruption", player, player->find_spell( max_rank( player, corruption_ranks ).spell_id ) )
   {
     parse_options( options_str );
   }
 };
 
-struct summon_imp_t final : public spell_t
+struct summon_imp_t final : public warlock_spell_t
 {
-  summon_imp_t( std::string_view name, warlock_t* player, std::string_view options_str ) :
-    spell_t( name, player, player->find_spell( 688 ) )
+  summon_imp_t( warlock_t* player, std::string_view options_str ) :
+    warlock_spell_t( "summon_imp", player, player->find_spell( 688 ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -158,8 +180,8 @@ struct summon_imp_t final : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
-    static_cast<warlock_t*>(player)->pets.imp->summon();
+    warlock_spell_t::execute();
+    p()->pets.imp->summon();
   }
 };
 
@@ -172,8 +194,8 @@ struct summon_imp_t final : public spell_t
 namespace pets {
   struct warlock_pet_t : public pet_t
   {
-    warlock_pet_t( sim_t* sim, warlock_t* owner, std::string_view pet_name, bool guardian = false, bool dynamic = false ) :
-      pet_t( sim, owner, pet_name, guardian, dynamic )
+    warlock_pet_t( sim_t* sim, warlock_t* owner, std::string_view pet_name, pet_e pet_type, bool guardian = false ) :
+      pet_t( sim, owner, pet_name, pet_type, guardian, false )
     {
     }
 
@@ -184,11 +206,38 @@ namespace pets {
     { return static_cast<warlock_t*>( owner ); }
   };
 
+  template <class Base>
+  struct warlock_pet_action_t : parse_action_effects_t<Base>
+  {
+  private:
+    using ab = parse_action_effects_t<Base>;
+  public:
+    using base_t = warlock_pet_action_t<Base>;
+
+    template <typename... Args>
+    warlock_pet_action_t( Args&&... args ) : ab( std::forward<Args>( args )... ) {}
+
+    warlock_pet_t* p()
+    { return debug_cast<warlock_pet_t*>( this->player ); }
+
+    const warlock_pet_t* p() const
+    { return debug_cast<const warlock_pet_t*>( this->player ); }
+
+    warlock_t* o()
+    { return debug_cast<warlock_t*>( p()->owner ); }
+
+    const warlock_t* o() const
+    { return debug_cast<const warlock_t*>( p()->owner ); }
+  };
+
+  using warlock_pet_attack_t = warlock_pet_action_t<melee_attack_t>;
+  using warlock_pet_spell_t  = warlock_pet_action_t<spell_t>;
+
   namespace imp {
     struct imp_pet_t : warlock_pet_t
     {
       imp_pet_t( sim_t* sim, warlock_t* owner ) :
-        warlock_pet_t( sim, owner, "imp" )
+        warlock_pet_t( sim, owner, "imp", PET_IMP )
       {
         // from level 6-10 imp character sheet
         owner_coeff.armor = 0.35;
@@ -240,10 +289,10 @@ namespace pets {
 
     // TODO: There's some funky delay on beta. Some casts are back-to-back, some have a 0.5-1.0s gap even when
     // the imp has mana
-    struct firebolt_t : spell_t
+    struct firebolt_t : warlock_pet_spell_t
     {
       firebolt_t( std::string_view n, imp_pet_t* p, std::string_view options_str  ) :
-        spell_t( n, p, p->find_spell( max_rank( p, firebolt_ranks ).spell_id ) )
+        warlock_pet_spell_t( n, p, p->find_spell( max_rank( p, firebolt_ranks ).spell_id ) )
       {
         parse_options( options_str );
 
@@ -272,7 +321,7 @@ action_t* warlock_t::create_action( util::string_view name, util::string_view op
     return new corruption_t( this, options_str );
 
   if ( name == "summon_imp" )
-    return new summon_imp_t( name, this, options_str );
+    return new summon_imp_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -288,20 +337,30 @@ void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attack_crit_chance = 0.02;
-  base.spell_crit_chance = 0.01701;
+  base.attack_crit_chance = get_passive_player_value(0.02, "all_crit");
+  base.spell_crit_chance = get_passive_player_value(0.01701, "all_crit");
+}
+
+void warlock_t::init_spells()
+{
+  player_t::init_spells();
+
+  parse_all_class_passives();
+  parse_all_passive_talents();
 }
 
 void warlock_t::init_action_list()
 {
-  if ( action_list_str.empty() )
+  if ( !action_list_str.empty() )
   {
-    get_action_priority_list( "precombat" )->add_action( "summon_imp" );
-
-    get_action_priority_list( "default" )->add_action( "immolate,if=!ticking|remains<2" );
-    get_action_priority_list( "default" )->add_action( "corruption,if=!ticking|remains<2" );
-    get_action_priority_list( "default" )->add_action( "shadow_bolt" );
+    player_t::init_action_list();
+    return;
   }
+
+  clear_action_priority_lists();
+  warlock_apl::warlock( this );
+  use_default_action_list = true;
+  player_t::init_action_list();
 }
 
 }  // namespace warlock
