@@ -452,7 +452,6 @@ public:
   {
     bool fingers_of_frost_active;
     bool had_low_mana;
-    bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
@@ -3744,12 +3743,7 @@ struct filler_spell_t : custom_state_spell_t<Base, frostfire_data_t>
   }
 
   bool apply_frostfire_empowerment( const action_state_t* s ) const
-  {
-    if ( this->sim->dbc->wowv() < wowv_t{ 12, 1, 5 } )
-      return frostfire && this->p()->state.trigger_ff_empowerment;
-    else
-      return frostfire && this->cast_state( s )->data.frostfire_empowerment;
-  }
+  { return frostfire && this->cast_state( s )->data.frostfire_empowerment; }
 
   void execute() override
   {
@@ -3759,7 +3753,6 @@ struct filler_spell_t : custom_state_spell_t<Base, frostfire_data_t>
     {
       // Buff is decremented with a short delay, allowing two spells to benefit.
       make_event( *this->sim, 15_ms, [ this ] { this->p()->buffs.frostfire_empowerment->decrement(); } );
-      this->p()->state.trigger_ff_empowerment = true;
     }
   }
 
@@ -3769,11 +3762,9 @@ struct filler_spell_t : custom_state_spell_t<Base, frostfire_data_t>
 
     if ( this->result_is_hit( s->result ) && apply_frostfire_empowerment( s ) )
     {
-      this->p()->state.trigger_ff_empowerment = false;
-
       double amount = s->result_total;
       // TODO: Doesn't seem to benefit from crits on the main target
-      if ( this->sim->dbc->wowv() >= wowv_t{ 12, 1, 5 } )
+      if ( this->p()->bugs )
         amount /= 1.0 + s->result_crit_bonus;
       this->p()->action.frostfire_empowerment->execute_on_target( s->target, this->p()->talents.frostfire_empowerment->effectN( 2 ).percent() * amount );
     }
@@ -4043,10 +4034,6 @@ struct frostbolt_t final : public filler_spell_t<frost_mage_spell_t>
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
-
-    // TODO: PTR check
-    if ( p->bugs && !frostfire && sim->dbc->wowv() < wowv_t{ 12, 1, 5 } )
-      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
