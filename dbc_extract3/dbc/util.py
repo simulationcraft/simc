@@ -154,7 +154,9 @@ def race_id(**kwargs):
 
 def class_skills():
     if not hasattr(class_skills, '_map'):
-        class_skills._map = [info['skill'] for info in constants.CLASS_INFO]
+        class_skills._map = set()
+        for info in constants.CLASS_INFO:
+            class_skills._map.update( info['skill'] )
 
     return class_skills._map
 
