@@ -2629,11 +2629,7 @@ public:
   { return 0.0; }
 
   double cost_flat_modifier() const override
-  {
-     double c = ab::cost_flat_modifier();
-
-     return c;
-  }
+  { return ab::cost_flat_modifier(); }
 
   double cost_pct_multiplier() const override
   {
