@@ -121,9 +121,7 @@ struct warrior_t : public player_t
   {
     // Arms
     // Row 1
-    player_talent_t improved_heroic_strike;
     player_talent_t deflection;
-    player_talent_t improved_rend;
 
   } talent;
 
@@ -267,8 +265,6 @@ struct warrior_melee_t : public warrior_attack_t
     {
       if ( p()->resource_available( RESOURCE_RAGE, p()->heroic_strike->cost() ) )
       {
-        // TODO: figure out if we should track the target at queue time. I assume this hits the current target which
-        // could be different.
         p()->heroic_strike->execute_on_target( target );
         schedule_execute();
         return;
@@ -342,15 +338,6 @@ struct rend_t : public warrior_attack_t
     parse_options( options_str );
 
     dot_behavior = DOT_CLIP;
-
-    constexpr std::array<double, 4> improved_rend_pct {
-      0,
-      0.15,
-      0.25,
-      0.35,
-    };
-
-    base_td_multiplier *= 1.0 + improved_rend_pct[ player->talent.improved_rend.rank() ];
 
     // TODO: Verify this at higher levels
     attack_power_mod.tick = 0.016;
@@ -460,17 +447,22 @@ void warrior_t::init_base_stats()
 
   player_t::init_base_stats();
 
+
+  base.parry_per_strength = 0.0;
+
+  // TODO - can this base stuff be moved into core?
+
   base.all_crit           = 0.0;
-  base.attack_crit_chance = 0.0;
   base.spell_crit_chance  = 0.0;
 
   base.dodge_per_agility = base.attack_crit_per_agility;
-  base.dodge = ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility )
+  auto base_dodge = ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility )
                * base.dodge_per_agility;
 
-  base.parry_per_strength = 0.0;
-  base.parry = 0.05;
-  base.block = 0.05;
+  base.attack_crit_chance = get_passive_player_value( 0.0, "attack_crit" );
+  base.parry              = get_passive_player_value( 0.05, "parry" );
+  base.block              = get_passive_player_value( 0.05, "block" );
+  base.dodge              = get_passive_player_value( base_dodge, "dodge" );
 
   base.stats.attack_power = 3.0 * level() - 20.0;
 }
@@ -496,7 +488,7 @@ void warrior_t::create_buffs()
   buff.battle_shout = make_buff<stat_buff_t>( this, "battle_shout",
                         find_spell( max_rank( this, battle_shout_ranks ).spell_id ) );
 
-  buff.bloodrage = make_buff<stat_buff_t>( this, "bloodrage",
+  buff.bloodrage = make_buff( this, "bloodrage",
                         find_spell( max_rank( this, bloodrage_ranks ).buff_id ) )
                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                             resource_gain( RESOURCE_RAGE, 1.0, get_gain( "bloodrage" ) ); } );
@@ -509,8 +501,7 @@ void warrior_t::init_spells()
   player_t::init_spells();
 
   parse_all_class_passives();
-
-  talent.improved_rend = find_talent_spell( talent_tree::CLASS, "Improved Rend" );
+  parse_all_passive_talents();
 }
 
 action_t* warrior_t::create_action( util::string_view name, util::string_view options_str )
