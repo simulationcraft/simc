@@ -3929,17 +3929,6 @@ struct blade_flurry_t : public rogue_attack_t
       return m;
     }
 
-    void impact( action_state_t* state ) override
-    {
-      rogue_attack_t::impact( state );
-
-      // 2026-04-10 -- Whirl of Blades is triggered by Blade Flurry cast damage only with Deft talented
-      if ( p()->bugs && p()->talent.outlaw.deft_maneuvers->ok() ) 
-      {
-        p()->buffs.mid1_outlaw_4pc->trigger();
-      }
-    }
-
     bool procs_main_gauche() const override
     { return true; }
   };
