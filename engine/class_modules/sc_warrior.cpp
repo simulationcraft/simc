@@ -144,10 +144,14 @@ struct warrior_t : public player_t
 template <class Base>
 struct warrior_action_t : public parse_action_effects_t<Base>
 {
-  using base_t = parse_action_effects_t<Base>;
+private:
+  using ab = parse_action_effects_t<Base>;
+
+public:
+  using base_t = warrior_action_t<Base>;
 
   template <typename... Args>
-  warrior_action_t( Args&&... args ) : base_t( std::forward<Args>( args )... ) {}
+  warrior_action_t( Args&&... args ) : ab( std::forward<Args>( args )... ) {}
 
   warrior_t* p()
   { return debug_cast<warrior_t*>( this->player ); }
@@ -178,7 +182,7 @@ struct warrior_action_t : public parse_action_effects_t<Base>
     }
     else
     {
-      base_t::consume_resource();
+      ab::consume_resource();
     }
   }
 };

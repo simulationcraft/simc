@@ -180,10 +180,14 @@ struct shaman_module_t : public module_t
 template <class Base>
 struct shaman_action_t : public parse_action_effects_t<Base>
 {
-  using base_t = parse_action_effects_t<Base>;
+private:
+  using ab = parse_action_effects_t<Base>;
+
+public:
+  using base_t = shaman_action_t<Base>;
 
   template <typename... Args>
-  shaman_action_t( Args&&... args ) : base_t( std::forward<Args>( args )... ) {}
+  shaman_action_t( Args&&... args ) : ab( std::forward<Args>( args )... ) {}
 
   shaman_t* p()
   { return debug_cast<shaman_t*>( this->player ); }
