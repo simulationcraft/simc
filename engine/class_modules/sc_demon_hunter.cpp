@@ -7075,6 +7075,11 @@ struct blade_dance_base_t
     {
       double m = base_t::composite_da_multiplier( s );
       m *= 1.0 + dh()->talent.havoc.first_blood->effectN( 1 ).percent();
+
+      // 10/13/2026 the last attack of Blade Dance double dips the Eternal Hunt bonus.
+      if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack)
+        m *= 1.0 + dh()->talent.havoc.eternal_hunt_3->effectN( 1 ).percent();
+      
       return m;
     }
 
@@ -7119,6 +7124,17 @@ struct blade_dance_base_t
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
       if ( p->talent.havoc.first_blood->ok() )
         target_filter_callback = secondary_targets_only();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = base_t::composite_da_multiplier( s );
+
+      // 10/13/2026 the last attack of Blade Dance double dips the Eternal Hunt bonus.
+      if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack )
+        m *= 1.0 + dh()->talent.havoc.eternal_hunt_3->effectN( 1 ).percent();
+      
+      return m;
     }
 
     void impact( action_state_t* s ) override
