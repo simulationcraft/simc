@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-
+#include "action/parse_effects.hpp"
 #include "class_modules/apl/shaman.hpp"
 
 namespace {
@@ -132,7 +132,7 @@ struct shaman_t final : public player_t
   {
     // Enhancement
     // Row 1
-    player_talent_t thundering_strikes;
+    // player_talent_t thundering_strikes;
 
     // Row 2
     player_talent_t mental_dexterity;
@@ -177,6 +177,25 @@ struct shaman_module_t : public module_t
   void register_hotfixes() const override {}
 };
 
+template <class Base>
+struct shaman_action_t : public parse_action_effects_t<Base>
+{
+  using base_t = parse_action_effects_t<Base>;
+
+  template <typename... Args>
+  shaman_action_t( Args&&... args ) : base_t( std::forward<Args>( args )... ) {}
+
+  shaman_t* p()
+  { return debug_cast<shaman_t*>( this->player ); }
+
+  const shaman_t* p() const
+  { return debug_cast<const shaman_t*>( this->player ); }
+};
+
+
+using shaman_attack_t = shaman_action_t<melee_attack_t>;
+using shaman_spell_t  = shaman_action_t<spell_t>;
+
 void shaman_t::init_base_stats()
 {
   base.attack_power_per_strength = 2.0;
@@ -185,13 +204,11 @@ void shaman_t::init_base_stats()
 
   base.stats.attack_power = 2.0 * level() - 20.0;
 
-  double thundering_strikes = talent.thundering_strikes->effectN( 1 ).percent();
-
   // original classic crit rates according to
   // * https://github.com/wowsims/classic/blob/master/sim/core/base_stats.go#L84
   // TODO: Verify in-game
-  base.attack_crit_chance = 0.017 + thundering_strikes;
-  base.spell_crit_chance = 0.023 + thundering_strikes;
+  base.attack_crit_chance = get_passive_player_value( 0.017, "all_crit" );
+  base.spell_crit_chance = get_passive_player_value( 0.023, "all_crit" );
 }
 
 void shaman_t::init_spells()
@@ -199,8 +216,8 @@ void shaman_t::init_spells()
   player_t::init_spells();
 
   parse_all_class_passives();
+  parse_all_passive_talents();
 
-  talent.thundering_strikes = find_talent_spell( talent_tree::CLASS, "Thundering Strikes" );
   talent.mental_dexterity = find_talent_spell( talent_tree::CLASS, "Mental Dexterity" );
 }
 
@@ -229,10 +246,10 @@ void shaman_t::invalidate_cache( cache_e c )
 
 // Earth Shock
 
-struct earth_shock_t : public spell_t
+struct earth_shock_t : public shaman_spell_t
 {
   earth_shock_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "earth_shock", player, player->find_spell( max_rank( player, earth_shock_ranks ).spell_id ) )
+    shaman_spell_t( "earth_shock", player, player->find_spell( max_rank( player, earth_shock_ranks ).spell_id ) )
   {
     parse_options( options_str );
 
@@ -243,10 +260,10 @@ struct earth_shock_t : public spell_t
 
 // Flame Shock
 
-struct flame_shock_t : public spell_t
+struct flame_shock_t : public shaman_spell_t
 {
   flame_shock_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "flame_shock", player, player->find_spell( max_rank( player, flame_shock_ranks ).spell_id ) )
+    shaman_spell_t( "flame_shock", player, player->find_spell( max_rank( player, flame_shock_ranks ).spell_id ) )
   {
     parse_options( options_str );
 
@@ -259,10 +276,10 @@ struct flame_shock_t : public spell_t
 // Shaman Weapon Imbues
 // ==========================================================================
 
-struct flametongue_attack_t : public spell_t
+struct flametongue_attack_t : public shaman_spell_t
 {
   flametongue_attack_t( shaman_t* player ) :
-    spell_t( "flametongue_attack", player, player->find_spell( max_rank( player, flametongue_weapon_ranks ).attack_id ) )
+    shaman_spell_t( "flametongue_attack", player, player->find_spell( max_rank( player, flametongue_weapon_ranks ).attack_id ) )
   {
     background = true;
 
@@ -275,10 +292,10 @@ struct flametongue_attack_t : public spell_t
   }
 };
 
-struct flametongue_weapon_t : public spell_t
+struct flametongue_weapon_t : public shaman_spell_t
 {
   flametongue_weapon_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "flametongue_weapon", player, player->find_spell( max_rank( player, flametongue_weapon_ranks ).spell_id ) )
+    shaman_spell_t( "flametongue_weapon", player, player->find_spell( max_rank( player, flametongue_weapon_ranks ).spell_id ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -287,27 +304,25 @@ struct flametongue_weapon_t : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    shaman_spell_t::execute();
 
-    auto p = static_cast<shaman_t*>( player );
-
-    p->buff.rockbiter_weapon->expire();
-    p->buff.flametongue_weapon->trigger();
+    p()->buff.rockbiter_weapon->expire();
+    p()->buff.flametongue_weapon->trigger();
   }
 
   bool ready() override
   {
-    if ( static_cast<shaman_t*>( player )->buff.flametongue_weapon->check() )
+    if ( p()->buff.flametongue_weapon->check() )
       return false;
 
-    return spell_t::ready();
+    return shaman_spell_t::ready();
   }
 };
 
-struct rockbiter_weapon_t : public spell_t
+struct rockbiter_weapon_t : public shaman_spell_t
 {
   rockbiter_weapon_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "rockbiter_weapon", player, player->find_spell( max_rank( player, rockbiter_weapon_ranks ).spell_id ) )
+    shaman_spell_t( "rockbiter_weapon", player, player->find_spell( max_rank( player, rockbiter_weapon_ranks ).spell_id ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -316,20 +331,18 @@ struct rockbiter_weapon_t : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    shaman_spell_t::execute();
 
-    auto p = static_cast<shaman_t*>( player );
-
-    p->buff.flametongue_weapon->expire();
-    p->buff.rockbiter_weapon->trigger();
+    p()->buff.flametongue_weapon->expire();
+    p()->buff.rockbiter_weapon->trigger();
   }
 
   bool ready() override
   {
-    if ( static_cast<shaman_t*>( player )->buff.rockbiter_weapon->check() )
+    if ( p()->buff.rockbiter_weapon->check() )
       return false;
 
-    return spell_t::ready();
+    return shaman_spell_t::ready();
   }
 };
 
@@ -341,10 +354,10 @@ struct rockbiter_weapon_t : public spell_t
 // TODO: Make totems a unit for use with range?
 // TODO: Party buff
 
-struct strength_of_earth_totem_t : public spell_t
+struct strength_of_earth_totem_t : public shaman_spell_t
 {
   strength_of_earth_totem_t( shaman_t* player, util::string_view options_str ) :
-    spell_t( "strength_of_earth_totem", player, player->find_spell( max_rank( player, strength_of_earth_totem_ranks ).spell_id ) )
+    shaman_spell_t( "strength_of_earth_totem", player, player->find_spell( max_rank( player, strength_of_earth_totem_ranks ).spell_id ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -353,9 +366,9 @@ struct strength_of_earth_totem_t : public spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    shaman_spell_t::execute();
 
-    static_cast<shaman_t*>( player )->buff.strength_of_earth->trigger();
+    p()->buff.strength_of_earth->trigger();
   }
 };
 
@@ -367,10 +380,10 @@ struct strength_of_earth_totem_t : public spell_t
 
 // Melee Attack =============================================================
 
-struct shaman_melee_t : public melee_attack_t
+struct shaman_melee_t : public shaman_attack_t
 {
   shaman_melee_t( util::string_view name, player_t* player, weapon_t* w )
-    : melee_attack_t( name, player, spell_data_t::nil() )
+    : shaman_attack_t( name, player, spell_data_t::nil() )
   {
     weapon            = w;
     weapon_multiplier = 1.0;
@@ -389,20 +402,18 @@ struct shaman_melee_t : public melee_attack_t
 
   void impact( action_state_t* state ) override
   {
-    melee_attack_t::impact( state );
+    shaman_attack_t::impact( state );
 
-    auto p = static_cast<shaman_t*>( player );
-
-    if ( result_is_hit( state->result ) && p->buff.flametongue_weapon->check() )
-      p->flametongue_attack->execute_on_target( state->target );
+    if ( result_is_hit( state->result ) && p()->buff.flametongue_weapon->check() )
+      p()->flametongue_attack->execute_on_target( state->target );
   }
 };
 
 
-struct shaman_auto_attack_t : public melee_attack_t
+struct shaman_auto_attack_t : public shaman_attack_t
 {
   shaman_auto_attack_t( shaman_t* p, util::string_view options_str )
-    : melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+    : shaman_attack_t( "auto_attack", p, spell_data_t::nil() )
   {
     parse_options( options_str );
     trigger_gcd           = 0_ms;
