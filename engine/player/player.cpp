@@ -1513,7 +1513,7 @@ void player_t::init_base_stats()
 
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
-    base.attack_crit_chance = base.all_crit;
+    base.attack_crit_chance = get_passive_player_value( base.all_crit, "attack_crit" );
 
     const auto& pes = player_expected_stat_t::find( util::class_id( type ), level(), is_ptr() );
     base.attack_crit_per_agility = pes.crit_per_agility;
@@ -13935,6 +13935,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_DODGE_PERCENT,                      "dodge"                            },  // 49
   { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"             },  // 50
   { A_MOD_BLOCK_PERCENT,                      "block"                            },  // 51
+  { A_MOD_CRIT_PERCENT,                       "attack_crit"                      },  // 52
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                       },  // 57
   { A_MOD_DAMAGE_PERCENT_DONE,                "damage_multiplier"                },  // 79
   { A_MOD_PERCENT_STAT,                       "base_attribute_multiplier"        },  // 80
@@ -14322,6 +14323,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PARRY_PERCENT:  // 47
       case A_MOD_DODGE_PERCENT:  // 49
       case A_MOD_BLOCK_PERCENT:  // 51
+      case A_MOD_CRIT_PERCENT:   // 52
       case A_MOD_SPELL_CRIT_CHANCE:  // 57
       case A_MOD_SPEED_ALWAYS:  // 129
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:  // 187
