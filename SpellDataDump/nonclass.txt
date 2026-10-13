@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70391 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -261540,7 +261540,6 @@ Effects          :
 Description      : $@spelldesc1310208
 
 Name             : Luminescent Phoenixblade (id=1310252) [Passive] 
-Hotfixed         : Description
 School           : Holyfire
 Spell Type       : None
 Proc Chance      : 101%
