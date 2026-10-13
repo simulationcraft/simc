@@ -1197,7 +1197,7 @@ public:
     attack_t* screaming_brutality_slash_proc_throw_glaive          = nullptr;
     attack_t* essence_break_proc                                   = nullptr;
     spell_t* glaive_tempest                                        = nullptr;
-    spell_t* collective_anguish          = nullptr;
+    spell_t* collective_anguish                                    = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -4077,48 +4077,32 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
 struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
 {
-  abyssal_gaze_t( demon_hunter_t* p ) : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, "" )
+  abyssal_gaze_t( demon_hunter_t* p, util::string_view o ) : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, o )
   {
+  }
+
+  bool ready() override
+  {
+    if ( !eye_beam_base_t::ready() )
+      return false;
+
+    return dh()->buff.metamorphosis->check();
   }
 };
 
 struct eye_beam_t : public eye_beam_base_t
 {
-  abyssal_gaze_t* abyssal_gaze;
-  double abyssal_gaze_cost;
-
   eye_beam_t( demon_hunter_t* p, util::string_view options_str )
-    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str ),
-      abyssal_gaze( nullptr ),
-      abyssal_gaze_cost( 0 )
+    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str )
   {
-    if ( p->talent.scarred.demonic_intensity->ok() )
-    {
-      abyssal_gaze      = new abyssal_gaze_t( p );
-      abyssal_gaze_cost = abyssal_gaze->data().cost( POWER_FURY );
-      add_child( abyssal_gaze );
-    }
   }
 
-  double cost() const override
+  bool ready() override
   {
-    if ( dh()->buff.demonsurge_demonic_intensity->check() )
-    {
-      return abyssal_gaze_cost;
-    }
-    return eye_beam_base_t::cost();
-  }
+    if ( !eye_beam_base_t::ready() )
+      return false;
 
-  void execute() override
-  {
-    if ( dh()->buff.demonsurge_demonic_intensity->check() )
-    {
-      abyssal_gaze->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    eye_beam_base_t::execute();
+    return !dh()->buff.metamorphosis->check();
   }
 };
 
@@ -5503,8 +5487,7 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
 struct the_hunt_dot_t : public demon_hunter_spell_t
 {
-  the_hunt_dot_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->spec.the_hunt_dot )
+  the_hunt_dot_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.the_hunt_dot )
   {
     dual         = true;
     aoe          = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
@@ -7077,9 +7060,9 @@ struct blade_dance_base_t
       m *= 1.0 + dh()->talent.havoc.first_blood->effectN( 1 ).percent();
 
       // 10/13/2026 the last attack of Blade Dance double dips the Eternal Hunt bonus.
-      if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack)
+      if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack )
         m *= 1.0 + dh()->talent.havoc.eternal_hunt_3->effectN( 1 ).percent();
-      
+
       return m;
     }
 
@@ -7133,7 +7116,7 @@ struct blade_dance_base_t
       // 10/13/2026 the last attack of Blade Dance double dips the Eternal Hunt bonus.
       if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack )
         m *= 1.0 + dh()->talent.havoc.eternal_hunt_3->effectN( 1 ).percent();
-      
+
       return m;
     }
 
@@ -9752,6 +9735,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new disrupt_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
+  if ( name == "abyssal_gaze" )
+    return new abyssal_gaze_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )
