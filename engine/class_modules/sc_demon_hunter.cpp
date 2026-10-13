@@ -7128,7 +7128,7 @@ struct blade_dance_base_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = base_t::composite_da_multiplier( s );
+      double m = demon_hunter_attack_t::composite_da_multiplier( s );
 
       // 10/13/2026 the last attack of Blade Dance double dips the Eternal Hunt bonus.
       if ( dh()->talent.havoc.eternal_hunt_3->ok() && last_attack )
