@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -45,8 +45,8 @@ Affecting Spells : Frosty Zap (24392 effect#1), Improved Counterspell (24429 eff
 Family Flags     : 5, 57
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=75)       : Trigger Missiles (32): Frostbolt | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.8 | Trigger Spell: 228597 | Chain Targets: 1 | Target: Targeted Enemy (6)
+#1 (id=75)       : Trigger Missiles (32): Frostbolt | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Trigger Spell: 228597 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.$?a1246769[
 
 |CFFffffffApplies $1246769s1 $lstack:stacks; of Freezing.|R][]
@@ -210,7 +210,9 @@ Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49),
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Radius: 100 yards | Target: Targeted Ally or Raid (118)
-#2 (id=1286688)  : Remove Aura (203): Arcane Intellect Highlight
+#2 (id=1286688)  : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+#3 (id=1356090)  : Remove Aura (203): Arcane Intellect Highlight
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271907 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
 
@@ -567,9 +569,9 @@ Effects          :
 #5 (id=1261329)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Ignition (1254756 effect#1), Wildfire (1254828 effect#1)
-Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast,  Pyroblast$?s153561[, Meteor][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a1254756[
+Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Pyroblast$?s153561[, Meteor][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a1254756[
 
-Fire Blast causes $s1% of your Ignite to spread to $s5 nearby $Lenemy:enemies;.][]
+Fire Blast causes $s2% of your Ignite to spread to $s5 nearby $Lenemy:enemies;.][]
 
 Name             : Fireball (id=13438) [Spell Family (3)] 
 School           : Fire
@@ -1346,7 +1348,7 @@ Effects          :
 #1 (id=32866)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block or Ice Cold again for $d.
-Tooltip          : $?a414659[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
+Tooltip          : $?s414658[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
 
 Name             : Reduced Blink GCD (id=44301) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -1915,7 +1917,6 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=85629)    : School Damage (2): frost | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.777 | PvP Coefficient: 1.75 | Radius: 9.5 yards | Target: at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.67584 -> 0.777)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -2177,7 +2178,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Master of Escape (210476 effect#1)
 Family Flags     : 31, 50
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Mount (17), Leave World (19)
 Effects          :
 #1 (id=123208)   : Trigger Spell (64): Greater Invisibility
@@ -2963,7 +2964,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=212872)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.29 | PvP Coefficient: 0.93 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.86 -> 1.29), PvP Coefficient (1.4 -> 0.93)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153595
 
@@ -3039,7 +3039,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage (3): fire every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.04 | PvP Coefficient: 0.65 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.52 -> 1.04), PvP Coefficient (1.3 -> 0.65)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
@@ -4105,7 +4104,7 @@ Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 (Category) | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
-Description      : Frost Nova now has ${1+$m1} charges.
+Description      : Frost Nova gains an additional charge.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4486,7 +4485,7 @@ Effects          :
 Description      : $@spelldesc205022
 Tooltip          : Maximum mana increased by $s1%.
 
-Name             : Master of Escape (desc=PvP Talent) (id=210476) [Spell Family (3), Passive, Hidden] 
+Name             : Master of Escape (id=210476) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
@@ -4499,7 +4498,7 @@ Effects          :
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Invisibility (66), Greater Invisibility (110959), Greater Invisibility (113862), Greater Invisibility (122293)
                    Family Flags: 50
-Description      : Reduces the cooldown of Invisibility by ${-$s1/1000} sec.
+Description      : $?s110959[Greater ][]Invisibility's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Mark of Aluneth (desc=Artifact) (id=210726) 
 Class            : Mage
@@ -6145,7 +6144,7 @@ Effects          :
 Description      : $@spelldesc269650
 Tooltip          : Damage done by your next non-instant Pyroblast or Flamestrike increased by $s1%.
 
-Name             : Ray of Frost (id=269748) [Spell Family (3), Hidden] 
+Name             : Ray of Frost (id=269748) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -6154,7 +6153,7 @@ Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Is Channelled (34), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
+Attributes       : No Immunities (29), No Redirection (35), No Reflection (39), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=718211)   : Apply Aura (6) | Periodic Trigger Spell (23): Fingers of Frost every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 44544 | Target: Self (1)
@@ -8373,7 +8372,7 @@ Effects          :
 #2 (id=1244659)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 23 | Misc Value 2: 5291 (Label) | Target: Self (1)
                    Affected Spells (Label): Temporal Realignment (1244090), Temporal Realignment (1244093)
-Description      : Reduces the cooldown of $?a1244090[Temporal Realignment][Alter Time] by ${$s1/-1000} sec. 
+Description      : Alter Time's cooldown is reduced by ${$s1/-1000} sec. 
 
 Name             : From the Ashes (id=342344) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=9, col=3, max_rank=1, req_points=20]
@@ -9149,7 +9148,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1007588)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.5 -> 2.25)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1007601)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 378947
@@ -9287,7 +9285,7 @@ Effects          :
 #2 (id=1013564)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.5 | Misc Value: 1632 (Category) | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
-Description      : The cooldowns of Blink and Shimmer are reduced by ${$s1/-1000} sec.
+Description      : $?s212653[Shimmer's][Blink's] cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
 Class            : Mage, Evoker
@@ -9393,12 +9391,12 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 7158
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Unknown (450)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Unknown (450)
 Effects          :
 #1 (id=1013746)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 0.5 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : The cooldown of Ice Block is reduced by ${$s1/-1000} sec.
+Description      : $?s414659[Ice Cold][Ice Block]'s cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Tome of Antonidas (id=382490) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8]
@@ -9413,7 +9411,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013847)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases Haste by $s1%. 
+Description      : Haste increased by $s1%. 
 
 Name             : Tome of Rhonin (id=382493) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
@@ -9428,7 +9426,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013852)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases critical strike chance by $s1%.
+Description      : Critical strike chance by $s1%.
 
 Name             : Arcane Warding (id=383092) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=2, req_points=0]
@@ -9444,7 +9442,7 @@ Effects          :
 #1 (id=1014783)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Description      : Reduces magic damage taken by $s1%.
+Description      : Magic damage taken reduced by $s1%.
 
 Name             : Mass Polymorph (id=383121) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
@@ -9473,7 +9471,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1014831)  : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16372 | Misc Value 2: 9 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Description      : Transforms all enemies within $a yards into sheep, wandering around incapacitated for $d. While affected, the victims cannot take actions but will regenerate health very quickly. Damage will cancel the effect.
+Description      : Transforms all enemies within $a1 yds into sheep, wandering around incapacitated for $d. While affected, the victims cannot take actions but will regenerate health very quickly. Damage will cancel the effect.
 
 Only works on Beasts, Humanoids and Critters.
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
@@ -9797,7 +9795,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1016232)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Your Haste is increased by $s1%.
+Description      : Haste increased by $s1%.
 
 Name             : Arcane Tempo (id=383997) [Spell Family (3)] 
 Class            : Mage
@@ -10154,7 +10152,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1021214)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Casting your barrier removes all snare effects.
+Description      : Casting $?c1[Prismatic]?c2[Blazing][Ice] Barrier removes all snare effects.
 
 Name             : Fervent Flickering (id=387044) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -10851,6 +10849,7 @@ Effects          :
 Description      : $@spelldesc389713
 
 Name             : Ice Cold (id=414658) [Spell Family (3)] 
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, replace="Ice Block" (id=45438)]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -10892,11 +10891,12 @@ Description      : Your blood runs cold, reducing all damage you take by $s8% fo
 
 While Ice Cold is active, you heal for ${$382292s1*10}% of your maximum health over the duration.][]
 
+Does not incur the Global Cooldown.
+
 Causes Hypothermia, preventing you from recasting Ice Cold for $41425d.
 Tooltip          : Damage taken reduced by $s8%.
 
 Name             : Ice Cold (id=414659) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -10955,7 +10955,7 @@ Effects          :
                    Base Value: -180000 | Scaled Value: -180000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Mass Invisibility (414664)
                    Family Flags: 103
-Description      : The cooldown of Mass Invisibility is reduced by ${$s1/-60000} min and it can affect allies in combat.
+Description      : Mass Invisibility's cooldown is reduced by ${$s1/-60000} min, and it can affect allies in combat.
 
 Name             : Fuel the Fire (id=416094) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=3, col=6, max_rank=1, req_points=0]
@@ -11535,11 +11535,11 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #2 (id=1131295)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.6667 | Target: Self (1)
-Description      : $?a137019[Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies]?a137020[Comet Storm now also calls down a Meteor, dealing $351140s1 Fire damage to nearby enemies. Damage reduced beyond 8 targets.
+Description      : $?a137019[Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies]?a137020[Comet Storm now also calls down a Meteor, dealing $438607s1 Fire damage to nearby enemies. Damage reduced beyond 8 targets.
 
 Damage from Meteor Shatters $1246769s5 stacks of Freezing][Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies.
 
-Comet Storm now also calls down a Meteor, dealing $351140s1 Fire damage to nearby enemies].
+Comet Storm now also calls down a Meteor, dealing $438607s1 Fire damage to nearby enemies].
 
 Name             : Flame and Frost (id=431112) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -11617,7 +11617,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Flamestrike (2120), Scorch (2948), Ignite (12654), Ice Lance (30455), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Fire Blast (319836), Meteor (351140), Blast Wave (389631), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438674), Meteorite (449560), Meteorite (449569), Living Bomb (453251), Flamestrike (460476), Living Bomb (464884), Frostfire Bolt (468655), Ignite (1236160), Glacial Spike (1236209), Glacial Spike (1236211), Shatter (1246949), Freezing Winds (1247554), Blizzard (1248829), Flamestrike (1254851), Glacial Spike (1262860), Glacial Spike (1262862), Ignite (1262887), Winter's End (1280757)
                    Family Flags: 1, 2, 4, 5, 7, 9, 17, 27, 28, 35, 38, 48, 52, 56, 64, 78, 82, 88, 96, 102, 119, 120
-Description      : $?a137020[Frostfire Bolt has an additional $s1% chance to grant Brain Freeze]?a137019[Frostfire Bolt's critical strike chance is increased by $s2%.][Frostfire Bolt has and additional $s1% chance to grant Brain Freeze and its critical strike chance is increased by $s2%].
+Description      : $?a137020[Frostfire Bolt grants Brain Freeze $s1% more often]?a137019[Frostfire Bolt's critical strike chance is increased by $s2%][Frostfire Bolt grants Brain Freeze $s1% more often and its critical strike chance is increased by $s2%].
 
 The damage of your Frost spells and Fire spells are increased by $s3%.
 
@@ -11667,7 +11667,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #6 (id=1296950)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Casting Frostfire spells has a $s3% chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies. Damage reduced beyond $s5 targets.$?c2[][
+Description      : Casting Frostfire spells has a $s3% chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, and explode for $s2% of its damage to nearby enemies. Damage reduced beyond $s5 targets.$?c2[][
 
 Damage from Frostfire Empowerment applies $s4 $Lstack:stacks; of Freezing.]
 
@@ -11967,7 +11967,7 @@ Labels           : 16: Class Spells
                  : 3408: Mastery: Savant (190740 effect#6), Mastery: Icicles (321684 effect#4)
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Mastery: Freeze and Shatter (1246752 effects: #1, #3), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 85
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.453 | Target: Targeted Enemy (6)
@@ -12016,7 +12016,7 @@ Labels           : 16: Class Spells
                  : 3408: Mastery: Savant (190740 effect#6), Mastery: Icicles (321684 effect#4)
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Mastery: Freeze and Shatter (1246752 effects: #1, #3), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 85
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139865)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4365 | Target: Targeted Enemy (6)
@@ -12039,7 +12039,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1250329)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $?c1[Casting Arcane Surge generates $s1 Arcane Splinters][Each time Ray of Frost damages one or more enemies, it generates $s3 Frost $LSplinter:Splinters;].
+Description      : $?c1[Casting Arcane Surge conjures $s1 Arcane Splinters][Each time Ray of Frost damages one or more enemies, it conjures $s3 Frost $LSplinter:Splinters;].
 
 $?c1[During Arcane Surge, your chance to conjure an additional Arcane Splinter is increased to $s2%][For $1247908d after casting Ray of Frost, your chance to conjure an additional Frost Splinter is increased to $s2%].
 
@@ -12202,7 +12202,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1141352)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : While in combat, Blink summons a Mirror Image at your previous location.
+Description      : While in combat, $?s212653[Shimmer][Blink] summons a Mirror Image at your previous location.
 
 Name             : Phantasmal Image (id=444784) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -12219,7 +12219,7 @@ Effects          :
 #2 (id=1141403)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 3672 (Label) | Target: Self (1)
                    Affected Spells (Label): Mirror Image (55342)
-Description      : Your Mirror Image summons $s2 extra $Lcopy:copies; of you.
+Description      : Casting Mirror Image summons $s2 extra $Lcopy:copies; of you.
 
 Name             : Reactive Barrier (id=444827) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
@@ -12958,7 +12958,6 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Flamestrike (460476), Flamestrike (1254851)
                    Family Flags: 2
-Hotfixed         : Base Value (3 -> 6)
 #3 (id=1261872)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
@@ -13587,7 +13586,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1158858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : When your Barrier is removed, reduce its cooldown by ${$s1/1000} sec.
+Description      : When $?c1[Prismatic]?c2[Blazing][Ice] Barrier is removed, its remaining cooldown is reduced by ${$s1/1000} sec.
 
 Name             : Intuition (id=455681) [Spell Family (3)] 
 Class            : Mage
@@ -14181,7 +14180,6 @@ Class            : Mage
 School           : Frostfire
 Spell Type       : Magic
 Range            : 100 yards
-GCD              : 1.5 seconds
 Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
@@ -15251,7 +15249,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5291: Master of Time (342249 effect#2)
+                 : 5291: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1244648)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Temporal Realignment
@@ -15260,8 +15258,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1279710)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60000 | Scaled Value: 60000 | Target: Self (1)
-                   Modified By: Master of Time (342249 effect#2)
-Description      : Upon dropping below $s1% health, your past self corrects your timeline, casting Alter Time and instantly returning $1244092s1% of your maximum health and healing you for an additional ${$1244092s2*$1244092d}% over $1244092d.
+                   Modified By: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
+Description      : When your health is brought below $s1%, your past self corrects your timeline if Alter Time is not on cooldown, instantly restoring $1244092s1% of your maximum health and healing you for an additional ${$1244092s2*$1244092d}% over $1244092d.
+
+This effect places Alter Time on cooldown as if it had been cast.
 
 Name             : Temporal Realignment (id=1244092) [Spell Family (3)] 
 Class            : Mage
@@ -15289,7 +15289,7 @@ Duration         : 90 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5291: Master of Time (342249 effect#2)
+                 : 5291: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
 Attributes       : Aura Is Debuff (26), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1244653)  : Apply Aura (6) | Dummy (4)
@@ -15326,7 +15326,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1244681)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Your Mastery is increased by $s1%.
+Description      : Mastery increased by $s1%.
 
 Name             : Glacial Bulwark (id=1244110) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -15345,7 +15345,7 @@ Effects          :
 #2 (id=1244696)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : Ice Block now has an additional charge and its cooldown is reduced by ${-$s2/1000} sec.
+Description      : $?s414658[Ice Cold][Ice Block] gains an additional charge and its cooldown is reduced by ${-$s2/1000} sec.
 
 Name             : Overpowered Missiles (id=1244329) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=10, col=4, max_rank=1, req_points=20]
@@ -15553,7 +15553,6 @@ Effects          :
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1293650)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.273 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.248 -> 0.273)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1246769
 
@@ -15852,7 +15851,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1250331)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15913,7 +15912,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Flamestrike (460476), Flamestrike (1254851)
                    Family Flags: 2
-Hotfixed         : Base Value (10 -> 15)
 #6 (id=1261864)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Blizzard (190356), Blizzard (190357), Freezing Winds (1247554), Blizzard (1248829)
@@ -16264,7 +16262,10 @@ Effects          :
 #1 (id=1261855)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 892 (Label) | Target: Self (1)
                    Affected Spells (Label): Alter Time (108978), Alter Time (342245)
-Description      : The cooldown of Alter Time is reduced by ${-$s1/1000} sec.
+#2 (id=1340973)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 23 | Misc Value 2: 5291 (Label) | Target: Self (1)
+                   Affected Spells (Label): Temporal Realignment (1244090), Temporal Realignment (1244093)
+Description      : Alter Time's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Phase Shift (id=1256245) [Spell Family (107), Passive] 
 Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
@@ -16564,7 +16565,6 @@ Effects          :
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 7 | Misc Value 2: 4891 (Label) | Target: Self (1)
 #9 (id=1351781)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -70 | Scaled Value: -70 | Misc Value: 5 | Misc Value 2: 5947 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-50 -> -70)
 #10 (id=1352928) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 5 | Misc Value 2: 7158 (Label) | Target: Self (1)
 
@@ -16719,7 +16719,7 @@ Effects          :
 #3 (id=1270122)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 4137 (Label) | Target: Self (1)
                    Affected Spells (Label): Meteorite (449569)
-Description      : $?c1[Arcane Salvo can stack $s1 additional times][Fire Blast cooldown reduced by ${-$s2/1000}.1 sec].
+Description      : $?c1[Arcane Salvo can stack $s1 additional times][Fire Blast's cooldown is reduced by ${-$s2/1000}.1 sec].
 
 Meteorite damage increased by $s3%.
 
@@ -16769,7 +16769,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=1270702)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Direct damage from $?c1[Arcane][Frost] Splinters have a $?c1[$s1][$s2]% chance to $?c1[grant $s3 $Lstack:stacks; Arcane Salvo][apply $s4 $Lstack:stacks; of Freezing].$?c1[
+Description      : Direct damage from $?c1[Arcane][Frost] Splinters has a $?c1[$s1][$s2]% chance to $?c1[grant $s3 $Lstack:stacks; Arcane Salvo][apply $s4 $Lstack:stacks; of Freezing].$?c1[
 
 $@spellicon1242974 $@spellname1242974
 $@spellaura1242974][]
@@ -16892,7 +16892,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $?c2[Comet Storm and Glacial Spike now apply Ignite][Meteor and Pyroblast now apply Ignite].
 
-Your Haste is increased by $s2%.
+Haste increased by $s2%.
 
 Name             : Glacial Spike (id=1262860) [Spell Family (3)] 
 Class            : Mage
@@ -17264,7 +17264,7 @@ Effects          :
 #1 (id=1277318)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : The cooldown of Ice Block and Ice Cold are reduced by ${-$s1/1000} sec.
+Description      : $?s414659[Ice Cold][Ice Block]'s cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Blazing Barrier (id=1265927) 
 Class            : Mage

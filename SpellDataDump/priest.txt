@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -653,7 +653,6 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.38138 | PvP Coefficient: 0.61 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.2012 -> 1.38138), PvP Coefficient (0.7 -> 0.61)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -1275,7 +1274,7 @@ Name             : Penance (id=47540) [Spell Family (6)]
 Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
-Resource         : 1.28% Base Mana (0) (id=2193)[Hotfixed: Percent Cost (1.6 -> 1.28)]
+Resource         : 1.28% Base Mana (0) (id=2193)
 Spell Level      : 11
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1843,7 +1842,6 @@ Description      : $@spelldesc197862
 Tooltip          : Healing and absorption increased by $s1%.
 
 Name             : Atonement (id=81749) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Discipline [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
@@ -1858,12 +1856,10 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 46 | Scaled Value: 46 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1.39 -> 1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1356875)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
-Hotfixed         : NEW EFFECT
 Description      : Power Word: Shield, Flash Heal, Shadow Mend, Plea, and Power Word: Radiance apply Atonement to your target for $194384d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done. Healing is reduced when healing more than $s2 targets.
@@ -3053,7 +3049,6 @@ Effects          :
                    Base Value: 360 | Scaled Value: 360 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
-Hotfixed         : Base Value (300 -> 360)
 #13 (id=1040381) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 137 | Scaled Value: 137 | Misc Value 2: 4040 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Blast (8092)
@@ -3065,7 +3060,6 @@ Hotfixed         : Base Value (300 -> 360)
                    Base Value: 254 | Scaled Value: 254 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
-Hotfixed         : Base Value (208 -> 254)
 #16 (id=1041381) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
@@ -4041,7 +4035,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20), PvP Coefficient (1 -> 1.25)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -7586,12 +7579,10 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Spell Has
 Effects          :
 #1 (id=832086)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.61625 | PvP Coefficient: 0.87 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.275 -> 2.61625), PvP Coefficient (1 -> 0.87)
 #2 (id=832087)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Targeted Enemy (6)
 #3 (id=832088)   : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.61625 | PvP Coefficient: 0.87 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (2.275 -> 2.61625), PvP Coefficient (1 -> 0.87)
 Description      : A word of madness haunts the target's mind, dealing $s1 Shadow damage instantly plus an additional $o3 Shadow damage over $d. Heals you for ${$e1*100}% of damage dealt.
 
 When reapplied to a target, all remaining damage is added to the new effect.
@@ -9899,10 +9890,8 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Not In Sp
 Effects          :
 #1 (id=1002578)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.25 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (7.5 -> 11.25)
 #2 (id=1002579)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3930 | Scaled Value: 3930 | Target: Targeted Enemy (6)
-Hotfixed         : Base Value (2625 -> 3930)
                    Modified By: Shadow Word: Manipulation (356392 effect#2)
 #3 (id=1002580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
@@ -9910,7 +9899,6 @@ Hotfixed         : Base Value (2625 -> 3930)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 375902 | Target: Self (1)
 #5 (id=1002582)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3930 | Scaled Value: 3930 | Target: Targeted Enemy (6)
-Hotfixed         : Base Value (2625 -> 3930)
                    Modified By: Shadow Word: Manipulation (356392 effect#3)
 #6 (id=1002583)  : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Current Target (25)
@@ -11114,7 +11102,6 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=1028897)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.375 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.55929 | PvP Coefficient: 0.76 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.3559 -> 1.55929), PvP Coefficient (0.875 -> 0.76)
 #2 (id=1028898)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 0.714286 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.375 seconds
@@ -14461,7 +14448,7 @@ Description      : Increases the healing done by Holy Word: Serenity$?a1246517[ 
 Increases the radius of Holy Word: Sanctify by $s2%.]
 
 Name             : Divine Procession (id=472361) [Spell Family (6), Passive] 
-Talent Entry     : Discipline [tree=spec, row=8, col=1, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14604,7 +14591,7 @@ Effects          :
 Description      : $@spelldesc1215265
 
 Name             : Holy Celerity (id=1215275) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15065,7 +15052,6 @@ Attributes       : Allow While Not Shapeshifted (caster form) (83), Do Not Displ
 Effects          :
 #1 (id=1223522)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.33 | PvP Coefficient: 1.05 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.4 -> 1.33), PvP Coefficient (1 -> 1.05)
 Description      : $@spelldesc73510
 
 Name             : Penance (id=1232567) [Spell Family (6)] 
@@ -15306,10 +15292,8 @@ Effects          :
                    Family Flags: 7
 #12 (id=1329440) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 62 | Scaled Value: 62 | Misc Value 2: 2932 (Label) | Target: Self (1)
-Hotfixed         : Base Value (25 -> 62)
 #13 (id=1329441) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 62 | Scaled Value: 62 | Misc Value 2: 4003 (Label) | Target: Self (1)
-Hotfixed         : Base Value (25 -> 62)
 Description      : Holy Priest core passive
 
 Name             : Death's Torment (id=1240364) [Spell Family (6), Passive, Hidden] 
@@ -15556,7 +15540,7 @@ Effects          :
 Description      : $@spelldesc373280
 
 Name             : Ultimate Serenity (id=1246517) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
+Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -16159,7 +16143,7 @@ Name             : Master the Darkness (id=1253591) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Duration         : 60 seconds
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -16411,7 +16395,6 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
-Hotfixed         : Base Value (-32 -> -12)
 #4 (id=1264744)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: -38 | Scaled Value: -38 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
@@ -16894,7 +16877,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 2.66667 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
-Hotfixed         : PvP Coefficient (1 -> 2.66667)
 #3 (id=1285501)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Void Volley (1242173), Void Volley (1242189)
@@ -16919,7 +16901,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
-Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=1285512)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 6250 (Label) | Target: Self (1)
                    Affected Spells (Label): Surge of Light (109186)
