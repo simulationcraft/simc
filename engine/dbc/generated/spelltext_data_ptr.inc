@@ -29294,7 +29294,7 @@ static constexpr std::array<spelltext_data_t, 29365> __ptr_spelltext_data { {
   { 1310209, "$@spelldesc1310208", 0, 0 },
   { 1310213, "Impales its target for $s1 Nature damage and $s2 Nature damage to up to $i nearby enemies.", 0, 0 },
   { 1310248, "$@spelldesc1296586", "Generating Icicles.", 0 },
-  { 1310252, "Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s1 Radiant damage, and damaging spells will heal a nearby ally for $s2 health.", 0, 0 },
+  { 1310252, "Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s2 Radiant damage, and damaging spells will heal a nearby ally for $s1 health.", 0, 0 },
   { 1310255, "$@spelldesc1310252", 0, 0 },
   { 1310258, "$@spelldesc1310252", 0, 0 },
   { 1310372, "$@spelldesc1296650", "Strength increased by ${$W1}.1%.", 0 },
@@ -29368,7 +29368,8 @@ static constexpr std::array<spelltext_data_t, 29365> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.5.70340
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  { 1310252,  0, "Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s1 Radiant damage, and damaging spells will heal a nearby ally for $s2 health.", "Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s2 Radiant damage, and damaging spells will heal a nearby ally for $s1 health." },
 } };
 
 // Spell description variables, wow build 12.1.5.70340
