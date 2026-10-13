@@ -471,16 +471,16 @@ void shaman_t::create_actions()
 
 void shaman_t::init_action_list()
 {
-  if ( action_list_str.empty() )
+  if ( !action_list_str.empty() )
   {
-    get_action_priority_list( "precombat" )->add_action( "flametongue_weapon" );
-    get_action_priority_list( "precombat" )->add_action( "strength_of_earth_totem" );
-
-    get_action_priority_list( "default" )->add_action( "auto_attack" );
-    get_action_priority_list( "default" )->add_action( "strength_of_earth_totem,if=!buff.strength_of_earth.up" );
-    get_action_priority_list( "default" )->add_action( "flame_shock,if=!ticking|remains<1" );
-    get_action_priority_list( "default" )->add_action( "earth_shock,if=dot.flame_shock.ticking|!action.flame_shock.enabled" );
+    player_t::init_action_list();
+    return;
   }
+
+  clear_action_priority_lists();
+  shaman_apl::shaman( this );
+  use_default_action_list = true;
+  player_t::init_action_list();
 }
 
 }  // namespace
