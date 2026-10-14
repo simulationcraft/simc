@@ -6916,6 +6916,12 @@ struct volley_t : public hunter_spell_t
       aoe = -1;
       background = dual = ground_aoe = true;
 
+      // 2026-10-14: Volley's damage is not buffed by Unnatural Causes, despite spelldata suggesting so.
+      if ( p->bugs )
+      {
+        affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      }
+
       if ( p->talents.salvo.ok() )
       {
         salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
