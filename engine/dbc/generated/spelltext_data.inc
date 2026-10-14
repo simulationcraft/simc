@@ -1,5 +1,5 @@
-// Spell text, wow build 1.60.1.70334
-static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
+// Spell text, wow build 1.60.1.70374
+static constexpr std::array<spelltext_data_t, 7120> __spelltext_data { {
   {      10, "Ice shards pelt the target area doing ${$1279976m1*$d*$<frostdamage>} Frost damage over $d.", "$1279976s1 Frost damage every $t3 $lsecond:seconds;.", "Rank 1" },
   {      17, "Draws on the soul of the party member to shield them, absorbing $?a14748[${$s1*(1+$14748s1/100)}][$s1] damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage.", "Rank 1" },
   {      53, "Backstab the target, causing $s2% weapon damage plus $s1 to the target.  Must be behind the target.  Requires a dagger in the main hand.  Awards $s3 combo $lpoint:points;.", 0, "Rank 1" },
@@ -1738,6 +1738,7 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   {   13439, "Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.", "Movement slowed by $s1%.", 0 },
   {   13440, "Sends a shadowy bolt at the enemy causing $s1 Shadow damage.", 0, 0 },
   {   13441, "Blasts a target for $s1 Fire damage.", 0, 0 },
+  {   13442, "Blasts a target for $s1 Fire damage.", 0, 0 },
   {   13464, "Permanently enchant a shield to increase its armor by 30.", 0, 0 },
   {   13480, "Sends a shadowy bolt at the enemy causing $s1 Shadow damage.", 0, 0 },
   {   13482, "Blasts a target for $s1 Nature damage.", 0, "Rank 1" },
@@ -2948,6 +2949,7 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   {   18078, "Wounds the target causing them to bleed for $o1 damage over $d.", "Bleeding for $s1 damage every $t1 sec.", 0 },
   {   18081, "Blasts a target for $s1 Nature damage.", 0, 0 },
   {   18082, "Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.", "$s2 Fire damage every $t2 sec.", 0 },
+  {   18083, "Blasts a target for $s1 Fire damage.", 0, 0 },
   {   18089, "Blasts a target for $s1 Nature damage.", 0, 0 },
   {   18090, "Wounds the target for $s1 damage.", 0, 0 },
   {   18091, "Blasts a target for $s1 Arcane damage.", 0, 0 },
@@ -4298,6 +4300,7 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   {   29638, "Fires a Searing Arrow at the target for $s1 Fire damage.", 0, 0 },
   {   29640, "Shadowbolt for $s1 Shadow damage.", 0, 0 },
   {   29641, "Fires a Shadow Shot at the target for $s1 Shadow damage.", 0, 0 },
+  {   29644, "Strike your ranged target with a Fire Blast for $s1 Fire damage.", 0, 0 },
   {   29647, "Strike the target with a Flaming Shell for $s1 Fire damage.", 0, 0 },
   {   29653, "Venom Shot the target for $s1 Nature damage.", 0, 0 },
   {   29655, "Strike your target with Keeper's Sting for $29655s1 Nature damage.", 0, 0 },
@@ -6739,6 +6742,7 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   { 1293818, "Ignites a target that is already afflicted by your Immolate spell, dealing $s1 Fire damage and consuming your Immolate effect.", 0, "Rank 2" },
   { 1293819, "Reduces the duration of all movement impairing effects on you by $m2%.", 0, 0 },
   { 1293820, "Increases your chance to Dodge by $s1% for $d. This effect is doubled in Strongholds and Cities.", "Chance to dodge increased by $w1%.", 0 },
+  { 1293980, "Chance on harmful spell cast to blast a target for $18083s1 Fire damage.", 0, 0 },
   { 1294006, "$@spelldesc1131 If you spend at least 10 sec eating, you will become well fed and gain $1294007s2% movement speed while in Hyjal for $1294007d. $@spelldesc1243969", 0, 0 },
   { 1294007, "A nutritious meal has made you Well Fed, increasing your movement speed.", "Your movement speed is increased by $w2% while in Hyjal.", 0 },
   { 1294025, "Restores $s1 Mana.", 0, 0 },
@@ -7118,11 +7122,11 @@ static constexpr std::array<spelltext_data_t, 7116> __spelltext_data { {
   { 1324578, "Reduces the hit chance of Fear effects against you by $s1%.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 1.60.1.70334
+// spelltext hotfix entries, wow build 1.60.1.70374
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 1.60.1.70334
+// Spell description variables, wow build 1.60.1.70374
 static constexpr std::array<spelldesc_vars_data_t, 116> __spelldesc_vars_data { {
   {      10, "$power=${13.828124+0.018012*$PL+0.044141*$PL*$PL}\r\n$healpower=${38.258376+0.904195*$PL+0.161311*$PL*$PL}\r\n$frostdamage1=$?s11151[${1.02}][${1.0}]\r\n$frostdamage2=$?s12952[${1.04}][${$<frostdamage1>}]\r\n$frostdamage=$?s12953[${1.06}][${$<frostdamage2>}]" },
   {     116, "$power=${13.828124+0.018012*$PL+0.044141*$PL*$PL}\r\n$healpower=${38.258376+0.904195*$PL+0.161311*$PL*$PL}\r\n$frostdamage1=$?s11151[${1.02}][${1.0}]\r\n$frostdamage2=$?s12952[${1.04}][${$<frostdamage1>}]\r\n$frostdamage=$?s12953[${1.06}][${$<frostdamage2>}]" },
@@ -7242,7 +7246,7 @@ static constexpr std::array<spelldesc_vars_data_t, 116> __spelldesc_vars_data { 
   { 1293696, "$shadowMult=$?a23761[${1.1}][${1}]\r\n$fireMult=$?a23759[${1.1}][${1}]\r\n$petMult=$?a18769[${1.1}][${1}]\r\n$mult=${$<fireMult>*$<petMult>*$<shadowMult>}\r\n$sps=${$SPS}\r\n$spfi=${$SPFI}\r\n$which=${$cond($gt($<spfi>,$<sps>), $<spfi>,$<sps>)}\r\n$minDam=${((($pl-26)*1.5)+14+(0.078*$<which>))}\r\n$maxDam=${((($pl-26)*1.5)+17+(0.078*$<which>))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 1.60.1.70334
+// spelldesc_vars hotfix entries, wow build 1.60.1.70374
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
