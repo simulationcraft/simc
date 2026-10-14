@@ -6175,7 +6175,7 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   auto damage = create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
   auto heal = create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
   auto buff = create_omnium_stat_buff( effect );
-  auto callback = [ damage, heal, buff ]( auto, auto, player_t* t, auto ) {
+  auto callback = [ damage, heal, buff ]( auto, auto, player_t* t, action_state_t* s ) {
     if ( buff )
       buff->trigger();
 
@@ -6190,6 +6190,7 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   };
 
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, callback );
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
