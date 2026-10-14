@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70374 Live
 Name             : Sprint (TEST) (id=47) 
 School           : Physical
 Spell Type       : None
@@ -7606,6 +7606,20 @@ Effects          :
 #1 (id=690996)   : School Damage (2): shadow
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Target: Targeted Enemy (6)
 Description      : Sends a shadowy bolt at the enemy causing $s1 Shadow damage.
+
+Name             : Firebolt (id=13442) 
+School           : Fire
+Spell Type       : Magic
+Resource         : 18 Base Mana (0) (id=179478)
+Spell Level      : 30
+Range            : 30 yards
+Cast Time        : 3 seconds
+Velocity         : 19 yards/sec
+Attributes       : Unknown (493)
+Effects          :
+#1 (id=691018)   : School Damage (2): fire
+                   Base Value: 90 | Scaled Value: 90 | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Fire damage.
 
 Name             : Minor Blocking (id=13462) [Passive, Hidden] 
 School           : Physical
@@ -18105,6 +18119,18 @@ Effects          :
                    Base Value: 91 | Scaled Value: 91 (delta=0.314815) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Nature damage.
 
+Name             : Firebolt (id=18083) 
+School           : Fire
+Spell Type       : Magic
+Spell Level      : 30
+Range            : 100 yards
+Triggered By     : Firebolt (1293980)
+Attributes       : Unknown (493)
+Effects          :
+#1 (id=694118)   : School Damage (2): fire
+                   Base Value: 77 | Scaled Value: 77 (delta=0.333333) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Fire damage.
+
 Name             : Lightning Bolt (id=18089) 
 School           : Nature
 Spell Type       : Magic
@@ -28241,6 +28267,17 @@ Effects          :
 #1 (id=705033)   : School Damage (2): shadow
                    Base Value: 26 | Scaled Value: 26 (delta=0.363636) | Target: Targeted Enemy (6)
 Description      : Fires a Shadow Shot at the target for $s1 Shadow damage.
+
+Name             : Fire Blast (id=29644) 
+School           : Fire
+Spell Type       : Ranged
+Spell Level      : 1
+Range            : 50000 yards
+Attributes       : Suppress Caster Procs (112), Suppress Weapon Procs (151), Unknown (493)
+Effects          :
+#1 (id=705034)   : School Damage (2): fire
+                   Base Value: 28 | Scaled Value: 28 (delta=0.4) | Target: Targeted Enemy (6)
+Description      : Strike your ranged target with a Fire Blast for $s1 Fire damage.
 
 Name             : Flaming Shell (id=29647) 
 School           : Fire
@@ -44723,6 +44760,20 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Increases your chance to Dodge by $s1% for $d. This effect is doubled in Strongholds and Cities.
 Tooltip          : Chance to dodge increased by $w1%.
+
+Name             : Firebolt (id=1293980) [Passive, Hidden] 
+School           : Fire
+Spell Type       : Magic
+Spell Level      : 30
+Range            : 100 yards
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
+Effects          :
+#1 (id=1315088)  : Apply Aura (6) | Proc Trigger Spell (42): Firebolt
+                   Base Value: 0 | Scaled Value: 0 (delta=0.333333) | Trigger Spell: 18083 | Target: Self (1)
+Description      : Chance on harmful spell cast to blast a target for $18083s1 Fire damage.
 
 Name             : Nutritious Food (id=1294006) [Hidden] 
 School           : Physical
