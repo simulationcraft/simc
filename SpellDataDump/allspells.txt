@@ -517367,9 +517367,11 @@ Effects          :
 Description      : Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s2 Radiant damage, and damaging spells will heal a nearby ally for $s1 health.
 
 Name             : Luminescent Phoenixblade (id=1310255) 
+Hotfixed         : Attributes
 School           : Holyfire
 Spell Type       : Magic
-Range            : 60 yards
+Range            : 50 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339626)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -517378,9 +517380,11 @@ Effects          :
 Description      : $@spelldesc1310252
 
 Name             : Luminescent Phoenixblade (id=1310258) 
+Hotfixed         : Attributes
 School           : Holyfire
 Spell Type       : Magic
 Range            : 60 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339634)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
