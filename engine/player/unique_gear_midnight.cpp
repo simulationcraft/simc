@@ -6078,7 +6078,7 @@ struct omnium_core_rune_t : public BASE
 
       echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
-      echo->name_str_reporting               = "rune_of_echoes";
+      echo->name_str_reporting              = "rune_of_echoes";
       echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
       if( !echo->stats->parent )
         BASE::add_child( echo );
@@ -6181,6 +6181,10 @@ void rune_of_unleashed_fire( special_effect_t& effect )
 
     if ( t->is_enemy() )
       damage->execute_on_target( t );
+    // Does not trigger the heal on the players pets. Instead execute damage on the first non-sleeping target in the
+    // players target list. Might be worth exploring if we can get the players last target to trigger this on instead.
+    else if ( t->is_pet() && !t->sim->target_non_sleeping_list.empty() )
+      damage->execute_on_target( t->sim->target_non_sleeping_list[ 0 ] );
     else
       heal->execute_on_target( t );
   };
