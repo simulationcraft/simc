@@ -5182,6 +5182,8 @@ struct blood_fletching_damage_t : public hunter_ranged_attack_t
   blood_fletching_damage_t( hunter_t* p ) : hunter_ranged_attack_t( "blood_fletching", p, p->talents.blood_fletching_damage )
   {
     background = dual = true;
+    // Bleed damage ignores armor, but the spell is modeled as direct School Damage rather than Periodic Damage, so it does not pick up ignores_armor from the spell data.
+    ignores_armor = true;
   }
 };
 
@@ -5402,7 +5404,15 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     hunter_td_t* target_data = td( s->target );
 
     if ( p()->talents.blood_fletching.ok() && s->result == RESULT_CRIT )
-      target_data->debuffs.blood_fletching->trigger();
+    {
+      // The bleed is only proc'd by damage dealt after the debuff is applied, so the Aimed Shot crit that 
+      // applies it does not trigger it. The dbc proc callback resolves once impact has fully executed, 
+      //so applying the debuff on a delay puts the potential proc after the applying Aimed Shot crit has resolved.
+      make_event( sim, 1_ms, [ this, t = s->target ]() {
+        if ( !t->is_sleeping() )
+          td( t )->debuffs.blood_fletching->trigger();
+      } );
+    }
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
