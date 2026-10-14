@@ -4102,7 +4102,7 @@ struct eye_beam_t : public eye_beam_base_t
     if ( !eye_beam_base_t::ready() )
       return false;
 
-    return !dh()->buff.metamorphosis->check();
+    return !( dh()->buff.metamorphosis->check() && dh()->talent.scarred.demonic_intensity->ok() );
   }
 };
 
