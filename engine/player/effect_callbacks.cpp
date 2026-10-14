@@ -36,8 +36,8 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags2, ac
   // nor do they have a scheduled travel since they trigger on application from the action/etc.
   if ( type == PROC1_NONE_HELPFUL || type == PROC1_NONE_HELPFUL_TAKEN )
   {
-    // PF2_CRIT and PF2_GLANCE require amounts, if they are the sole proc2 flags don't register aura applied callbacks
-    if ( flags2 && !( flags2 & ~( PF2_CRIT | PF2_GLANCE ) ) )
+    // PF2_HIT, PF2_CRIT and PF2_GLANCE require results, if they are the sole proc2 flags don't register aura applied callbacks
+    if ( flags2 && !( flags2 & PF2_ALL_HIT ) )
       return;
 
     add_callback( type, PROC2_LANDED, cb );
