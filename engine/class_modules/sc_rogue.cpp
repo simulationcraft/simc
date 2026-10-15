@@ -2085,6 +2085,7 @@ public:
       multiplier *= 1.0 + p()->talent.subtlety.deeper_daggers->effectN( 1 ).percent();
       multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 1 ).percent();
       multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 2 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.ancient_arts_2->effectN( 2 ).percent();
     }
 
     const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
@@ -5713,8 +5714,7 @@ struct black_powder_t: public rogue_attack_t
     {
       double m = cast_state( state )->get_combo_points();
 
-      // 2026-08-02 -- Shadow Clones do not currently benefit from Potent Powder in-game
-      if ( !p()->bugs && p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
+      if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
       {
         m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
       }
@@ -8565,6 +8565,13 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
 
   // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
   double multiplier = affected_by.lingering_shadow.direct_percent * ( stacks / 100.0 );
+
+  // 2026-10-15 -- Lingering Shadow was still not added to the Lingering Darkness whitelists
+  if ( p()->talent.deathstalker.lingering_darkness->ok() )
+  {
+    multiplier *= p()->buffs.lingering_darkness->stack_value_direct();
+  }
+
   p()->active.lingering_shadow->trigger_residual_action( state, multiplier, false );
 }
 
@@ -9013,17 +9020,11 @@ void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t*
   if ( p()->get_active_dots( td( this->target )->dots.goremaws_bite ) == 0 )
     return;
 
-  // 2026-08-06 -- Does not appear to copy any Secret Technique clone attacks currently
-  if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE ||
-       ab::data().id() == p()->spec.shadow_clone_secret_technique_attack->id() )
-    return;
-
   // TOCHECK -- Using combo point state for now, may need to have a manual procs_goremaws_bite() function
   if ( cast_state( state )->get_combo_points() == 0 )
     return;
 
   // Damage multiplier is handled in the base_multiplier of goremaws_bite_finisher_damage_t
-  // Custom implementation of trigger_residual_action in the action
   p()->active.goremaws_bite->trigger_residual_action( state );
 }
 
