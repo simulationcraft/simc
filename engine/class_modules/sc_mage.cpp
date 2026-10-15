@@ -2909,8 +2909,6 @@ struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
 
 struct prismatic_bolt_t final : public arcane_mage_spell_t
 {
-  proc_t* prismatic_bolt_clearcasting = nullptr;
-
   prismatic_bolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
   {
@@ -2927,7 +2925,7 @@ struct prismatic_bolt_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::init_finished();
 
     if ( p()->talents.prismatic_bolt_2.ok() )
-      prismatic_bolt_clearcasting = p()->get_proc( "Clearcasting applied (Prismatic Bolt)" );
+      clearcasting_source = p()->get_proc( "Clearcasting applied (Prismatic Bolt)" );
   }
 
   bool ready() override
@@ -2949,7 +2947,7 @@ struct prismatic_bolt_t final : public arcane_mage_spell_t
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 3 ).base_value() ) );
 
     if ( p()->talents.prismatic_bolt_2.ok() )
-      p()->trigger_clearcasting( prismatic_bolt_clearcasting, p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
+      p()->trigger_clearcasting( clearcasting_source, p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
   }
 
   double action_multiplier() const override
@@ -3317,7 +3315,6 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
 struct arcane_surge_t final : public arcane_mage_spell_t
 {
   double energize_pct;
-  proc_t* surge_clearcasting = nullptr;
 
   arcane_surge_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->talents.arcane_surge ),
@@ -3332,7 +3329,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   void init_finished() override
   {
     arcane_mage_spell_t::init_finished();
-    surge_clearcasting = p()->get_proc( "Clearcasting applied (Arcane Surge)" );
+    clearcasting_source = p()->get_proc( "Clearcasting applied (Arcane Surge)" );
   }
 
   double action_multiplier() const override
@@ -3363,7 +3360,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     buff->trigger( -1, value, -1.0, duration );
 
-    p()->trigger_clearcasting( surge_clearcasting );
+    p()->trigger_clearcasting( clearcasting_source );
 
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
@@ -4767,8 +4764,6 @@ struct meteor_t final : public fire_mage_spell_t
 
 struct meteorite_impact_t final : public mage_spell_t
 {
-  proc_t* pyrocosm_clearcasting = nullptr;
-
   meteorite_impact_t( std::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 449569 ) )
   {
@@ -4782,7 +4777,7 @@ struct meteorite_impact_t final : public mage_spell_t
     mage_spell_t::init_finished();
 
     if ( p()->specialization() == MAGE_ARCANE && p()->talents.pyrocosm.ok() )
-      pyrocosm_clearcasting = p()->get_proc( "Clearcasting applied (Pyrocosm)" );
+      clearcasting_source = p()->get_proc( "Clearcasting applied (Pyrocosm)" );
   }
 
   void execute() override
@@ -4797,7 +4792,7 @@ struct meteorite_impact_t final : public mage_spell_t
       p()->cooldowns.fire_blast->adjust( -p()->talents.pyrocosm->effectN( 4 ).time_value(), true, false );
     else
       // TODO: Interactions with CC proc chance increases?
-      p()->trigger_clearcasting( pyrocosm_clearcasting, p()->talents.pyrocosm->effectN( 5 ).percent() );
+      p()->trigger_clearcasting( clearcasting_source, p()->talents.pyrocosm->effectN( 5 ).percent() );
   }
 };
 
