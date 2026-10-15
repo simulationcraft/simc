@@ -396,7 +396,8 @@ public:
     // Hero
     // Deathstalker
     buff_t* darkest_night;
-    buff_t* lingering_darkness;
+    damage_buff_t* lingering_darkness;
+    damage_buff_t* lingering_darkness_dark_brew;
     damage_buff_t* momentum_of_despair;
     damage_buff_t* symbolic_victory;
     damage_buff_t* unshakeable_drive;
@@ -1631,6 +1632,8 @@ public:
     bool unshakeable_drive_2 = false;
     bool zoldyck_insignia = false;
 
+    bool residual_shadow_multiplier = false; // Scripted residual modifiers for Subtlety
+
     bool mid1_assassination_4pc = false;
     bool mid1_subtlety_2pc = false;
 
@@ -1868,6 +1871,8 @@ public:
     register_damage_buff( p()->buffs.flawless_form );
     register_damage_buff( p()->buffs.inspiring_strike );
     register_damage_buff( p()->buffs.kingsbane );
+    register_damage_buff( p()->buffs.lingering_darkness );
+    register_damage_buff( p()->buffs.lingering_darkness_dark_brew );
     register_damage_buff( p()->buffs.momentum_of_despair );
     register_damage_buff( p()->buffs.shadow_focus );
     register_damage_buff( p()->buffs.silent_storm );
@@ -2072,6 +2077,16 @@ public:
     const double target_crit_bonus_adjustment = ( unmitigated && reverse_target_da_multiplier && s->result_crit_bonus > 0 ) ?
       ( 1.0 + s->result_crit_bonus * ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) ) / ( 1.0 + s->result_crit_bonus ) : 1.0;
 
+    // 2026-10-14 -- Scripted handling for residual Shadow school multipliers
+    // Shadow damage residuals like Shadow Blades now apply the modifier to Physical abilities
+    // This is not applied to Shadow abilities to avoid double-dipping, as they are already modified
+    if ( affected_by.residual_shadow_multiplier && !dbc::has_common_school( s->action->get_school(), SCHOOL_SHADOW )  )
+    {
+      multiplier *= 1.0 + p()->talent.subtlety.deeper_daggers->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 2 ).percent();
+    }
+
     const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
 
     if ( amount <= 0 )
@@ -2082,26 +2097,6 @@ public:
     p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.3f} * {:.3f}) on {}",
                          *p(), *this, amount, base_damage, multiplier, target_da_multiplier,
                          target_crit_bonus_adjustment, *primary_target );
-
-    if ( !ab::callbacks || !trigger_event )
-    {
-      ab::execute_on_target( primary_target, amount );
-    }
-    else
-    {
-      // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-      make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
-        ab::execute_on_target( primary_target, amount );
-      } );
-    }
-  }
-
-  virtual void trigger_residual_action( player_t* primary_target, double amount, bool trigger_event = true )
-  {
-    if ( amount <= 0 )
-      return;
-
-    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage on {}", *p(), *this, amount, *primary_target );
 
     if ( !ab::callbacks || !trigger_event )
     {
@@ -2937,6 +2932,12 @@ struct rogue_poison_t : public rogue_attack_t
       execute_on_target( source_state->target );
     }
 
+    // 2026-09-13 -- Wound Poison double hit is not in spell data
+    if ( affected_by.mid2_assassination_4pc )
+    {
+      execute_on_target( source_state->target );
+    }
+
     // MIDNIGHT TOCHECK -- Does this trigger twice with Deathmark?
     trigger_secondary_poisoning( source_state );
   }
@@ -3049,6 +3050,7 @@ struct wound_poison_t : public rogue_poison_t
   wound_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->spell.wound_poison, true )
   {
+    affected_by.mid2_assassination_4pc = p->set_bonuses.mid2_assassination_4pc->ok();
     impact_action = p->get_background_action<wound_poison_dd_t>(
       "wound_poison", p->spell.wound_poison->effectN( 1 ).trigger() );
   }
@@ -3681,6 +3683,7 @@ struct lingering_shadow_t : public rogue_attack_t
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
     callbacks = false;
+    affected_by.residual_shadow_multiplier = true;
   }
 
   bool procs_shadow_blades_damage() const override
@@ -4121,6 +4124,71 @@ struct crimson_tempest_t : public rogue_attack_t
       clone_dot( []( rogue_td_t* td ) { return td->dots.garrote; } );
       trigger_scent_of_blood(); // Force recalculate since no Rupture actions are triggered
     }
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_in_str_ci( name, "spread_duration" ) )
+    {
+      struct max_spread_duration_expr_t : public expr_t
+      {
+        crimson_tempest_t* crimson_tempest;
+        const std::vector<std::function<const dot_t* ( rogue_td_t* )>> dot_selectors;
+
+        max_spread_duration_expr_t( crimson_tempest_t* a, std::vector<std::function<const dot_t* ( rogue_td_t* )>> dot_selectors ) :
+          expr_t( "max_spread_duration" ),
+          crimson_tempest( a ),
+          dot_selectors( dot_selectors )
+        {}
+
+        double evaluate() override
+        {
+          std::vector<player_t*> tl = crimson_tempest->target_list();
+          if ( tl.size() <= 1 )
+            return 0;
+
+          std::vector<timespan_t> min_values, max_values;
+          for ( size_t i = 0; i < tl.size(); ++i )
+          {
+            auto target_data = crimson_tempest->td( tl[ i ] );
+            for ( size_t j = 0; j < dot_selectors.size(); ++j )
+            {
+              timespan_t curr_remains = dot_selectors[ j ]( target_data )->remains();
+              if ( i == 0 )
+              {
+                min_values.emplace_back( curr_remains );
+                max_values.emplace_back( curr_remains );
+              }
+              else
+              {
+                min_values[ j ] = std::min( min_values[ j ], curr_remains );
+                max_values[ j ] = std::max( max_values[ j ], curr_remains );
+              }
+            }
+          }
+
+          double max_refresh_value = 0;
+          for ( size_t i = 0; i < dot_selectors.size(); ++i )
+          {
+            max_refresh_value = std::max( max_refresh_value, ( max_values[ i ] - min_values[ i ] ).total_seconds() );
+          }
+          return max_refresh_value;
+        }
+      };
+
+      std::vector<std::function<const dot_t* ( rogue_td_t* )>> selectors;
+      if ( util::str_compare_ci( name, "max_rupture_spread_duration" ) )
+        selectors = { []( rogue_td_t* td ) { return td->dots.rupture; } };
+      else if ( util::str_compare_ci( name, "max_garrote_spread_duration" ) )
+        selectors = { []( rogue_td_t* td ) { return td->dots.garrote; } };
+      else
+        selectors = { []( rogue_td_t* td ) { return td->dots.rupture; },
+                      []( rogue_td_t* td ) { return td->dots.garrote; } };
+
+      return std::make_unique<max_spread_duration_expr_t>( this, selectors );
+    }
+
+    return rogue_attack_t::create_expression( name );
   }
 };
 
@@ -5443,6 +5511,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
     attack_power_mod.direct = 0; // Base 0.1 mod overwritten by proc damage
+    affected_by.residual_shadow_multiplier = true;
   }
 
   bool procs_shadow_blades_damage() const override
@@ -6390,34 +6459,7 @@ struct goremaws_bite_t : public rogue_attack_t
       callbacks = false;
       target_filter_callback = goremaws_bite_targets_only();
       base_multiplier = p->spec.goremaws_bite_finisher_debuff->effectN( 1 ).percent();
-    }
-
-    virtual void trigger_residual_action( const action_state_t* s, double, bool, bool, player_t*, bool ) override
-    {
-      double result_damage = s->result_total;
-      double result_crit_bonus = 1.0;
-      player_t* primary_target = s->target;
-
-      // Does not use the original spell's critical modifier or target damage modifier
-      // Reverses them and instead uses base modifiers only as the damage spell is in no whitelists
-      double target_da_multiplier = 1.0 / s->target_da_multiplier;
-      
-      if ( p()->bugs && s->result == RESULT_CRIT )
-      {
-        double spell_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
-        double global_bonus = composite_player_critical_multiplier( s );
-        result_damage /= 1.0 + s->result_crit_bonus;
-        result_crit_bonus = ( 1.0 + spell_bonus ) * global_bonus;
-      }
-
-      result_damage *= target_da_multiplier * result_crit_bonus;
-      
-      p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.2f}) on {}",
-                           *p(), *this, result_damage, s->result_total, target_da_multiplier, result_crit_bonus, *primary_target );
-
-      make_event( *p()->sim, 0_ms, [ this, result_damage, primary_target ]() {
-        rogue_attack_t::execute_on_target( primary_target, result_damage );
-      } );
+      affected_by.residual_shadow_multiplier = true;
     }
 
     bool procs_shadow_blades_damage() const override
@@ -8461,8 +8503,9 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( const action_s
   if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !procs_shadow_blades_damage() )
     return;
 
-  p()->active.shadow_blades_attack->trigger_residual_action( state, p()->buffs.shadow_blades->check_value(),
-                                                             false, true, nullptr, false );
+  double base_multiplier = p()->buffs.shadow_blades->check_value();
+
+  p()->active.shadow_blades_attack->trigger_residual_action( state, base_multiplier, false, true, nullptr, false );
 }
 
 template <typename Base>
@@ -8521,8 +8564,8 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
     return;
 
   // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
-  double amount = state->result_mitigated * affected_by.lingering_shadow.direct_percent * ( stacks / 100.0 );
-  p()->active.lingering_shadow->trigger_residual_action( state->target, amount );
+  double multiplier = affected_by.lingering_shadow.direct_percent * ( stacks / 100.0 );
+  p()->active.lingering_shadow->trigger_residual_action( state, multiplier, false );
 }
 
 template <typename Base>
@@ -9191,20 +9234,6 @@ double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( talent.deathstalker.lingering_darkness->ok() )
-  {
-    // 2024-08-12 -- Handled via hidden conditional aura for specializations
-    auto effect = ( specialization() == ROGUE_ASSASSINATION ?
-                    spell.lingering_darkness_buff->effectN( 1 ) :
-                    spell.lingering_darkness_buff->effectN( 2 ) );
-
-    if ( effect.has_common_school( school ) )
-    {
-      m *= 1.0 + buffs.lingering_darkness->value();
-    }
-  }
-
   return m;
 }
 
@@ -10896,7 +10925,10 @@ void rogue_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
+      {
         buffs.lingering_darkness->trigger();
+        buffs.lingering_darkness_dark_brew->trigger();
+      }
     } );
 
   buffs.shadow_dance = new buffs::shadow_dance_t( this );
@@ -10946,9 +10978,37 @@ void rogue_t::create_buffs()
     buffs.unshakeable_drive->set_direct_mod( spell.unshakeable_drive_buff, 1 );
   }
 
-  buffs.lingering_darkness = make_buff( this, "lingering_darkness", spell.lingering_darkness_buff )
-    ->set_default_value_from_effect( 1 )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.lingering_darkness = make_buff<damage_buff_t>( this, "lingering_darkness", spell.lingering_darkness_buff, false );
+  buffs.lingering_darkness_dark_brew = make_buff<damage_buff_t>( this, "lingering_darkness_dark_brew", spell.lingering_darkness_buff, false );
+  if ( spell.lingering_darkness_buff->ok() )
+  {
+    // Server-side conditional auras
+    if ( specialization() == ROGUE_ASSASSINATION )
+    {
+      buffs.lingering_darkness->set_direct_mod( spell.lingering_darkness_buff, 1 );
+      buffs.lingering_darkness->set_periodic_mod( spell.lingering_darkness_buff, 3 );
+    }
+    else
+    {
+      buffs.lingering_darkness->set_direct_mod( spell.lingering_darkness_buff, 2 );
+      buffs.lingering_darkness->set_periodic_mod( spell.lingering_darkness_buff, 4 );
+      buffs.lingering_darkness->direct_mod.labels.push_back( spell.lingering_darkness_buff->effectN( 7 ).misc_value2() );
+      
+      // Lingering Darkness buff modifies the passive damage effect of Dark Brew which then modifies poison damage
+      // This is handled as a distinct buff to make implementation more straightforward
+      // As this is additive with Deeper Daggers on the same effect, that needs to be reversed due to this being a buff
+      if ( talent.subtlety.dark_brew->ok() )
+      {
+        buffs.lingering_darkness_dark_brew->set_direct_mod( talent.subtlety.dark_brew, 4,
+                                                            ( spell.lingering_darkness_buff->effectN( 5 ).percent() /
+                                                              ( 1.0 + talent.subtlety.deeper_daggers->effectN( 5 ).percent() ) ) );
+
+        buffs.lingering_darkness_dark_brew->set_periodic_mod( talent.subtlety.dark_brew, 5,
+                                                              ( spell.lingering_darkness_buff->effectN( 6 ).percent() /
+                                                                ( 1.0 + talent.subtlety.deeper_daggers->effectN( 6 ).percent() ) ) );
+      }
+    }
+  }
 
   buffs.momentum_of_despair = make_buff<damage_buff_t>( this, "momentum_of_despair", spell.momentum_of_despair_buff );
 
