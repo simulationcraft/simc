@@ -3887,7 +3887,7 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
       channeled             = true;
       harmful               = false;
       effect                = &e;
-      
+
       target                = player;
 
       for ( auto a : player->action_list )
@@ -3934,7 +3934,7 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
       bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
-      
+
       if ( d->num_ticks() >= 1)
       {
         int stacks = d->num_ticks();
@@ -3960,7 +3960,7 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
           }
         }
       }
-      
+
       // Trigger the buff here as its a haste buff and will affect precombat spell cast times.
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
 
@@ -5684,24 +5684,31 @@ void void_eruption( special_effect_t& effect )
     "{}: Damage is assumed to not be split amongst targets hit.", effect.item->full_name() );
 
   // assumed to not split so use generic_proc_t and just set aoe = -1;
-  auto damage = create_proc_action<generic_aoe_proc_t>( "void_eruption", effect, 1310209 );
+  auto damage = create_proc_action<generic_proc_t>( "void_eruption", effect, 1310209 );
   damage->aoe = -1;
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
-  // TODO: generalize this into unique_gear.cpp if other item bonus tags need similar checks
-  for ( const auto& item : effect.player->items )
+  // Bug: The "If you are Venomcursed" damage bonus is currently not applied in game, neither with a venomcursed item
+  // equipped nor while a venomcursed buff is active. Damage matches the tooltip value in both cases.
+  if ( !effect.player->bugs )
   {
-    for ( auto bonus_id : item.parsed.bonus_id )
+    // TODO: It's undetermined what the criteria are for the 15% damage bonus to apply.
+    // It's assumed to apply permanently if a venomcursed item is equipped.
+    // TODO: generalize this into unique_gear.cpp if other item bonus tags need similar checks
+    for ( const auto& item : effect.player->items )
     {
-      for ( const auto& bonus_entry : effect.player->dbc->item_bonus( bonus_id ) )
+      for ( auto bonus_id : item.parsed.bonus_id )
       {
-        if ( bonus_entry.type == ITEM_BONUS_DESC && bonus_entry.value_1 == 14447 )
+        for ( const auto& bonus_entry : effect.player->dbc->item_bonus( bonus_id ) )
         {
-          effect.player->sim->print_debug( "{} venomcursed item '{} ({})' found.", *effect.player, item.name(),
-                                           item.parsed.data.id );
-          damage->base_multiplier *= 1.0 + effect.driver()->effectN( 2 ).percent();
-          goto create_callback;
+          if ( bonus_entry.type == ITEM_BONUS_DESC && bonus_entry.value_1 == 14447 )
+          {
+            effect.player->sim->print_debug( "{} venomcursed item '{} ({})' found.", *effect.player, item.name(),
+                                             item.parsed.data.id );
+            damage->base_multiplier *= 1.0 + effect.driver()->effectN( 2 ).percent();
+            goto create_callback;
+          }
         }
       }
     }
