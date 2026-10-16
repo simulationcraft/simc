@@ -129665,6 +129665,7 @@ Effects          :
 Tooltip          : Reduces damage taken.
 
 Name             : Arcane Wrath (desc=Rank 1) (id=1326079) [Spell Family (3)] 
+Hotfixed         : Cooldown (0 -> 6000), Category Cooldown (0 -> 6000), Category (0 -> 2601)
 Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
@@ -129676,6 +129677,8 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 6 seconds
+Category         : 2601 (Type 0x0)
+Category Cooldown: 6 seconds
 Affecting Spells : Arcane Focus (11222 effect#1), Arcane Mind (11232 effect#2), Improved Channeling (11237 effect#2), Arcane Impact (11242 effect#1), Arcane Geometry (11247 effect#1), Arcane Power (12042 effects: #1, #2), Presence of Mind (12043 effect#1), Clearcasting (12536 effect#1), Arcane Instability (15058 effect#1), Spell Power (412322 effect#1)
 Family Flags     : 30, 47
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Unknown (493)
@@ -129687,6 +129690,7 @@ Effects          :
 Description      : Launches a projectile of pure Arcane energy at the enemy target, causing $s1 Arcane damage. This spell gains additional Spell Damage equal to $s2% of your maximum Mana.
 
 Name             : Arcane Wrath (desc=Rank 2) (id=1326080) [Spell Family (3)] 
+Hotfixed         : Cooldown (0 -> 6000), Category Cooldown (0 -> 6000), Category (0 -> 2601)
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -129697,6 +129701,8 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 6 seconds
+Category         : 2601 (Type 0x0)
+Category Cooldown: 6 seconds
 Affecting Spells : Arcane Focus (11222 effect#1), Arcane Mind (11232 effect#2), Improved Channeling (11237 effect#2), Arcane Impact (11242 effect#1), Arcane Geometry (11247 effect#1), Arcane Power (12042 effects: #1, #2), Presence of Mind (12043 effect#1), Clearcasting (12536 effect#1), Arcane Instability (15058 effect#1), Spell Power (412322 effect#1)
 Family Flags     : 30, 47
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Unknown (493)
@@ -129708,6 +129714,7 @@ Effects          :
 Description      : Launches a projectile of pure Arcane energy at the enemy target, causing $s1 Arcane damage. This spell gains additional Spell Damage equal to $s2% of your maximum Mana.
 
 Name             : Arcane Wrath (desc=Rank 3) (id=1326081) [Spell Family (3)] 
+Hotfixed         : Cooldown (0 -> 6000), Category Cooldown (0 -> 6000), Category (0 -> 2601)
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -129718,6 +129725,8 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 6 seconds
+Category         : 2601 (Type 0x0)
+Category Cooldown: 6 seconds
 Affecting Spells : Arcane Focus (11222 effect#1), Arcane Mind (11232 effect#2), Improved Channeling (11237 effect#2), Arcane Impact (11242 effect#1), Arcane Geometry (11247 effect#1), Arcane Power (12042 effects: #1, #2), Presence of Mind (12043 effect#1), Clearcasting (12536 effect#1), Arcane Instability (15058 effect#1), Spell Power (412322 effect#1)
 Family Flags     : 30, 47
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Unknown (493)
@@ -129729,6 +129738,7 @@ Effects          :
 Description      : Launches a projectile of pure Arcane energy at the enemy target, causing $s1 Arcane damage. This spell gains additional Spell Damage equal to $s2% of your maximum Mana.
 
 Name             : Arcane Wrath (desc=Rank 4) (id=1326082) [Spell Family (3)] 
+Hotfixed         : Cooldown (0 -> 6000), Category Cooldown (0 -> 6000), Category (0 -> 2601)
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -129739,6 +129749,8 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 6 seconds
+Category         : 2601 (Type 0x0)
+Category Cooldown: 6 seconds
 Affecting Spells : Arcane Focus (11222 effect#1), Arcane Mind (11232 effect#2), Improved Channeling (11237 effect#2), Arcane Impact (11242 effect#1), Arcane Geometry (11247 effect#1), Arcane Power (12042 effects: #1, #2), Presence of Mind (12043 effect#1), Clearcasting (12536 effect#1), Arcane Instability (15058 effect#1), Spell Power (412322 effect#1)
 Family Flags     : 30, 47
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Unknown (493)
