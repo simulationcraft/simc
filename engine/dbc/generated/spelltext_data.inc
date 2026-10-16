@@ -1,5 +1,5 @@
 // Spell text, wow build 1.60.1.70425
-static constexpr std::array<spelltext_data_t, 7137> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 7138> __spelltext_data { {
   {      10, "Ice shards pelt the target area doing ${$1279976m1*$d*$<frostdamage>} Frost damage over $d.", "$1279976s1 Frost damage every $t3 $lsecond:seconds;.", "Rank 1" },
   {      17, "Draws on the soul of the party member to shield them, absorbing $?a14748[${$s1*(1+$14748s1/100)}][$s1] damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage.", "Rank 1" },
   {      53, "Backstab the target, causing $s2% weapon damage plus $s1 to the target.  Must be behind the target.  Requires a dagger in the main hand.  Awards $s3 combo $lpoint:points;.", 0, "Rank 1" },
@@ -6718,6 +6718,7 @@ static constexpr std::array<spelltext_data_t, 7137> __spelltext_data { {
   { 1293526, "Command a hawk to dive-bomb your targeted enemy, dealing ${$s1+($rap*($s4/100))} Physical damage and continuing its assault for $1293248d. Only $s3 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.", 0, "Rank 3" },
   { 1293527, "Command a hawk to dive-bomb your targeted enemy, dealing ${$s1+($rap*($s4/100))} Physical damage and continuing its assault for $1293248d. Only $s3 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.", 0, "Rank 4" },
   { 1293539, "Deals $s1 Holy damage every time you block.", 0, 0 },
+  { 1293540, "Reduces the cast time of spells and effects that revive targets by $s1%.", 0, 0 },
   { 1293542, "Gives you a $s1% chance to avoid interruption caused by damage while casting Flash Heal.", 0, 0 },
   { 1293544, "Increases the critical strike chance of your Flash of Light by $s1%.\r\n", 0, 0 },
   { 1293653, "Blasts a target for $s1 Frost damage.", 0, 0 },
