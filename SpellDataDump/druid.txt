@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70425 Live
 Name             : Demoralizing Roar (desc=Rank 1) (id=99) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -39,7 +39,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679124)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -66,7 +66,7 @@ Effects          :
 #1 (id=678994)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 3 | Scaled Value: 3 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Tranquility (desc=Rank 1) (id=740) [Spell Family (7)] 
@@ -162,6 +162,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Targeted Enemy (6)
 #3 (id=679905)   : Apply Aura (6) | Disable Stealth (41)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Targeted Enemy (6)
+#4 (id=1363296)  : Threat (63)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Decrease the armor of the target by $s1 for $d.  While affected, the target cannot stealth or turn invisible.
 Tooltip          : Decreases armor by $s1.  Cannot stealth or turn invisible.
 
@@ -180,7 +182,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=679789)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 8 | Scaled Value: 8 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -210,6 +212,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Targeted Enemy (6)
 #3 (id=680254)   : Apply Aura (6) | Disable Stealth (41)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Targeted Enemy (6)
+#4 (id=1363297)  : Threat (63)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Decrease the armor of the target by $s1 for $d.  While affected, the target cannot stealth or turn invisible.
 Tooltip          : Decreases armor by $s1.  Cannot stealth or turn invisible.
 
@@ -269,7 +273,7 @@ Effects          :
 #1 (id=679377)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 6 | Scaled Value: 6 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Travel Form (desc=Shapeshift) (id=783) [Spell Family (7)] 
@@ -313,7 +317,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=680350)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 12 | Scaled Value: 12 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -336,7 +340,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679939)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -389,7 +393,7 @@ Effects          :
 #1 (id=679625)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 9 | Scaled Value: 9 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Rip (desc=Rank 1) (id=1079) [Spell Family (7)] 
@@ -407,7 +411,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685878)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 3 | Scaled Value: 3 | Points Per Combo Point: 4.4 | Target: Targeted Enemy (6)
@@ -510,7 +514,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=679526)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 23 | Scaled Value: 23 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -554,7 +558,7 @@ Labels           : 21: Druid Spells
 Stance Mask      : 0x00000001
 Affecting Spells : Clearcasting (16870 effect#1), Ferocity (16934 effect#2), Savage Fury (16998 effects: #1, #2), Berserk (417141 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #7, #8), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T2- Druid - Feral 2P Bonus (467207 effects: #1, #2), S03 - Item - T2- Druid - Feral 4P Bonus (467208 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 12, 126
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681365)   : School Damage (2): physical
                    Base Value: 23 | Scaled Value: 23 | Target: Targeted Enemy (6)
@@ -580,7 +584,7 @@ Labels           : 21: Druid Spells
 Stance Mask      : 0x00000001
 Affecting Spells : Clearcasting (16870 effect#1), Ferocity (16934 effect#2), Savage Fury (16998 effects: #1, #2), Berserk (417141 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #7, #8), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T2- Druid - Feral 2P Bonus (467207 effects: #1, #2), S03 - Item - T2- Druid - Feral 4P Bonus (467208 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 12, 126
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681217)   : School Damage (2): physical
                    Base Value: 31 | Scaled Value: 31 | Target: Targeted Enemy (6)
@@ -606,7 +610,7 @@ Labels           : 21: Druid Spells
 Stance Mask      : 0x00000001
 Affecting Spells : Clearcasting (16870 effect#1), Ferocity (16934 effect#2), Savage Fury (16998 effects: #1, #2), Berserk (417141 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #7, #8), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T2- Druid - Feral 2P Bonus (467207 effects: #1, #2), S03 - Item - T2- Druid - Feral 4P Bonus (467208 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 12, 126
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=680978)   : School Damage (2): physical
                    Base Value: 45 | Scaled Value: 45 | Target: Targeted Enemy (6)
@@ -652,7 +656,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=681228)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 32 | Scaled Value: 32 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -674,7 +678,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=681314)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 42 | Scaled Value: 42 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -698,7 +702,7 @@ Stance Mask      : 0x40000000
 Mechanic         : Sleep
 Affecting Spells : Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1)
 Family Flags     : 24, 79
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=681250)   : Apply Aura (6) | Stun (12)
@@ -849,7 +853,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=681561)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 51 | Scaled Value: 51 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1067,7 +1071,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=683349)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1092,7 +1096,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=683233)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1163,7 +1167,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effects: #1, #2)
 Family Flags     : 13
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=683813)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1217,7 +1221,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : Melee
 Resource         : 60 Energy (3) (id=172903)
-Spell Level      : 22
+Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Labels           : 21: Druid Spells
@@ -1227,14 +1231,14 @@ Family Flags     : 15
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Unknown (493)
 Effects          :
 #1 (id=683154)   : Weapon Damage (58)
-                   Base Value: 24 | Scaled Value: 24 | SP Coefficient: 1 | Target: Targeted Enemy (6)
+                   Base Value: 22 | Scaled Value: 22 | SP Coefficient: 1 | Target: Targeted Enemy (6)
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#6)
 #2 (id=683155)   : Weapon Damage% (31)
                    Base Value: 155 | Scaled Value: 1.55 | SP Coefficient: 1 | Target: Targeted Enemy (6)
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#5)
 #3 (id=683156)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Shred the target, causing $s2% damage plus 54 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
+Description      : Shred the target, causing $s2% damage plus $s1 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Enrage (id=5229) [Spell Family (7)] 
 Class            : Druid
@@ -1378,6 +1382,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1357988)  : Apply Aura (6) | Unknown(668)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#5 (id=1363096)  : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: -100 | Scaled Value: -100 | Resource: energy | Target: Self (1)
 Description      : Shapeshift into Bear Form, increasing Attack Power by $1178s4, Armor contribution from items by $1178s1%, and Health by $1178s2.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.
 
 The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.
@@ -1398,7 +1404,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x40000000
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#3), Increased Insect Swarm Duration (1291061 effect#1)
 Family Flags     : 21
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684482)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 8 | Scaled Value: 8 | SP Coefficient: 0.158 | Target: Targeted Enemy (6)
@@ -1582,7 +1588,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effects: #1, #2)
 Family Flags     : 13
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685356)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1611,7 +1617,7 @@ Effects          :
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#5)
 #3 (id=685360)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Shred the target, causing $s2% damage plus 72 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
+Description      : Shred the target, causing $s2% damage plus $s1 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Maul (desc=Rank 1) (id=6807) [Spell Family (7)] 
 Class            : Druid
@@ -1759,7 +1765,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688039)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 71 | Scaled Value: 71 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1784,7 +1790,7 @@ Effects          :
 #1 (id=686498)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 12 | Scaled Value: 12 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Tranquility (desc=Rank 2) (id=8918) [Spell Family (7)] 
@@ -1980,7 +1986,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=686949)   : Direct Heal (10)
                    Base Value: 87 | Scaled Value: 96 (delta=0.153846) | Points Per Level: 1.8 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2005,7 +2011,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687298)   : Direct Heal (10)
                    Base Value: 164 | Scaled Value: 176.5 (delta=0.136364) | Points Per Level: 2.5 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2030,7 +2036,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687332)   : Direct Heal (10)
                    Base Value: 235 | Scaled Value: 250.5 (delta=0.132296) | Points Per Level: 3.1 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2055,7 +2061,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688040)   : Direct Heal (10)
                    Base Value: 311 | Scaled Value: 329 (delta=0.123894) | Points Per Level: 3.6 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2080,7 +2086,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688042)   : Direct Heal (10)
                    Base Value: 394 | Scaled Value: 414.5 (delta=0.12065) | Points Per Level: 4.1 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2198,7 +2204,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effects: #1, #2)
 Family Flags     : 13
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686797)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2227,7 +2233,7 @@ Effects          :
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#5)
 #3 (id=687554)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Shred the target, causing $s2% damage plus 99 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
+Description      : Shred the target, causing $s2% damage plus $s1 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Cower (desc=Rank 1) (id=8998) [Spell Family (7)] 
 Class            : Druid
@@ -2286,7 +2292,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effect#1), Berserk (417141 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 17
-Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Unknown (493)
+Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=688477)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2307,7 +2313,7 @@ Range            : 5 yards
 Duration         : 18 seconds
 Mechanic         : Bleed
 Triggered By     : Pounce (9005)
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=688148)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 15 | Scaled Value: 15 | Mechanic: Bleed | Target: Targeted Enemy (6)
@@ -2352,7 +2358,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681752)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 4 | Scaled Value: 4 | Points Per Combo Point: 7.2 | Target: Targeted Enemy (6)
@@ -2381,7 +2387,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 6 | Scaled Value: 6 | Points Per Combo Point: 8.5 | Target: Targeted Enemy (6)
@@ -2418,6 +2424,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1357989)  : Apply Aura (6) | Unknown(668)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#5 (id=1363092)  : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: -100 | Scaled Value: -100 | Resource: energy | Target: Self (1)
 Description      : Shapeshift into Dire Bear Form, increasing Attack Power by $9635s4, Armor contribution from items by $9635s1%, and Health by $9635s3.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.
 
 The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.
@@ -2516,6 +2524,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Targeted Enemy (6)
 #3 (id=684323)   : Apply Aura (6) | Disable Stealth (41)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Targeted Enemy (6)
+#4 (id=1363298)  : Threat (63)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Decrease the armor of the target by $s1 for $d.  While affected, the target cannot stealth or turn invisible.
 Tooltip          : Decreases armor by $s1.  Cannot stealth or turn invisible.
 
@@ -2535,7 +2545,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=684324)   : Direct Heal (10)
                    Base Value: 504 | Scaled Value: 527.5 (delta=0.117864) | Points Per Level: 4.7 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -2559,7 +2569,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684145)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 8 | Scaled Value: 8 | Points Per Combo Point: 12.7 | Target: Targeted Enemy (6)
@@ -2610,7 +2620,7 @@ Effects          :
 #1 (id=687063)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Healing Touch (desc=Rank 8) (id=9758) [Spell Family (7)] 
@@ -2666,7 +2676,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effect#1), Berserk (417141 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 17
-Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Unknown (493)
+Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=687674)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2687,7 +2697,7 @@ Range            : 5 yards
 Duration         : 18 seconds
 Mechanic         : Bleed
 Triggered By     : Pounce (9823)
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687677)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 20 | Scaled Value: 20 | Mechanic: Bleed | Target: Targeted Enemy (6)
@@ -2703,7 +2713,7 @@ Range            : 5 yards
 Duration         : 18 seconds
 Mechanic         : Bleed
 Triggered By     : Pounce (9827)
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687678)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 25 | Scaled Value: 25 | Mechanic: Bleed | Target: Targeted Enemy (6)
@@ -2724,7 +2734,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Stun
 Affecting Spells : Clearcasting (16870 effect#1), Brutal Impact (16940 effect#1), Berserk (417141 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 17
-Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Unknown (493)
+Attributes       : Is Ability (4), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=687679)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2757,7 +2767,7 @@ Effects          :
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#5)
 #3 (id=688292)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Shred the target, causing $s2% damage plus 144 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
+Description      : Shred the target, causing $s2% damage plus $s1 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Shred (desc=Rank 5) (id=9830) [Spell Family (7)] 
 Class            : Druid
@@ -2781,7 +2791,7 @@ Effects          :
                    Modified By: S03 - Tuning and Overrides Passive - Druid (436895 effect#5)
 #3 (id=688180)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Shred the target, causing $s2% damage plus 180 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
+Description      : Shred the target, causing $s2% damage plus $s1 to the target.  Must be behind the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Moonfire (desc=Rank 8) (id=9833) [Spell Family (7)] 
 Class            : Druid
@@ -2864,7 +2874,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687591)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 94 | Scaled Value: 94 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2886,7 +2896,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688107)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 124 | Scaled Value: 124 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2908,7 +2918,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Can Proc From Procs (122), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Can Proc From Procs (122), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687592)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 161 | Scaled Value: 161 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2979,7 +2989,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687651)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3004,7 +3014,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687265)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3029,7 +3039,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=686900)   : Direct Heal (10)
                    Base Value: 645 | Scaled Value: 671.5 (delta=0.113869) | Points Per Level: 5.3 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -3054,7 +3064,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=686919)   : Direct Heal (10)
                    Base Value: 817 | Scaled Value: 847 (delta=0.112019) | Points Per Level: 6 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -3079,7 +3089,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Nature's Focus (17063 effect#1), Improved Regrowth (17074 effect#1), Gift of Nature (17104 effects: #1, #2), Nature's Swiftness (17116 effect#1), Nimble Healing Touch (24542 effect#2), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Tree of Life (Passive) (439734 effect#1), Healing Grace (467204 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688380)   : Direct Heal (10)
                    Base Value: 1021 | Scaled Value: 1055 (delta=0.109331) | Points Per Level: 6.8 | SP Coefficient: 0.286 | Target: Targeted Ally (21)
@@ -3406,7 +3416,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=688033)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 11 | Scaled Value: 11 | Points Per Combo Point: 18.200001 | Target: Targeted Enemy (6)
@@ -3435,7 +3445,7 @@ Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting Spells : Feral Aggression (16858 effect#2), Feral Aggression (16859 effect#2), Feral Aggression (16860 effect#2), Feral Aggression (16861 effect#2), Feral Aggression (16862 effect#2), Clearcasting (16870 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #10, #12), Improved Rip (446212 effect#1), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T1 - Druid - Feral 6P Bonus (455873 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 23, 85
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=688085)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 15 | Scaled Value: 15 | Points Per Combo Point: 25.5 | Target: Targeted Enemy (6)
@@ -3487,7 +3497,7 @@ Labels           : 21: Druid Spells
 Stance Mask      : 0x00000001
 Affecting Spells : Clearcasting (16870 effect#1), Ferocity (16934 effect#2), Savage Fury (16998 effects: #1, #2), Berserk (417141 effect#1), S03 - Tuning and Overrides Passive - Druid (436895 effects: #7, #8), S03 - Item - T1 - Druid - Feral 4P Bonus (455872 effect#1), S03 - Item - T2- Druid - Feral 2P Bonus (467207 effects: #1, #2), S03 - Item - T2- Druid - Feral 4P Bonus (467208 effect#1), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 12, 126
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687442)   : School Damage (2): physical
                    Base Value: 61 | Scaled Value: 61 | Target: Targeted Enemy (6)
@@ -3523,6 +3533,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Targeted Enemy (6)
 #3 (id=687339)   : Apply Aura (6) | Disable Stealth (41)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Targeted Enemy (6)
+#4 (id=1363299)  : Threat (63)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Decrease the armor of the target by $s1 for $d.  While affected, the target cannot stealth or turn invisible.
 Tooltip          : Decreases armor by $s1.  Cannot stealth or turn invisible.
 
@@ -3563,7 +3575,7 @@ Effects          :
 #1 (id=687684)   : Apply Aura (6) | Damage Shield (15)
                    Base Value: 18 | Scaled Value: 18 | Target: Targeted Ally (21)
                    Modified By: Improved Thorns (16836 effect#1), Improved Thorns (16839 effect#1), Improved Thorns (16840 effect#1), S03 - Item - T1 - Druid - Balance 2P Bonus (455852 effect#1)
-Description      : Thorns sprout from the friendly target causing $s1 Nature damage to attackers when hit.  Lasts $d.
+Description      : Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts $d.
 Tooltip          : Causes $w1 Nature damage to attackers.
 
 Name             : Wrath (desc=Rank 8) (id=9912) [Spell Family (7)] 
@@ -4480,7 +4492,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=695211)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
-Description      : While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the critical strike chance of all party members within $24932a1 yards by $24932s1%, exclusive with Moonkin Aura.
+Description      : While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the melee and ranged Critical Strike chance of all party or raid members within $24932a1 yards by $24932s1%.
 
 Name             : Improved Mark of the Wild (desc=Rank 1) (id=17050) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -4561,11 +4573,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Target: Self (1)
 #2 (id=1235281)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Target: Self (1)
-Description      : Gives you a $m1% chance to gain $/10;17057s1 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores ${100*($m2/100)}% of the Energy you had when last in Cat Form, plus ${10*($m2/100)} Energy per sec spent outside Cat Form, up to ${100*($m2/100)} Energy.
-
-Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.
+Description      : Gives you a $m1% chance to gain $/10;17057s1 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores ${100*($m2/100)}% of the Energy you had when last in Cat Form, plus ${10*($m2/100)} Energy per second spent outside Bear Form or Dire Bear Form, up to ${100*($m2/100)} Energy.
 
 Name             : Nature's Focus (id=17063) [Spell Family (7), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=1, col=10, max_rank=5, req_points=0]
                  : Effect#1 [op=set, values=(14, 28, 42, 56, 70)]
 Class            : Druid
@@ -4578,7 +4589,7 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 | SP Coefficient: 1 | Misc Value: 9 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Tranquility (740), Entangling Roots (1062), Hibernate (2637), Starfire (2912), Wrath (5176), Wrath (5177), Wrath (5178), Wrath (5179), Wrath (5180), Healing Touch (5185), Healing Touch (5186), Healing Touch (5187), Healing Touch (5188), Healing Touch (5189), Entangling Roots (5195), Entangling Roots (5196), Healing Touch (6778), Wrath (6780), Healing Touch (8903), Wrath (8905), Tranquility (8918), Regrowth (8936), Regrowth (8938), Regrowth (8939), Regrowth (8940), Regrowth (8941), Starfire (8949), Starfire (8950), Starfire (8951), Regrowth (9750), Healing Touch (9758), Entangling Roots (9852), Entangling Roots (9853), Regrowth (9856), Regrowth (9857), Regrowth (9858), Tranquility (9862), Tranquility (9863), Starfire (9875), Starfire (9876), Healing Touch (9888), Healing Touch (9889), Wrath (9912), Hurricane (16914), Hurricane (17401), Hurricane (17402), Hibernate (18657), Hibernate (18658), Entangling Roots (19970), Entangling Roots (19971), Entangling Roots (19972), Entangling Roots (19973), Entangling Roots (19974), Entangling Roots (19975), Rebirth (20484), Rebirth (20739), Rebirth (20742), Rebirth (20747), Rebirth (20748), Healing Touch (25297), Starfire (25298), Nourish (408247), Regrowth (436937), Regrowth (436938), Regrowth (436939), Regrowth (436940), Regrowth (436942), Regrowth (436943), Regrowth (436944), Regrowth (436945), Regrowth (436946), Revive (437138), Revive (1237948), Revive (1237949), Revive (1237950), Revive (1237951), Hurricane (1278759), Hurricane (1278965), Hurricane (1278968)
                    Family Flags: 0, 2, 5, 6, 7, 9, 22, 28, 57, 73, 77, 79, 112
-Description      : Gives you a $m1% chance to avoid interruption caused by damage while casting Arcane and Nature spells.
+Description      : Gives your Arcane and Nature spells a $m1% chance to not lose casting time when you take damage.
 
 Name             : Naturalist (id=17069) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=2, col=9, max_rank=5, req_points=0]
@@ -4777,8 +4788,8 @@ Triggered By     : The Green Tower (18097)
 Attributes       : Not Shapeshifted (16), Unknown (493)
 Effects          :
 #1 (id=694562)   : Apply Aura (6) | Damage Shield (15)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=694563)   : Apply Aura (6) | Resistance (22)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1362974)  : Apply Aura (6) | Resistance (22)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self (1)
 Description      : Causes $s1 Nature damage to attackers when hit and increases Nature resistance by $s2 for $d.
 Tooltip          : Increased Nature resistance and inflicts $s1 Nature damage to attackers.
@@ -4937,7 +4948,7 @@ Stance Mask      : 0x40000000
 Mechanic         : Sleep
 Affecting Spells : Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1)
 Family Flags     : 24, 79
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=696067)   : Apply Aura (6) | Stun (12)
@@ -4962,7 +4973,7 @@ Stance Mask      : 0x40000000
 Mechanic         : Sleep
 Affecting Spells : Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1)
 Family Flags     : 24, 79
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=696082)   : Apply Aura (6) | Stun (12)
@@ -4981,7 +4992,7 @@ Duration         : 4 seconds
 Labels           : 21: Druid Spells
 Stance Mask      : 0x00000090
 Triggered By     : Feral Charge (Bear) (16979), Feral Charge (1238122)
-Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=697854)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -5005,7 +5016,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (17329)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=697168)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5030,7 +5041,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (16813)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=697123)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5055,7 +5066,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (16812)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=698159)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5080,7 +5091,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (16811)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696700)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5105,7 +5116,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (16810)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696717)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5130,7 +5141,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Improved Entangling Roots (16918 effect#1), Nature's Focus (17063 effect#1), Nature's Swiftness (17116 effect#1), Unstable Power (29275 effect#1), Brittle Armor (29284 effect#1), Mercurial Shield (29286 effect#1), Genesis (1223081 effect#1)
 Triggered By     : Nature's Grasp (16689)
 Family Flags     : 9
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=697584)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5602,7 +5613,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 38 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864)
                    Family Flags: 114
-Description      : Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by $s5%, Armor contribution from items by $24905s1%, and all party members within $24907a1 yards have their Critical Strike chance increased by $24907s1%, exclusive with Leader of the Pack.  Also protects the caster from Polymorph effects and prevents the use of healing spells.
+Description      : Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by $s5%, Armor contribution from items by $24905s1%, and all party or raid members within $24907a1 yards have their spell Critical Strike chance increased by $24907s1%.  Also protects the caster from Polymorph effects and prevents the use of healing spells.
 
 The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.
 Tooltip          : Immune to Polymorph effects. Omen of Clarity trigger chance increased. Armor contribution from items is increased by $24905s1%.
@@ -5636,9 +5647,10 @@ Triggered By     : Moonkin Form (24858)
 Family Flags     : 66
 Attributes       : Is Ability (4), Only On Player (104), Unknown (493)
 Effects          :
-#1 (id=701335)   : Apply Party Aura (35) | Modify Critical Strike% (290)
+#1 (id=701335)   : Apply Aura Raid (65) | Modify Spell Crit% (57)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1 | Radius: 45 yards | Target: Self (1)
-Tooltip          : Increases critical strike chance by $s1%.
+Description      : Increases spell Critical Strike chance by $s1%.
+Tooltip          : Increases spell Critical Strike chance by $s1%.
 
 Name             : Leader of the Pack (id=24932) [Spell Family (7)] 
 Class            : Druid
@@ -5650,9 +5662,9 @@ Stance Mask      : 0x00000091
 Family Flags     : 43
 Attributes       : No Aura Cancel (31), Only On Player (104), Unknown (493)
 Effects          :
-#1 (id=702727)   : Apply Party Aura (35) | Modify Critical Strike% (290)
+#1 (id=702727)   : Apply Aura Raid (65) | Modify Crit% (52)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1 | Radius: 45 yards | Target: Self (1)
-Tooltip          : Increases critical strike chance by $s1%.
+Tooltip          : Increases melee and ranged Critical Strike chance by $s1%.
 
 Name             : Tranquil Spirit (id=24968) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=10, max_rank=5, req_points=0]
@@ -5683,7 +5695,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x40000000
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#3), Increased Insect Swarm Duration (1291061 effect#1)
 Family Flags     : 21
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=701684)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.158 | Target: Targeted Enemy (6)
@@ -5706,7 +5718,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x40000000
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#3), Increased Insect Swarm Duration (1291061 effect#1)
 Family Flags     : 21
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=702975)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.158 | Target: Targeted Enemy (6)
@@ -5729,11 +5741,11 @@ Proc Chance      : 101%
 Stance Mask      : 0x40000000
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#3), Increased Insect Swarm Duration (1291061 effect#1)
 Family Flags     : 21
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=703378)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.158 | Target: Targeted Enemy (6)
-#2 (id=703379)   : Apply Aura (6) | Modify Hit% (54)
+#2 (id=703379)   : Apply Aura (6) | Modify Hit% (54) | Attributes: Suppress Points Stacking (6)
                    Base Value: -2 | Scaled Value: -2 | SP Coefficient: 1 | Target: Targeted Enemy (6)
 Description      : The enemy target is swarmed by insects, decreasing their chance to hit with attacks by $s2% and causing $o1 Nature damage over $d.
 Tooltip          : Chance to hit with attacks decreased by $s2% and $s1 Nature damage every $t1 sec.
@@ -5752,7 +5764,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x40000000
 Affecting Spells : Nature's Reach (16819 effect#1), Moonglow (16845 effect#1), Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Vengeance (16909 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#3), Increased Insect Swarm Duration (1291061 effect#1)
 Family Flags     : 21
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Bounce Fails Spell (157), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=703380)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 31 | Scaled Value: 31 | SP Coefficient: 0.158 | Target: Targeted Enemy (6)
@@ -5814,7 +5826,7 @@ Stance Mask      : 0x00000002
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Improved Rejuvenation (17111 effect#1), Nimble Healing Touch (24542 effect#2), Lifebloom (409824 effect#2), Gift of the Earthmother (414673 effect#1), Living Seed (414677 effect#1), Tree of Life (Passive) (439734 effect#1), Genesis (1223081 effect#1), Nature's Splendor (1223083 effect#1)
 Family Flags     : 4
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=702232)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 194 | Scaled Value: 194 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -5833,7 +5845,7 @@ Labels           : 23: Hunter Spells
 Stance Mask      : 0x00000090
 Mechanic         : Root
 Triggered By     : Charge (7371), Charge (26177), Charge (26178), Charge (26179), Charge (26201), Charge (27685)
-Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685492)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6108,7 +6120,7 @@ Duration         : 7 seconds
 Cooldown         : 6 seconds
 Labels           : 21: Druid Spells
 Stance Mask      : 0x00000002
-Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #8), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
+Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #3), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
 Family Flags     : 58
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
@@ -6512,7 +6524,7 @@ Category Cooldown: 10 seconds
 Stance Mask      : 0x00000091
 Affecting Spells : Clearcasting (16870 effect#1)
 Family Flags     : 123
-Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Always Hit (114), Always Line of Sight (185), Taps immediately (215), Can Cause Interrupt (235), Attack on Charge to Unit (242), Interrupts Current Cast (419), Unknown (493)
+Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Always Hit (114), Always Line of Sight (185), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Attack on Charge to Unit (242), Interrupts Current Cast (419), Unknown (493)
 Effects          :
 #1 (id=1075547)  : Charge (96)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 414621 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -6575,7 +6587,7 @@ Range            : 100 yards
 Duration         : 2 seconds
 Stance Mask      : 0x00000091
 Triggered By     : Skull Bash (410176)
-Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Always Hit (114), Do Not Display Range (126), Always Line of Sight (185), Taps immediately (215), Can Cause Interrupt (235), Attack on Charge to Unit (242), No Attack Miss (249), Interrupts Current Cast (419), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Always Hit (114), Do Not Display Range (126), Always Line of Sight (185), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Attack on Charge to Unit (242), No Attack Miss (249), Interrupts Current Cast (419), Unknown (493)
 Effects          :
 #1 (id=1083886)  : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -6597,7 +6609,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Bleed
 Affecting Spells : Clearcasting (16870 effect#1), Shredding Attacks (16966 effect#2), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 40
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1083926)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
@@ -8267,22 +8279,14 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Tranquility (740), Rejuvenation (774), Rejuvenation (1058), Rejuvenation (1430), Rejuvenation (2090), Rejuvenation (2091), Rejuvenation (3627), Rejuvenation (8910), Tranquility (8918), Regrowth (8936), Regrowth (8938), Regrowth (8939), Regrowth (8940), Regrowth (8941), Regrowth (9750), Rejuvenation (9839), Rejuvenation (9840), Rejuvenation (9841), Regrowth (9856), Regrowth (9857), Regrowth (9858), Tranquility (9862), Tranquility (9863), Rejuvenation (25299), Blessed Recovery (27813), Wild Growth (408120), Lifebloom (408124), Rejuvenation (417057), Rejuvenation (417058), Rejuvenation (417059), Rejuvenation (417060), Rejuvenation (417061), Rejuvenation (417062), Rejuvenation (417063), Rejuvenation (417064), Rejuvenation (417065), Rejuvenation (417066), Rejuvenation (417068), Regrowth (436937), Regrowth (436938), Regrowth (436939), Regrowth (436940), Regrowth (436942), Regrowth (436943), Regrowth (436944), Regrowth (436945), Regrowth (436946), Wild Growth (1238214), Wild Growth (1238215)
                    Family Flags: 4, 6, 7, 36, 58
-#2 (id=1133219)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: -1 | Target: Self (1)
-#3 (id=1133220)  : Apply Aura (6) | Modify Base Resistance (142)
+#2 (id=1133219)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
-#4 (id=1133224)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self (1)
-#5 (id=1133225)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Target: Self (1)
-#6 (id=1133226)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 2 | Target: Self (1)
-#7 (id=1133227)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
-#8 (id=1163761)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#3 (id=1133220)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wild Growth (408120), Wild Growth (1238214), Wild Growth (1238215)
                    Family Flags: 58
+#4 (id=1133224)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 25 | Scaled Value: 25 | Stat: Spi | Target: Self (1)
 
 Name             : Tree of Life (id=439745) [Spell Family (7)] 
 Class            : Druid
@@ -9519,7 +9523,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Bleed
 Affecting Spells : Clearcasting (16870 effect#1), Shredding Attacks (16966 effect#2), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 40
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1231459)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
@@ -9544,7 +9548,7 @@ Stance Mask      : 0x00000090
 Mechanic         : Bleed
 Affecting Spells : Clearcasting (16870 effect#1), Shredding Attacks (16966 effect#2), Genesis (1223081 effect#1), Natural Instinct (1223242 effect#1)
 Family Flags     : 40
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1231461)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
@@ -9737,7 +9741,7 @@ Duration         : 7 seconds
 Cooldown         : 6 seconds
 Labels           : 21: Druid Spells
 Stance Mask      : 0x00000002
-Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #8), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
+Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #3), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
 Family Flags     : 58
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
@@ -9762,7 +9766,7 @@ Duration         : 7 seconds
 Cooldown         : 6 seconds
 Labels           : 21: Druid Spells
 Stance Mask      : 0x00000002
-Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #8), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
+Affecting Spells : Clearcasting (16870 effect#1), Nature's Grace (16886 effect#2), Gift of Nature (17104 effect#2), Gift of the Earthmother (414673 effect#1), Tree of Life (Passive) (439734 effects: #1, #3), S03 - Item - T2- Druid - Restoration 6P Bonus (467205 effect#1), S03 - Item - T2- Druid - Restoration 6P Bonus Moonkin Effect (467206 effects: #1, #2), Genesis (1223081 effect#1)
 Family Flags     : 58
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
@@ -9856,10 +9860,10 @@ Labels           : 21: Druid Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
 Effects          :
 #1 (id=1310233)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -1000 | Scaled Value: -1000 | SP Coefficient: 1 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -500 | Scaled Value: -500 | SP Coefficient: 1 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Shifting Power (1322605)
                    Family Flags: 63
-Description      : Reduces the cooldown of your Shifting Power ability by ${$m1/-1000} sec.
+Description      : Reduces the cooldown of your Shifting Power ability by ${$m1/-1000}.1 sec.
 
 Name             : Increased Enrage Rage (id=1291060) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -9905,7 +9909,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1333949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : Your Lacerate hits have a $h% chance to reset the cooldown on Mangle (Bear).
+Description      : Your Lacerate hits have a $h% chance to reset the cooldown on Primal Bite.
 
 Name             : Swiftmend Cooldown Reduction (id=1306488) [Spell Family (7), Passive, Hidden] 
 School           : Physical

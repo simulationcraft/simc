@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70425 Live
 Name             : Power Word: Shield (desc=Rank 1) (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -16,7 +16,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687563)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 44 | Scaled Value: 48 | Points Per Level: 0.8 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -38,7 +38,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=678932)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 9 | Scaled Value: 9 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -158,7 +158,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=679452)   : Apply Aura (6) | Resistance (22)
+#1 (id=679452)   : Apply Aura (6) | Unknown(674)
                    Base Value: 315 | Scaled Value: 315 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -220,7 +220,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=691263)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 86 | Scaled Value: 92 | Points Per Level: 1.2 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -304,7 +304,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=686327)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 154 | Scaled Value: 162 | Points Per Level: 1.6 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -330,7 +330,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=679193)   : Apply Aura (6) | Resistance (22)
+#1 (id=679193)   : Apply Aura (6) | Unknown(674)
                    Base Value: 720 | Scaled Value: 720 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -352,7 +352,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Charm
 Affecting Spells : Inner Focus (14751 effect#1), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Turning (5), Sheathing (10), Interacting (11), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=679392)   : Apply Aura (6) | Dummy (4)
@@ -514,7 +514,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=685376)   : Apply Aura (6) | Resistance (22)
+#1 (id=685376)   : Apply Aura (6) | Unknown(674)
                    Base Value: 945 | Scaled Value: 945 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -788,7 +788,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 26
-Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), No Threat (42), Toggle Far Sight (45), No AutoCast (AI) (49), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), No Threat (42), Toggle Far Sight (45), No AutoCast (AI) (49), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Moving (4), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=681275)   : Apply Aura (6) | Dummy (4)
@@ -857,7 +857,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=680737)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 226 | Scaled Value: 236 | Points Per Level: 2 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -875,7 +875,7 @@ Range            : 30 yards
 Velocity         : 20 yards/sec
 Requires weapon  : Wand
 Category         : 351 (Type 0x0)
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Auto Repeat (69), Normal Ranged Attack (111), Auto Ranged Combat (152), Unknown (472), Unknown (493)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Auto Repeat (69), Normal Ranged Attack (111), Unknown (472), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Attacking (13), Damage Channel Duration (15), Action (Delayed) (17)
 Effects          :
 #1 (id=683674)   : Weapon Damage (17)
@@ -955,7 +955,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=684533)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 291 | Scaled Value: 302.5 | Points Per Level: 2.3 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -981,7 +981,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=685847)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 368 | Scaled Value: 381 | Points Per Level: 2.6 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -1003,7 +1003,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=683159)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1023,7 +1023,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=683160)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1043,7 +1043,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=683135)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 32 | Scaled Value: 32 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1063,7 +1063,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=683403)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 41 | Scaled Value: 41 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1083,7 +1083,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=684361)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 54 | Scaled Value: 54 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -1138,7 +1138,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=684875)   : Apply Aura (6) | Resistance (22)
+#1 (id=684875)   : Apply Aura (6) | Unknown(674)
                    Base Value: 495 | Scaled Value: 495 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -1295,7 +1295,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Improved Psychic Scream (15392 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=686784)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1 | Radius: 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1321,7 +1321,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Improved Psychic Scream (15392 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=687516)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1 | Radius: 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1440,7 +1440,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shackle
 Affecting Spells : Inner Focus (14751 effects: #1, #2), Focused Casting (27828 effect#1), Deliverance (467543 effect#1), Holy Precision (1309957 effect#1)
 Family Flags     : 30, 58
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=687027)   : Apply Aura (6) | Stun (12)
@@ -1465,7 +1465,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shackle
 Affecting Spells : Inner Focus (14751 effects: #1, #2), Focused Casting (27828 effect#1), Deliverance (467543 effect#1), Holy Precision (1309957 effect#1)
 Family Flags     : 30, 58
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=687155)   : Apply Aura (6) | Stun (12)
@@ -1690,7 +1690,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Improved Psychic Scream (15392 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=689112)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1 | Radius: 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1716,7 +1716,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Improved Psychic Scream (15392 effect#1)
 Family Flags     : 16
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=689280)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1 | Radius: 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1803,7 +1803,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687788)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 470 | Scaled Value: 485 | Points Per Level: 3 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -1829,7 +1829,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688062)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 591 | Scaled Value: 608 | Points Per Level: 3.4 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -1855,7 +1855,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=687799)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 749 | Scaled Value: 768.5 | Points Per Level: 3.9 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -1881,7 +1881,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting Spells : Mental Agility (14520 effect#1), Improved Power Word: Shield (14748 effect#1), Inner Focus (14751 effect#1), Improved Power Word: Shield (24191 effect#1), Soul Warding (402000 effects: #1, #2)
 Family Flags     : 0
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Never Bounces (148), Aura Points On Client (268), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688352)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 928 | Scaled Value: 949.5 | Points Per Level: 4.3 | SP Coefficient: 0.1 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
@@ -1904,7 +1904,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 26
-Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), No Threat (42), Toggle Far Sight (45), No AutoCast (AI) (49), Exclude Caster (51), Require All Targets (58), Ignore Line of Sight (66), Allow Low Level Buff (67), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), No Threat (42), Toggle Far Sight (45), No AutoCast (AI) (49), Exclude Caster (51), Require All Targets (58), Ignore Line of Sight (66), Allow Low Level Buff (67), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Moving (4), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=689066)   : Apply Aura (6) | Dummy (4)
@@ -1930,7 +1930,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Charm
 Affecting Spells : Inner Focus (14751 effect#1), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Turning (5), Sheathing (10), Interacting (11), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=687907)   : Apply Aura (6) | Dummy (4)
@@ -1956,7 +1956,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Charm
 Affecting Spells : Inner Focus (14751 effect#1), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Require All Targets (58), Cannot cast on tapped (70), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Turning (5), Sheathing (10), Interacting (11), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=689062)   : Apply Aura (6) | Dummy (4)
@@ -2036,7 +2036,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688963)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 74 | Scaled Value: 74 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2056,7 +2056,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=688978)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 102 | Scaled Value: 102 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2076,7 +2076,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=689187)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 134 | Scaled Value: 134 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -2289,7 +2289,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=687259)   : Apply Aura (6) | Resistance (22)
+#1 (id=687259)   : Apply Aura (6) | Unknown(674)
                    Base Value: 1170 | Scaled Value: 1170 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -2312,7 +2312,7 @@ Affecting Spells : Mental Agility (14520 effect#1), Improved Inner Fire (14747 e
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=688399)   : Apply Aura (6) | Resistance (22)
+#1 (id=688399)   : Apply Aura (6) | Unknown(674)
                    Base Value: 1395 | Scaled Value: 1395 | Misc Value: 1 | Target: Self (1)
                    Modified By: Improved Inner Fire (14747 effect#1)
 Description      : A burst of Holy energy fills the caster, increasing armor by $s1.  Each melee or ranged damage hit against the priest will remove one charge.  Lasts $d or until $n charges are used.
@@ -2335,7 +2335,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Shackle
 Affecting Spells : Inner Focus (14751 effects: #1, #2), Focused Casting (27828 effect#1), Deliverance (467543 effect#1), Holy Precision (1309957 effect#1)
 Family Flags     : 30, 58
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Prevents Anim (50), Allow While Not Shapeshifted (caster form) (83), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=689088)   : Apply Aura (6) | Stun (12)
@@ -2534,14 +2534,14 @@ Labels           : 18: Priest Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
 Effects          :
 #1 (id=690270)   : Apply Aura (6) | Threat (10)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 2 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 34 | Target: Self (1)
 #2 (id=1338739)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 12 | Target: Self (1)
 #3 (id=1338740)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 5 | Target: Self (1)
 #4 (id=1338741)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 9 | Target: Self (1)
-Description      : Reduces the threat generated by your Holy spells by $s1% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by $m2%.
+Description      : Reduces the threat generated by your spells by $s1% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by $m2%.
 
 
 Name             : Wand Specialization (id=14524) [Passive, Hidden] 
@@ -2594,7 +2594,7 @@ Effects          :
 Description      : Increases the Armor bonus of your Inner Fire spell by $s1% and increases its total charges by $m2.
 
 Name             : Improved Power Word: Shield (id=14748) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=3, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(7, 14, 20)]
 Class            : Priest
 School           : Physical
@@ -2622,7 +2622,7 @@ Effects          :
 Description      : Increases the effect of your Power Word: Fortitude and Prayer of Fortitude spells by $s1%.
 
 Name             : Improved Mana Burn (id=14750) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-500, -1000)]
 Class            : Priest
 School           : Physical
@@ -2868,6 +2868,7 @@ Effects          :
 Description      : Reduces the Mana cost of your Lesser Heal, Heal, Greater Heal, Penance, and Prayer of Mending spells by $s1%.
 
 Name             : Twilight Focus (id=14913) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=1, col=5, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(23, 47, 70)]
 Class            : Priest
@@ -2879,8 +2880,9 @@ Effects          :
 #1 (id=690494)   : Apply Aura (6) | Add Percent Modifier (108): Spell Pushback (9)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 9 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (591), Prayer of Healing (596), Smite (598), Mind Control (605), Smite (984), Prayer of Healing (996), Smite (1004), Resurrection (2006), Resurrection (2010), Lesser Heal (2050), Lesser Heal (2052), Lesser Heal (2053), Heal (2054), Heal (2055), Greater Heal (2060), Flash Heal (2061), Smite (6060), Heal (6063), Heal (6064), Mind Blast (8092), Mind Blast (8102), Mind Blast (8103), Mind Blast (8104), Mind Blast (8105), Mind Blast (8106), Mana Burn (8129), Mana Burn (8131), Flash Heal (9472), Flash Heal (9473), Flash Heal (9474), Starshards (10797), Mana Burn (10874), Mana Burn (10875), Mana Burn (10876), Resurrection (10880), Resurrection (10881), Mind Control (10911), Mind Control (10912), Flash Heal (10915), Flash Heal (10916), Flash Heal (10917), Smite (10933), Smite (10934), Mind Blast (10945), Mind Blast (10946), Mind Blast (10947), Prayer of Healing (10960), Prayer of Healing (10961), Greater Heal (10963), Greater Heal (10964), Greater Heal (10965), Holy Fire (14914), Holy Fire (15261), Holy Fire (15262), Holy Fire (15263), Holy Fire (15264), Holy Fire (15265), Holy Fire (15266), Holy Fire (15267), Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Mind Flay (18807), Starshards (19296), Starshards (19299), Starshards (19302), Starshards (19303), Starshards (19304), Starshards (19305), Resurrection (20770), Greater Heal (25314), Prayer of Healing (25316), Binding Heal (401937), Penance (402174), Penance (402261), Penance (402277), Penance (402284), Penance (402289), Penance (1240720), Penance (1240721), Penance (1240723), Penance (1240724), Penance (1240727), Penance (1240730), Penance (1240732), Penance (1240733), Penance (1240734), Penance (1240736), Binding Heal (1240770), Binding Heal (1240771), Binding Heal (1240772), Binding Heal (1240773), Binding Heal (1240774), Penance (1316991), Penance (1316992), Penance (1316993), Penance (1316994), Penance (1316995)
-                   Family Flags: 4, 7, 9, 10, 11, 12, 13, 17, 18, 20, 21, 23, 34, 47, 48, 55, 71, 116
-Description      : Gives you a $s1% chance to avoid interruption caused by damage while casting any spell.
+                   Family Flags: 4, 7, 9, 10, 11, 12, 13, 17, 18, 20, 21, 23, 34, 47, 48, 55, 71, 116, 126
+Hotfixed         : Affects Spells
+Description      : Gives your spells a $s1% chance to not lose casting time when you take damage.
 
 Name             : Holy Fire (desc=Rank 1) (id=14914) [Spell Family (6)] 
 Class            : Priest
@@ -2952,7 +2954,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=693453)   : Apply Aura (6) | Proc Trigger Spell (42): Shadow Weaving
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 15258 | Target: Self (1)
-Description      : Your Shadow damage spells have a $s1% chance to increase the Shadow damage you deal by $15258s1% for $15258d, stacking up to $15258u times.
+Description      : Your Shadow damage spells have a $s1% chance to increase the Shadow damage the target takes from you by $15258s1% for $15258d, stacking up to $15258u times.
 
 Name             : Shadow Weaving (id=15258) [Spell Family (6)] 
 Class            : Priest
@@ -3111,7 +3113,7 @@ Effects          :
 #1 (id=692082)   : School Damage (2): holy
                    Base Value: 106 | Scaled Value: 115 (delta=0.233766) | Points Per Level: 1.5 | SP Coefficient: 0.75 | Target: Targeted Enemy (6)
 #2 (id=692083)   : Apply Aura (6) | Periodic Damage (3): holy every 2 seconds
-                   Base Value: 13 | Scaled Value: 13 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
+                   Base Value: 9 | Scaled Value: 9 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
 Description      : Consumes the enemy in holy flames that cause $s1 Holy damage and an additional $o2 Holy damage over $d.
 Tooltip          : $s2 Holy damage every $t2 seconds.
 
@@ -3218,7 +3220,7 @@ Effects          :
 Tooltip          : Spirit increased by $s1% and allows $s2% of Mana regeneration while casting.
 
 Name             : Improved Mind Blast (id=15273) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=9, max_rank=5, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=9, max_rank=5, req_points=0]
                  : Effect#1 [op=set, values=(-500, -1000, -1500, -2000, -2500)]
 Class            : Priest
 School           : Physical
@@ -3233,8 +3235,6 @@ Effects          :
 Description      : Reduces the cooldown of your Mind Blast spell by $/1000;S1 sec.
 
 Name             : Improved Fade (id=15274) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(-3000, -6000)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -3272,13 +3272,13 @@ Spell Level      : 30
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Cooldown         : 60 seconds
+Cooldown         : 30 seconds
 Labels           : 18: Priest Spells
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effects: #1, #2), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1), Improved Vampiric Embrace (27839 effect#1), Holy Precision (1309957 effect#1)
 Family Flags     : 2, 26, 31
-Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : DoT Stacking Rule (103), Always Hit (114), Can Proc From Procs (122), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=694156)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -3287,8 +3287,6 @@ Description      : Afflicts your target with Shadow energy that causes all party
 Tooltip          : $w1% of Shadow spell damage caused by casting priest heals the priest's group.
 
 Name             : Shadow Affinity (id=15318) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=9, max_rank=3, req_points=0]
-                 : Effect#1 [op=set, values=(-10, -20, -30)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -3382,16 +3380,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=693750)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 21 | Scaled Value: 21 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=693751)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -3465,8 +3462,8 @@ Effects          :
                    Affected School(s): Shadow
 #5 (id=1239839)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Shadow Word: Pain (594), Shadow Word: Pain (970), Shadow Word: Pain (992), Shadow Word: Pain (2767), Devouring Plague (2944), Mind Blast (8092), Mind Blast (8102), Mind Blast (8103), Mind Blast (8104), Mind Blast (8105), Mind Blast (8106), Mana Burn (8129), Mana Burn (8131), Mana Burn (10874), Mana Burn (10875), Mana Burn (10876), Shadow Word: Pain (10892), Shadow Word: Pain (10893), Shadow Word: Pain (10894), Mind Blast (10945), Mind Blast (10946), Mind Blast (10947), Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Shadowguard (18137), Mind Flay (18807), Devouring Plague (19276), Devouring Plague (19277), Devouring Plague (19278), Devouring Plague (19279), Devouring Plague (19280), Shadowguard (19308), Shadowguard (19309), Shadowguard (19310), Shadowguard (19311), Shadowguard (19312), Shadowguard (28377), Shadowguard (28378), Shadowguard (28379), Shadowguard (28380), Shadowguard (28381), Shadowguard (28382)
-                   Family Flags: 4, 13, 15, 23, 25
+                   Affected Spells: Shadow Word: Pain (589), Shadow Word: Pain (594), Shadow Word: Pain (970), Shadow Word: Pain (992), Shadow Word: Pain (2767), Devouring Plague (2944), Mind Blast (8092), Mind Blast (8102), Mind Blast (8103), Mind Blast (8104), Mind Blast (8105), Mind Blast (8106), Mana Burn (8129), Mana Burn (8131), Mana Burn (10874), Mana Burn (10875), Mana Burn (10876), Shadow Word: Pain (10892), Shadow Word: Pain (10893), Shadow Word: Pain (10894), Mind Blast (10945), Mind Blast (10946), Mind Blast (10947), Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Shadowguard (18137), Mind Flay (18807), Devouring Plague (19276), Devouring Plague (19277), Devouring Plague (19278), Devouring Plague (19279), Devouring Plague (19280), Shadowguard (19308), Shadowguard (19309), Shadowguard (19310), Shadowguard (19311), Shadowguard (19312), Shadowguard (28377), Shadowguard (28378), Shadowguard (28379), Shadowguard (28380), Shadowguard (28381), Shadowguard (28382), Shadow Word: Death (401955), Shadow Word: Death (1309595), Shadow Word: Death (1309633), Shadow Word: Death (1309635), Shadow Word: Death (1309636), Early Demise (1310076)
+                   Family Flags: 4, 13, 15, 23, 25, 33
 Description      : Assume Shadowform, increasing your Shadow damage by $s2%, reducing the Mana cost of all Shadow spells by $m4%, increasing the critical strike damage bonus of your Shadow spells by $m5%, and reducing Physical damage taken by you by $s3%. However, you may not cast healing spells while in this form.
 Tooltip          : Shadow damage you deal increased by $w2%. Mana cost of all Shadow spells reduced by $w4%. Critical strike damage bonus of Shadow spells increased by $m5%. Physical damage you take reduced by $s3%. You may not cast healing spells.
 
@@ -3486,7 +3483,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Silence
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effects: #1, #2), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1), Holy Precision (1309957 effect#1)
 Family Flags     : 26, 31
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=692844)   : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Targeted Enemy (6)
@@ -3523,16 +3520,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=693024)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 34 | Scaled Value: 34 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=693025)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -3547,16 +3543,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=695277)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 51 | Scaled Value: 51 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=695278)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -3571,16 +3566,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=695229)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 75 | Scaled Value: 75 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=695230)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -3595,16 +3589,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=694607)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 98 | Scaled Value: 98 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=694608)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -3787,8 +3780,8 @@ Effects          :
 Description      : Increases your spell damage by $s1% and the critical strike chance of your offensive spells by $s1%.
 
 Name             : Mental Strength (id=18551) [Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=5, req_points=0]
-                 : Effect#1 [op=set, values=(3, 6, 9, 12, 15)]
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=5, req_points=0]
+                 : Effect#1 [op=set, values=(2, 4, 6, 8, 10)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -3810,16 +3803,15 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 18: Priest Spells
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Improved Mind Flay (1225139 effects: #1, #2, #3), Eureka! (1259823 effects: #1, #2, #3)
+Affecting Spells : Inner Focus (14751 effects: #1, #2), Twilight Focus (14913 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effect#3), Force of Will (18547 effect#3), Force of Will (18548 effect#3), Force of Will (18549 effect#3), Force of Will (18550 effect#3), Focused Casting (27828 effect#1), Pain and Suffering (413251 effect#1), Despair (431670 effects: #1, #2), Melting Faces (456549 effects: #1, #2, #3), S03 - Item - TAQ - Priest - Shadow 2P Bonus (1213675 effect#1), Damage Over Time Increase (1222994 effects: #1, #2), Damage Over Time Increase (1222997 effects: #1, #2), Twin Disciplines (1225132 effect#2), Eureka! (1259823 effects: #1, #2, #3)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=696948)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 130 | Scaled Value: 130 | SP Coefficient: 0.167 | Target: Targeted Enemy (6)
 #2 (id=696949)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
-                   Modified By: Improved Mind Flay (1225139 effect#3)
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d  and slowing their movement speed by $m2%.
 Tooltip          : $w1 Shadow damage every $t1 sec. Movement speed slowed by $w2%.
 
@@ -4052,7 +4044,7 @@ Labels           : 18: Priest Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Mental Agility (14520 effect#1), Inner Focus (14751 effect#1), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#2), Improved Renew (14908 effect#1), Rapid Healing (24546 effect#2), Twin Disciplines (1225132 effect#2)
 Family Flags     : 6
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Heal Prediction (280), Unknown (493), Unknown (516)
 Effects          :
 #1 (id=702021)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 166 | Scaled Value: 166 | SP Coefficient: 0.2 | Target: Targeted Ally (21)
@@ -4380,7 +4372,7 @@ Effects          :
 Description      : Reduces all spell damage taken by $s1%.
 
 Name             : Elemental Warding (id=28996) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=3, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(-3, -7, -10)]
 Class            : Shaman
 School           : Physical
@@ -4525,7 +4517,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Unknown (493)
 Effects          :
@@ -4673,7 +4665,7 @@ Spell Level      : 30
 Range            : 40 yards
 Duration         : 2 seconds
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Family Flags     : 48, 71
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Do Not Display Range (126), Force Display Castbar (155), Extra Initial Period (169), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -4692,7 +4684,7 @@ Spell Level      : 30 (max 39)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
 Triggered By     : Penance (402261)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Do Not Display Cast Time (441), Unknown (493)
@@ -4709,7 +4701,7 @@ Spell Level      : 30 (max 39)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Triggered By     : Penance (402277)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Do Not Display Range (126), Do Not Display Cast Time (441), Unknown (493), Unknown (516)
@@ -5748,7 +5740,9 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1119518)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1 | Target: Self (1)
-Description      : Your critical heals create a protective shield on the target, absorbing $s1% of the amount healed. Lasts $431624d.
+#2 (id=1363670)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Target: Self (1)
+Description      : Your non-periodic critical heals create a protective shield on the target, absorbing $s1% of the amount healed. Shields up to ${$s2*$pl} damage and lasts $431624d.
 
 Name             : Divine Aegis (id=431624) [Spell Family (6)] 
 Class            : Priest
@@ -6603,41 +6597,27 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1214136)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Touch of Weakness (2943), Desperate Prayer (13908), Holy Nova (15237), Holy Nova (15430), Holy Nova (15431), Shadowguard (18137), Desperate Prayer (19236), Desperate Prayer (19238), Desperate Prayer (19240), Desperate Prayer (19241), Desperate Prayer (19242), Desperate Prayer (19243), Touch of Weakness (19249), Touch of Weakness (19251), Touch of Weakness (19252), Touch of Weakness (19253), Touch of Weakness (19254), Shadowguard (19308), Shadowguard (19309), Shadowguard (19310), Shadowguard (19311), Shadowguard (19312), Holy Nova (23455), Holy Nova (23458), Holy Nova (23459), Prayer of Spirit (27681), Holy Nova (27799), Holy Nova (27800), Holy Nova (27801), Holy Nova (27803), Holy Nova (27804), Holy Nova (27805), Shadowguard (28377), Shadowguard (28378), Shadowguard (28379), Shadowguard (28380), Shadowguard (28381), Shadowguard (28382), Prayer of Mending (401863), Circle of Healing (401946), Chastise (1277331), Chastise (1277332), Chastise (1277333), Chastise (1277334), Chastise (1277335), Divine Grace (1277370), Divine Grace (1277371), Divine Grace (1277372), Divine Grace (1277374), Divine Grace (1277376), Divine Grace (1277377), Divine Grace (1277378), Contingency Plan (1277456), Contingency Plan (1277457), Contingency Plan (1277458), Contingency Plan (1277459), Contingency Plan (1277460), Contingency Plan (1277462), Contingency Plan (1277463), Contingency Plan (1277464), Contingency Plan (1277465), Contingency Plan (1277466), Contingency Plan (1277467), Contingency Plan (1277634), Contingency Plan (1277638), Contingency Plan (1277639), Contingency Plan (1277640)
-                   Family Flags: 5, 19, 22, 24, 27, 28, 36, 117
+                   Affected Spells: Touch of Weakness (2943), Desperate Prayer (13908), Holy Nova (15237), Holy Nova (15430), Holy Nova (15431), Shadowguard (18137), Desperate Prayer (19236), Desperate Prayer (19238), Desperate Prayer (19240), Desperate Prayer (19241), Desperate Prayer (19242), Desperate Prayer (19243), Touch of Weakness (19249), Touch of Weakness (19251), Touch of Weakness (19252), Touch of Weakness (19253), Touch of Weakness (19254), Shadowguard (19308), Shadowguard (19309), Shadowguard (19310), Shadowguard (19311), Shadowguard (19312), Holy Nova (23455), Holy Nova (23458), Holy Nova (23459), Prayer of Spirit (27681), Holy Nova (27799), Holy Nova (27800), Holy Nova (27801), Holy Nova (27803), Holy Nova (27804), Holy Nova (27805), Shadowguard (28377), Shadowguard (28378), Shadowguard (28379), Shadowguard (28380), Shadowguard (28381), Shadowguard (28382), Prayer of Mending (401863), Circle of Healing (401946), Shadow Word: Death (401955), Penance (402277), Penance (402284), Penance (402289), Penance (1240723), Penance (1240724), Penance (1240727), Penance (1240730), Penance (1240732), Penance (1240733), Chastise (1277331), Chastise (1277332), Chastise (1277333), Chastise (1277334), Chastise (1277335), Divine Grace (1277370), Divine Grace (1277371), Divine Grace (1277372), Divine Grace (1277374), Divine Grace (1277376), Divine Grace (1277377), Divine Grace (1277378), Contingency Plan (1277456), Contingency Plan (1277457), Contingency Plan (1277458), Contingency Plan (1277459), Contingency Plan (1277460), Contingency Plan (1277462), Contingency Plan (1277463), Contingency Plan (1277464), Contingency Plan (1277465), Contingency Plan (1277466), Contingency Plan (1277467), Contingency Plan (1277634), Contingency Plan (1277638), Contingency Plan (1277639), Contingency Plan (1277640), Shadow Word: Death (1309595), Shadow Word: Death (1309633), Shadow Word: Death (1309635), Shadow Word: Death (1309636), Early Demise (1310076), Penance (1316991), Penance (1316992), Penance (1316993)
+                   Family Flags: 5, 19, 22, 24, 27, 28, 33, 36, 47, 48, 117
 #2 (id=1239165)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Shadow Word: Pain (589), Shadow Word: Pain (594), Shadow Word: Pain (970), Shadow Word: Pain (992), Shadow Word: Pain (2767), Devouring Plague (2944), Renew (6074), Renew (6075), Renew (6076), Renew (6077), Renew (6078), Shadow Word: Pain (10892), Shadow Word: Pain (10893), Shadow Word: Pain (10894), Renew (10927), Renew (10928), Renew (10929), Crystal Restore (15229), Devouring Plague (19276), Devouring Plague (19277), Devouring Plague (19278), Devouring Plague (19279), Devouring Plague (19280), Renew (25315), Prayer of Spirit (27681), Renew (425268), Renew (425269), Renew (425270), Renew (425271), Renew (425272), Renew (425273), Renew (425274), Renew (425275), Renew (425276), Renew (425277), Contingency Plan (1277456), Contingency Plan (1277457), Contingency Plan (1277458), Contingency Plan (1277459), Contingency Plan (1277460), Contingency Plan (1277462), Contingency Plan (1277463), Contingency Plan (1277464), Contingency Plan (1277465), Contingency Plan (1277466), Contingency Plan (1277467), Contingency Plan (1277634), Contingency Plan (1277638), Contingency Plan (1277639), Contingency Plan (1277640)
-                   Family Flags: 5, 6, 15, 100
+                   Affected Spells: Renew (139), Shadow Word: Pain (589), Shadow Word: Pain (594), Shadow Word: Pain (970), Shadow Word: Pain (992), Shadow Word: Pain (2767), Devouring Plague (2944), Renew (6074), Renew (6075), Renew (6076), Renew (6077), Renew (6078), Starshards (10797), Shadow Word: Pain (10892), Shadow Word: Pain (10893), Shadow Word: Pain (10894), Renew (10927), Renew (10928), Renew (10929), Crystal Restore (15229), Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Mind Flay (18807), Devouring Plague (19276), Devouring Plague (19277), Devouring Plague (19278), Devouring Plague (19279), Devouring Plague (19280), Starshards (19296), Starshards (19299), Starshards (19302), Starshards (19303), Starshards (19304), Starshards (19305), Renew (25315), Prayer of Spirit (27681), Renew (425268), Renew (425269), Renew (425270), Renew (425271), Renew (425272), Renew (425273), Renew (425274), Renew (425275), Renew (425276), Renew (425277), Contingency Plan (1277456), Contingency Plan (1277457), Contingency Plan (1277458), Contingency Plan (1277459), Contingency Plan (1277460), Contingency Plan (1277462), Contingency Plan (1277463), Contingency Plan (1277464), Contingency Plan (1277465), Contingency Plan (1277466), Contingency Plan (1277467), Contingency Plan (1277634), Contingency Plan (1277638), Contingency Plan (1277639), Contingency Plan (1277640)
+                   Family Flags: 5, 6, 15, 21, 23, 100
 Description      : Increases the damage and healing of your instant cast spells by $s1%.
 
 Name             : Improved Mind Flay (id=1225139) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=13, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
-                 : Effect#2 [op=set, values=(5, 10)]
-                 : Effect#3 [op=set, values=(15, 30)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Labels           : 18: Priest Spells
 Family Flags     : 70
-Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=1214146)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Mind Flay (18807)
-                   Family Flags: 23
-#2 (id=1214147)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Mind Flay (18807)
-                   Family Flags: 23
-#3 (id=1239748)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Mind Flay (15407), Mind Flay (17311), Mind Flay (17312), Mind Flay (17313), Mind Flay (17314), Mind Flay (18807)
-                   Family Flags: 23
-#4 (id=1339336)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Your Mind Flay now deals $s1% more damage, gains $s2 yards increased range, but slows the target's movement speed by ${$s4-($m3)}%.
+#1 (id=1214146)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Each instance of damage of Mind Flay deals $s1% more damage than its previous instance of damage.
 
 Name             : Penance (desc=Rank 2) (id=1240720) [Spell Family (6)] 
 Class            : Priest
@@ -6689,7 +6669,7 @@ Spell Level      : 40 (max 49)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Triggered By     : Penance (1240732)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493), Unknown (516)
@@ -6706,7 +6686,7 @@ Spell Level      : 50 (max 59)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Triggered By     : Penance (1240733)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493), Unknown (516)
@@ -6723,7 +6703,7 @@ Spell Level      : 40 (max 49)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
 Triggered By     : Penance (1240734)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
@@ -6740,7 +6720,7 @@ Spell Level      : 50 (max 59)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
 Triggered By     : Penance (1240736)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
@@ -6757,7 +6737,7 @@ Spell Level      : 40
 Range            : 40 yards
 Duration         : 2 seconds
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Family Flags     : 48, 71
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Do Not Display Range (126), Force Display Castbar (155), Extra Initial Period (169), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -6776,7 +6756,7 @@ Spell Level      : 50
 Range            : 40 yards
 Duration         : 2 seconds
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Family Flags     : 48, 71
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Do Not Display Range (126), Force Display Castbar (155), Extra Initial Period (169), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -7001,7 +6981,7 @@ Proc Chance      : 101%
 Mechanic         : Interrupt
 Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Focused Casting (27828 effect#1)
 Family Flags     : 26
-Attributes       : Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=1239819)  : Interrupt Cast (68)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
@@ -7047,12 +7027,12 @@ Resource         : 175 Base Mana (0) (id=314465)
 Spell Level      : 32 (max 37)
 Range            : 30 yards
 GCD              : 1.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 18 seconds
 Category         : 1169 (Type 0x0)
 Labels           : 18: Priest Spells
-Category Cooldown: 15 seconds
+Category Cooldown: 18 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
@@ -7072,12 +7052,12 @@ Resource         : 205 Base Mana (0) (id=314466)
 Spell Level      : 40 (max 45)
 Range            : 30 yards
 GCD              : 1.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 18 seconds
 Category         : 1169 (Type 0x0)
 Labels           : 18: Priest Spells
-Category Cooldown: 15 seconds
+Category Cooldown: 18 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
@@ -7097,12 +7077,12 @@ Resource         : 250 Base Mana (0) (id=314467)
 Spell Level      : 48 (max 53)
 Range            : 30 yards
 GCD              : 1.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 18 seconds
 Category         : 1169 (Type 0x0)
 Labels           : 18: Priest Spells
-Category Cooldown: 15 seconds
+Category Cooldown: 18 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
@@ -7122,12 +7102,12 @@ Resource         : 340 Base Mana (0) (id=314468)
 Spell Level      : 56 (max 61)
 Range            : 30 yards
 GCD              : 1.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 18 seconds
 Category         : 1169 (Type 0x0)
 Labels           : 18: Priest Spells
-Category Cooldown: 15 seconds
+Category Cooldown: 18 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Unknown (493)
 Effects          :
@@ -7155,9 +7135,11 @@ Effects          :
                    Family Flags: 100
 #2 (id=1339127)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#3 (id=1363982)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Reduces the mana cost of your Devouring Plague by $s1%.
 
-Targets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within $s2 yds for the remaining duration.
+Targets that die while Devouring Plague is active spreads it, jumping to $s3 nearby enemies within $s2 yds for the remaining duration.
 
 
 Name             : Holy Precision (id=1309957) [Spell Family (6), Passive, Hidden] 
@@ -7187,7 +7169,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1339154)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Your Smite and Penance spells deal $m1% increased damage to targets afflicted with your Holy Fire.
+Description      : Your Smite and Penance spells deal $m1% increased damage to targets afflicted with your Holy Fire or Shadow Word: Pain.
 
 Name             : Early Demise (id=1310076) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=9, max_rank=2, req_points=0]
@@ -7196,7 +7178,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Eureka! (1259823 effects: #1, #2)
+Affecting Spells : Inner Focus (14751 effect#1), Shadow Focus (15260 effect#1), Shadow Affinity (15318 effect#1), Shadowform (15473 effect#5), Shadow Reach (17322 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - T2 - Priest - Shadow 2P Bonus (467604 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #1, #2)
 Family Flags     : 33
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
 Effects          :
@@ -7214,7 +7196,7 @@ Spell Level      : 60 (max 60)
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Triggered By     : Penance (1316992)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493), Unknown (516)
@@ -7231,7 +7213,7 @@ Spell Level      : 60
 Range            : 40 yards
 Duration         : 2 seconds
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Eureka! (1259823 effects: #2, #3)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Spiritual Healing (14898 effect#1), Twilight Focus (14913 effect#1), Focused Casting (27828 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3)
 Family Flags     : 48, 71
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Do Not Display Range (126), Force Display Castbar (155), Extra Initial Period (169), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -7250,7 +7232,7 @@ Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Labels           : 18: Priest Spells
-Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
+Affecting Spells : Inner Focus (14751 effect#2), Holy Specialization (14889 effect#1), Twilight Focus (14913 effect#1), Force of Will (18544 effects: #1, #2), Force of Will (18547 effects: #1, #2), Force of Will (18548 effects: #1, #2), Force of Will (18549 effects: #1, #2), Force of Will (18550 effects: #1, #2), Despair (431670 effect#2), S03 - Item - TAQ - Priest - Healer 2P Bonus (1213624 effect#1), Twin Disciplines (1225132 effect#1), Eureka! (1259823 effects: #2, #3), Holy Precision (1309957 effect#1)
 Triggered By     : Penance (1316994)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441), Unknown (493)
@@ -7376,4 +7358,32 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc15487
 Tooltip          : $@spellaura15487
+
+Name             : Dark Inspiration (id=1326159) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=5, req_points=0]
+                 : Effect#1 [op=set, values=(3, 6, 9, 12, 15)]
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 18: Priest Spells
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Include In Advanced Combat Log (72), Unknown (493)
+Effects          :
+#1 (id=1363921)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Your Mind Blast and fully channeled Mind Flay causes Dark Inspiration, increasing yours and your party's Spirit by $m1% for $1326168d.
+
+Name             : Dark Inspiration (id=1326168) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 10 seconds
+Labels           : 18: Priest Spells
+Attributes       : Do Not Log (8), Include In Advanced Combat Log (72), Not an Action (92), Aura Points On Client (268), Unknown (493)
+Effects          :
+#1 (id=1363937)  : Apply Aura (6) | Modify Base Attribute% (80)
+                   Base Value: 15 | Scaled Value: 15 | Stat: Spi | Radius: 100 yards | Target: Party in Area (20) -> Self (1)
+Description      : Your Mind Blast and fully channeled Mind Flay causes Dark Inspiration, increasing yours and your party's Spirit by $1326159s1% for $d.
+
+Tooltip          : Spirit increased by $w1%.
 

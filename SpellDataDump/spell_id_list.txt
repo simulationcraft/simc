@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 1.60.1.70334
+Class Spell ID List, wow build 1.60.1.70425
 
 Druid
 99       Demoralizing Roar
@@ -1578,7 +1578,7 @@ Mage
 11069    Improved Fireball
 11070    Improved Frostbolt
 11071    Frostbite
-11078    Wake of Fire
+11078    Improved Fire Blast
 11083    Burning Soul
 11094    Improved Fire Ward
 11095    Improved Scorch
@@ -2150,11 +2150,19 @@ Mage
 1308652 *Teleport: Dalaran
 1308937  Arcane Missile
 1312002  Ice Lance
-1312934  Wake of Fire
+1312934 *Wake of Fire
 1318432 *Fire Blast
 1321337 *DNT
 1321339 *DNT
 1321343 *DNT
+1326053  Frost Blast
+1326054  Frost Blast
+1326055  Frost Blast
+1326079  Arcane Wrath
+1326080  Arcane Wrath
+1326081  Arcane Wrath
+1326082  Arcane Wrath
+1326083 *Missile Barrage
 
 Paladin
 465      Devotion Aura
@@ -2174,7 +2182,7 @@ Paladin
 1022     Blessing of Protection
 1026     Holy Light
 1032     Devotion Aura
-1038     Blessing of Salvation
+1038     Salvation
 1042     Holy Light
 1044     Blessing of Freedom
 1152     Purify
@@ -2430,7 +2438,7 @@ Paladin
 25782    Greater Blessing of Might
 25890    Greater Blessing of Light
 25894    Greater Blessing of Wisdom
-25895    Greater Blessing of Salvation
+25895    Mass Salvation
 25898    Greater Blessing of Kings
 25902    Holy Shock
 25903    Holy Shock
@@ -2557,7 +2565,7 @@ Paladin
 440651  *Sacred Shield
 440658   Shield of Righteousness
 440672   Righteous Judgement
-440675  *Righteous Judgement
+440675   Righteous Judgement
 440677   Righteous Judgement
 440789   Shield of Righteousness
 440791   Shock and Awe
@@ -2754,6 +2762,7 @@ Paladin
 1317271 *Righteous Indignation
 1317272 *Righteous Indignation
 1323419 *Revelation
+1325499  Revoke
 
 Priest
 17       Power Word: Shield
@@ -3393,6 +3402,8 @@ Priest
 1316995  Penance
 1317006  Litany of Light
 1323377 *Revelation
+1326159  Dark Inspiration
+1326168  Dark Inspiration
 
 Rogue
 53       Backstab
@@ -3863,7 +3874,12 @@ Rogue
 1310721  Thousand Cuts
 1310723  Thousand Cuts
 1310728  Quietus
+1316709 *Death Mark
 1318151 *Stealth
+1325756 *Death Mark
+1325757 *Death Mark
+1325758 *Death Mark
+1326175 *Stealth
 
 Shaman
 324      Lightning Shield
@@ -3978,10 +3994,10 @@ Shaman
 8249     Flametongue Totem
 8250     Flametongue Totem
 8253     Flametongue Totem Proc
-8349     Fire Nova
+8349    *Fire Nova
 8443    *Fire Nova
-8502     Fire Nova
-8503     Fire Nova
+8502    *Fire Nova
+8503    *Fire Nova
 8504    *Fire Nova
 8505    *Fire Nova
 8512     Windfury Totem
@@ -4068,8 +4084,8 @@ Shaman
 10623    Chain Heal
 10626    Grace of Air
 10627    Grace of Air Totem
-11306    Fire Nova
-11307    Fire Nova
+11306   *Fire Nova
+11307   *Fire Nova
 11310   *Fire Nova
 11311   *Fire Nova
 15036    Flametongue Totem
@@ -4089,10 +4105,11 @@ Shaman
 16039    Convection
 16040    Reverberation
 16043    Earth's Grasp
-16086    Improved Fire Nova
+16086    Trial by Fire
 16089    Elemental Fury
 16120    Call of Thunder
 16164    Elemental Focus
+16166    Elemental Mastery
 16173    Totemic Focus
 16176    Ancestral Healing
 16178    Purification
@@ -4257,11 +4274,11 @@ Shaman
 408343   Fire Nova
 408344   Fire Nova
 408345   Fire Nova
-408423  *Fire Nova
-408424  *Fire Nova
-408426  *Fire Nova
-408427  *Fire Nova
-408428  *Fire Nova
+408423   Fire Nova
+408424   Fire Nova
+408426   Fire Nova
+408427   Fire Nova
+408428   Fire Nova
 408438   Lightning Overload
 408439   Lightning Bolt
 408440   Lightning Bolt
@@ -4558,6 +4575,9 @@ Shaman
 1309539  Tidebringer's Claw
 1323418 *Revelation
 1323420 *Totemic Recall
+1325256  Mana Tide Totem
+1325257  Mana Tide
+1326047  Lava Burst
 
 Warlock
 128     *Spellstone
@@ -5138,7 +5158,7 @@ Warlock
 1222977 *Damage Over Time Increase
 1223794 *Seal of the Dawn
 1223963 *Corruption
-1225177  Malediction
+1225177 *Malediction
 1225217  Improved Felhunter
 1225228  Bane of Havoc
 1225841 *Curse of Recklessness
@@ -5205,6 +5225,7 @@ Warlock
 1316697  Wrack
 1322007 *Summon Voidwalker
 1323392 *Revelation
+1326140 *Ritual of Summoning
 
 Warrior
 71       Defensive Stance
@@ -5492,6 +5513,7 @@ Warrior
 30012   *Chess Move (DND)
 30112   *Frenzied Dive
 30440   *Increased Spell Hit Chance
+88163   *Attack
 402877   Flagellation
 402906  *Flagellation
 402911   Raging Blow
@@ -5669,7 +5691,7 @@ Warrior
 1270802 *Berserker Charge
 1270811 *Intimidating Shout
 1277424 *Shield Wall
-1289681  Bloodthrill
+1289681 *Bloodthrill
 1289682  Bloodthrill
 1300968 *1.60.0 - Item - Tier 1 - Warrior - Arms/Fury 2P Bonus - Haste
 1301069 *1.60.0 - Item - Tier 1 - Warrior - Arms/Fury 3P Bonus - Intimidating Shout
