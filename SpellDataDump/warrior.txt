@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70425 Live
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -38,7 +38,7 @@ Category Cooldown: 12 seconds
 Stance Mask      : 0x00030000
 Affecting Spells : Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 11
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679417)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -190,7 +190,7 @@ Stance Mask      : 0x00020000
 Mechanic         : Disarm
 Affecting Spells : Improved Disarm (12313 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 9
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679476)   : Apply Aura (6) | Disarm (67)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -239,7 +239,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679312)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
@@ -298,7 +298,7 @@ Labels           : 25: Warrior Spells
 Proc Chance      : 101%
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Demoralizing Shout (12324 effect#1), Improved Demoralizing Shout (12876 effect#1), Improved Demoralizing Shout (12877 effect#1), Improved Demoralizing Shout (12878 effect#1), Improved Demoralizing Shout (12879 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 17
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=680061)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: -49 | Scaled Value: -63 | Points Per Level: -1.4 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -345,7 +345,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Pushback (207), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
 Effects          :
 #1 (id=680356)   : Weapon Damage (17)
                    Base Value: 32 | Scaled Value: 32 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -385,7 +385,7 @@ Category Cooldown: 12 seconds
 Stance Mask      : 0x00030000
 Affecting Spells : Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 11
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679688)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -410,7 +410,7 @@ Category Cooldown: 12 seconds
 Stance Mask      : 0x00030000
 Affecting Spells : Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 11
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679690)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -454,7 +454,7 @@ Labels           : 25: Warrior Spells
 Stance Mask      : 0x00050000
 Affecting Spells : Impale (16493 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Hamstring Rage Reduction (459608 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 1
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=680510)   : School Damage (2): physical
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -639,9 +639,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=683198)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 21 | Scaled Value: 23.7 | Points Per Level: 0.3 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 21 | Scaled Value: 23.7 | Points Per Level: 0.3 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Intimidating Shout (id=5246) [Spell Family (4)] 
@@ -661,7 +661,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Intimidating Shout (19870 effect#1), Improved Intimidating Shout (19871 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 18
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684363)   : Trigger Spell (64): Intimidating Shout
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Trigger Spell: 20511 | Target: Targeted Enemy (6)
@@ -757,7 +757,7 @@ Labels           : 25: Warrior Spells
 Proc Chance      : 101%
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Demoralizing Shout (12324 effect#1), Improved Demoralizing Shout (12876 effect#1), Improved Demoralizing Shout (12877 effect#1), Improved Demoralizing Shout (12878 effect#1), Improved Demoralizing Shout (12879 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 17
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684456)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: -77 | Scaled Value: -91 | Points Per Level: -1.4 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -782,9 +782,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=684488)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 33 | Scaled Value: 35.7 | Points Per Level: 0.3 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 33 | Scaled Value: 35.7 | Points Per Level: 0.3 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Thunder Clap (desc=Rank 1) (id=6343) [Spell Family (4)] 
@@ -829,7 +829,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684294)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
@@ -851,7 +851,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684736)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 9 | Scaled Value: 9 | Target: Targeted Enemy (6)
@@ -873,7 +873,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684653)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 11 | Scaled Value: 11 | Target: Targeted Enemy (6)
@@ -896,7 +896,7 @@ Category Cooldown: 10 seconds
 Stance Mask      : 0x00040000
 Affecting Spells : Improved Pummel (12288 effects: #1, #2), Improved Pummel (12707 effects: #1, #2), Improved Pummel (12708 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=684927)   : School Damage (2): physical
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -920,7 +920,7 @@ Category Cooldown: 10 seconds
 Stance Mask      : 0x00040000
 Affecting Spells : Improved Pummel (12288 effects: #1, #2), Improved Pummel (12707 effects: #1, #2), Improved Pummel (12708 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=683919)   : School Damage (2): physical
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -986,9 +986,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=685066)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 9 | Scaled Value: 12 | Points Per Level: 0.3 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 9 | Scaled Value: 12 | Points Per Level: 0.3 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Cleave (desc=Rank 2) (id=7369) [Spell Family (4)] 
@@ -1022,7 +1022,7 @@ Labels           : 25: Warrior Spells
 Stance Mask      : 0x00050000
 Affecting Spells : Impale (16493 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Hamstring Rage Reduction (459608 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 1
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686691)   : School Damage (2): physical
                    Base Value: 18 | Scaled Value: 18 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -1045,7 +1045,7 @@ Labels           : 25: Warrior Spells
 Stance Mask      : 0x00050000
 Affecting Spells : Impale (16493 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3), Hamstring Rage Reduction (459608 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 1
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685506)   : School Damage (2): physical
                    Base Value: 45 | Scaled Value: 45 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -1283,7 +1283,7 @@ Mechanic         : Stun
 Affecting Spells : Gladiator Stance Shield Passive (413479 effect#3)
 Triggered By     : Charge (100), Charge (6178), Charge (11578), Demon Charge (412788), Charge (1240287), Charge (1240288), Charge (1240289)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685389)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1410,7 +1410,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Pushback (207), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
 Effects          :
 #1 (id=687405)   : Weapon Damage (17)
                    Base Value: 43 | Scaled Value: 43 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -1430,9 +1430,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=688665)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 51 | Scaled Value: 56.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 51 | Scaled Value: 56.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Battle Shout (desc=Rank 5) (id=11550) [Spell Family (4)] 
@@ -1449,9 +1449,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=689577)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 78 | Scaled Value: 83.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 78 | Scaled Value: 83.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Battle Shout (desc=Rank 6) (id=11551) [Spell Family (4)] 
@@ -1468,9 +1468,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=689517)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 111 | Scaled Value: 116.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 111 | Scaled Value: 116.4 | Points Per Level: 0.6 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Demoralizing Shout (desc=Rank 3) (id=11554) [Spell Family (4)] 
@@ -1485,7 +1485,7 @@ Labels           : 25: Warrior Spells
 Proc Chance      : 101%
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Demoralizing Shout (12324 effect#1), Improved Demoralizing Shout (12876 effect#1), Improved Demoralizing Shout (12877 effect#1), Improved Demoralizing Shout (12878 effect#1), Improved Demoralizing Shout (12879 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 17
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689894)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: -98 | Scaled Value: -112 | Points Per Level: -1.4 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1508,7 +1508,7 @@ Labels           : 25: Warrior Spells
 Proc Chance      : 101%
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Demoralizing Shout (12324 effect#1), Improved Demoralizing Shout (12876 effect#1), Improved Demoralizing Shout (12877 effect#1), Improved Demoralizing Shout (12878 effect#1), Improved Demoralizing Shout (12879 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 17
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689759)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: -147 | Scaled Value: -161 | Points Per Level: -1.4 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1531,7 +1531,7 @@ Labels           : 25: Warrior Spells
 Proc Chance      : 101%
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Demoralizing Shout (12324 effect#1), Improved Demoralizing Shout (12876 effect#1), Improved Demoralizing Shout (12877 effect#1), Improved Demoralizing Shout (12878 effect#1), Improved Demoralizing Shout (12879 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 17
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Taps immediately (215), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=690063)   : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: -196 | Scaled Value: -210 | Points Per Level: -1.4 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1625,7 +1625,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689803)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 14 | Scaled Value: 14 | Target: Targeted Enemy (6)
@@ -1647,7 +1647,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689690)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 18 | Scaled Value: 18 | Target: Targeted Enemy (6)
@@ -1669,7 +1669,7 @@ Stance Mask      : 0x00030000
 Mechanic         : Bleed
 Affecting Spells : Improved Rend (12286 effect#1), Impale (16493 effect#1), Focused Rage (29787 effect#1), Blood Frenzy (412507 effects: #1, #2, #3), Gladiator Stance Shield Passive (413479 effect#3), Echoes of Defensive Stance (457699 effect#1)
 Family Flags     : 5
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689691)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 21 | Scaled Value: 21 | Target: Targeted Enemy (6)
@@ -1911,7 +1911,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Pushback (207), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
 Effects          :
 #1 (id=688565)   : Weapon Damage (17)
                    Base Value: 68 | Scaled Value: 68 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -1933,7 +1933,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Pushback (207), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
 Effects          :
 #1 (id=688660)   : Weapon Damage (17)
                    Base Value: 87 | Scaled Value: 87 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -1982,7 +1982,7 @@ Range            : 50000 yards
 Labels           : 25: Warrior Spells
 Mechanic         : Bleed
 Triggered By     : Deep Wounds (12834)
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), Ignore Line of Sight (66), Unknown (493)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), Ignore Line of Sight (66), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=689382)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2503,7 +2503,7 @@ Labels           : 25: Warrior Spells
 Mechanic         : Snare
 Affecting Spells : Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 37
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689540)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -2738,7 +2738,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Impale (16493 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 26
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=690209)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3108,12 +3108,13 @@ Effects          :
 Description      : Regenerates $m1% of your total Health over $16488d after being the victim of a critical strike or suffering more than $m2% of your maximum Health from a single attack.
 
 Name             : Blood Craze (id=16488) 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
 Triggered By     : Blood Craze (16487)
-Attributes       : Is Ability (4), Aura Points On Client (268), Unknown (493)
+Attributes       : Is Ability (4), No Threat (42), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=694573)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -3187,7 +3188,7 @@ Duration         : 3 seconds
 Labels           : 25: Warrior Spells
 Mechanic         : Silence
 Triggered By     : Improved Shield Bash (12311)
-Attributes       : Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695862)   : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Targeted Enemy (6)
@@ -3222,11 +3223,10 @@ School           : Physical
 Spell Type       : Magic
 Resource         : 0 Energy (3) (id=182845)
 Spell Level      : 45
-Duration         : 10 seconds
-Proc Chance      : 101%
+Duration         : 20 seconds
 Attributes       : Do Not Sheath (18), No School Immunities (90), Unknown (493)
 Effects          :
-#1 (id=695124)   : Apply Aura (6) | Resistance (22)
+#1 (id=695124)   : Apply Aura (6) | Unknown(674)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 1 | Target: Self (1)
 Description      : Increases armor by $s1 for $d.
 Tooltip          : Increased armor.
@@ -3383,7 +3383,7 @@ Mechanic         : Flee
 Affecting Spells : Booming Voice (12321 effects: #1, #2), Improved Intimidating Shout (19870 effect#1), Improved Intimidating Shout (19871 effect#1), Focused Rage (29787 effect#1), Gladiator Stance Shield Passive (413479 effect#3)
 Triggered By     : Intimidating Shout (5246)
 Family Flags     : 18
-Attributes       : Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=697242)   : Apply Aura (6) | Stun (12)
@@ -3806,7 +3806,7 @@ Duration         : 5 seconds
 Labels           : 25: Warrior Spells
 Mechanic         : Root
 Triggered By     : Improved Hamstring (12289)
-Attributes       : Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=701145)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -4078,9 +4078,9 @@ Family Flags     : 16
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Only On Player (104), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=702382)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 139 | Scaled Value: 139.6 | Points Per Level: 0.6 | Radius: 20 yards | Target: Party in Area (20)
+                   Base Value: 139 | Scaled Value: 139.6 | Points Per Level: 0.6 | Radius: 20 yards | Target: Raid in Area (56)
                    Modified By: Improved Battle Shout (12318 effect#1), Improved Battle Shout (12857 effect#1), Improved Battle Shout (12858 effect#1), Improved Battle Shout (12860 effect#1), Improved Battle Shout (12861 effect#1)
-Description      : The warrior shouts, increasing the melee attack power of all party members within $a1 yards by $s1.  Lasts $d.
+Description      : The warrior shouts, increasing the melee attack power of all party or raid members within $a1 yards by $s1.  Lasts $d.
 Tooltip          : Increases your melee attack power by $w1.
 
 Name             : Execute (id=26651) [Spell Family (4), Hidden] 
@@ -4622,7 +4622,7 @@ Proc Chance      : 101%
 Mechanic         : Bleed
 Affecting Spells : Gladiator Stance Shield Passive (413479 effect#3)
 Family Flags     : 36
-Attributes       : Is Ability (4), Ignore Line of Sight (66), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Ignore Line of Sight (66), DoT Stacking Rule (103), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1080145)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -5525,7 +5525,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x00020000
 Affecting Spells : Impale (16493 effect#1), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - RAQ - Warrior - Tank 3P Bonus (1214165 effect#1)
 Family Flags     : 47
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Show Mechanic as Combat Text (213), Unknown (493)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1134402)  : Apply Aura (6) | Stun (12) | Attributes: Area Effects Use Target Radius (17)
@@ -6176,7 +6176,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Pushback (207), Doesn't Reset Swing Timer if Instant (217), Unknown (493)
 Effects          :
 #1 (id=1238371)  : Weapon Damage (17)
                    Base Value: 16 | Scaled Value: 16 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6274,27 +6274,6 @@ Effects          :
 #1 (id=1264777)  : Extra Attacks (19)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Target: Self (1)
 
-Name             : Bloodthrill (id=1289681) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Range            : 50000 yards
-Duration         : 6 seconds
-Labels           : 25: Warrior Spells
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : Yellow Melee
-Attributes       : Do Not Sheath (18), No Aura Cancel (31), Ignore Line of Sight (66), Unknown (493)
-Effects          :
-#1 (id=1308184)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
-#2 (id=1323444)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=1349749)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Tooltip          : Overpower recently activated by Bloodthrill.
-
 Name             : Bloodthrill (id=1289682) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=5, req_points=0]
                  : Effect#1 [op=set, values=(4, 8, 12, 16, 20)]
@@ -6309,7 +6288,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1308185)  : Apply Aura (6) | Proc Trigger Spell (42): Overpower
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1282733 | Target: Self (1)
-Description      : Your Main Hand melee attacks against enemies afflicted by your Rend have a $s1% chance to allow the use of your Overpower ability on the target. Lasts $1289681d.
+Description      : Grants your Main Hand melee attacks against enemies afflicted by your Rend a $s1% chance to allow an activation of Overpower.
 
 Name             : Weaponmaster (id=1290261) [Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=5, req_points=0]
@@ -6370,7 +6349,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Pushback (207), Unknown (493)
 Effects          :
 #1 (id=1339514)  : Weapon Damage (17)
                    Base Value: 16 | Scaled Value: 16 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6392,7 +6371,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Pushback (207), Unknown (493)
 Effects          :
 #1 (id=1339515)  : Weapon Damage (17)
                    Base Value: 32 | Scaled Value: 32 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6414,7 +6393,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Pushback (207), Unknown (493)
 Effects          :
 #1 (id=1339516)  : Weapon Damage (17)
                    Base Value: 43 | Scaled Value: 43 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6436,7 +6415,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Pushback (207), Unknown (493)
 Effects          :
 #1 (id=1339517)  : Weapon Damage (17)
                    Base Value: 68 | Scaled Value: 68 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -6458,7 +6437,7 @@ Labels           : 25: Warrior Spells
 Category Cooldown: 18 seconds
 Affecting Spells : Improved Slam (12862 effects: #1, #2, #3), Impale (16493 effect#1), Focused Rage (29787 effect#1), Precise Timing (402922 effects: #1, #2), Blood Surge (413399 effects: #1, #2), Gladiator Stance Shield Passive (413479 effect#3), S03 - Item - T2 - Warrior - Damage 4P Bonus (468235 effect#1), Eureka! (1259813 effects: #1, #2)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Pushback (207), Unknown (493)
 Effects          :
 #1 (id=1339518)  : Weapon Damage (17)
                    Base Value: 87 | Scaled Value: 87 | SP Coefficient: 1 | Target: Targeted Enemy (6)

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70425 Live
 Name             : Backstab (desc=Rank 1) (id=53) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -39,7 +39,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Improved Kidney Shot (14174 effect#1), Relentless Strikes (14179 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679152)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -82,7 +82,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679355)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 24 | Scaled Value: 24 | Target: Targeted Enemy (6)
@@ -107,7 +107,7 @@ Category Cooldown: 30 seconds
 Mechanic         : Distract
 Affecting Spells : Improved Distract (14084 effects: #1, #2), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Improved Pick Pocket and Distract 01 (1291987 effect#1)
 Family Flags     : 12
-Attributes       : Is Ability (4), Do Not Sheath (18), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Suppress Target Procs (113), Not an Attack (194), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Do Not Sheath (18), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), No AutoCast (AI) (49), Not an Action (92), Suppress Target Procs (113), Not an Attack (194), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Hostile Action Received (0), Damage (1)
 Effects          :
 #1 (id=680046)   : Distract (69)
@@ -231,7 +231,7 @@ Labels           : 20: Rogue Spells
 Category Cooldown: 10 seconds
 Affecting Spells : Improved Kick (24434 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 4
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679719)   : School Damage (2): physical
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -254,7 +254,7 @@ Labels           : 20: Rogue Spells
 Category Cooldown: 10 seconds
 Affecting Spells : Improved Kick (24434 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 4
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679744)   : School Damage (2): physical
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -277,7 +277,7 @@ Labels           : 20: Rogue Spells
 Category Cooldown: 10 seconds
 Affecting Spells : Improved Kick (24434 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 4
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679746)   : School Damage (2): physical
                    Base Value: 45 | Scaled Value: 45 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -300,7 +300,7 @@ Labels           : 20: Rogue Spells
 Category Cooldown: 10 seconds
 Affecting Spells : Improved Kick (24434 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 4
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=679748)   : School Damage (2): physical
                    Base Value: 80 | Scaled Value: 80 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -326,7 +326,7 @@ Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting Spells : Improved Gouge (13741 effect#1), Lethality (14128 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=679725)   : School Damage (2): physical
@@ -356,7 +356,7 @@ Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting Spells : Improved Gouge (13741 effect#1), Lethality (14128 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=680364)   : School Damage (2): physical
@@ -497,7 +497,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Stun
 Affecting Spells : Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 10
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681382)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -598,7 +598,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681139)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 5 | Scaled Value: 5 | Points Per Combo Point: 1.18 | Target: Targeted Enemy (6)
@@ -652,7 +652,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Incapacitate
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Dirty Tricks (1224782 effect#1)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Limit N (165), Not an Attack (194), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Limit N (165), Not an Attack (194), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=681308)   : Apply Aura (6) | Stun (12)
@@ -675,7 +675,7 @@ Proc Chance      : 101%
 Mechanic         : Disorient
 Affecting Spells : Elusiveness (13981 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Dirty Tricks (1224782 effect#1)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=680256)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -1017,7 +1017,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Snare
 Affecting Spells : Improved Poisons (14113 effect#1), Vile Poisons (16513 effect#3), Venomous Totem (23726 effect#1), Carnage (432275 effect#1), S03 - Item - T1 - Rogue - Damage 4P Bonus (457339 effect#1), Venom (1310703 effect#4)
 Family Flags     : 14
-Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Do Not Display Range (126), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=681536)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Targeted Enemy (6)
@@ -1316,7 +1316,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Incapacitate
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Dirty Tricks (1224782 effect#1)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Limit N (165), Not an Attack (194), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Limit N (165), Not an Attack (194), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=684682)   : Apply Aura (6) | Stun (12)
@@ -1449,7 +1449,7 @@ Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting Spells : Improved Gouge (13741 effect#1), Lethality (14128 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=686161)   : School Damage (2): physical
@@ -1475,7 +1475,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686233)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 34 | Scaled Value: 34 | Target: Targeted Enemy (6)
@@ -1498,7 +1498,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686321)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 47 | Scaled Value: 47 | Target: Targeted Enemy (6)
@@ -1521,7 +1521,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687351)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 59 | Scaled Value: 59 | Target: Targeted Enemy (6)
@@ -1566,7 +1566,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686338)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 7 | Scaled Value: 7 | Points Per Combo Point: 1.78 | Target: Targeted Enemy (6)
@@ -1597,7 +1597,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686443)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 11 | Scaled Value: 11 | Points Per Combo Point: 2.37 | Target: Targeted Enemy (6)
@@ -1632,7 +1632,7 @@ Proc Chance      : 101%
 Mechanic         : Stun
 Affecting Spells : Improved Kidney Shot (14174 effect#1), Relentless Strikes (14179 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 21
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686634)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2135,7 +2135,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Snare
 Affecting Spells : Improved Poisons (14113 effect#1), Vile Poisons (16513 effect#3), Venomous Totem (23726 effect#1), Carnage (432275 effect#1), S03 - Item - T1 - Rogue - Damage 4P Bonus (457339 effect#1), Venom (1310703 effect#4)
 Family Flags     : 14
-Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Do Not Display Range (126), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=688650)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
@@ -2244,7 +2244,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687807)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 16 | Scaled Value: 16 | Points Per Combo Point: 2.96 | Target: Targeted Enemy (6)
@@ -2275,7 +2275,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687903)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 22 | Scaled Value: 22 | Points Per Combo Point: 4.14 | Target: Targeted Enemy (6)
@@ -2306,7 +2306,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Affecting Spells : Serrated Blades (14171 effect#2), Relentless Strikes (14179 effect#1), Hemorrhage (16511 effect#3), Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687822)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 35 | Scaled Value: 35 | Points Per Combo Point: 4.73 | Target: Targeted Enemy (6)
@@ -2406,7 +2406,7 @@ Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting Spells : Improved Gouge (13741 effect#1), Lethality (14128 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=690542)   : School Damage (2): physical
@@ -2436,7 +2436,7 @@ Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting Spells : Improved Gouge (13741 effect#1), Lethality (14128 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 3
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Completely Blocked (99), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=690529)   : School Damage (2): physical
@@ -2462,7 +2462,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689763)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 74 | Scaled Value: 74 | Target: Targeted Enemy (6)
@@ -2485,7 +2485,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Bleed
 Affecting Spells : Opportunity (14057 effect#2), Dirty Deeds (14082 effect#1), Honor Among Thieves (432266 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1)
 Family Flags     : 8
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689794)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 92 | Scaled Value: 92 | Target: Targeted Enemy (6)
@@ -2553,7 +2553,7 @@ Stance Mask      : 0x20000000
 Mechanic         : Incapacitate
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Dirty Tricks (1224782 effect#1)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Limit N (165), Not an Attack (194), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Only Stealthed (17), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Discount Power On Miss (59), Not an Action (92), PvP Enabling (96), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Limit N (165), Not an Attack (194), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Aura Interrupt   : Damage (1)
 Effects          :
 #1 (id=690591)   : Apply Aura (6) | Stun (12)
@@ -4027,7 +4027,7 @@ Effects          :
 #1 (id=691761)   : Apply Aura (6) | Unknown(109)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Points Per Combo Point: 20 | Trigger Spell: 14181 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Eviscerate (6760), Eviscerate (6761), Eviscerate (6762), Slice and Dice (6774), Eviscerate (8623), Eviscerate (8624), Rupture (8639), Rupture (8640), Kidney Shot (8643), Expose Armor (8647), Expose Armor (8649), Expose Armor (8650), Expose Armor (11197), Expose Armor (11198), Rupture (11273), Rupture (11274), Rupture (11275), Eviscerate (11299), Eviscerate (11300), Eviscerate (31016), Venom (1310703)
-                   Family Flags: 17, 18, 19, 20, 21, 90
+                   Family Flags: 17, 18, 19, 20, 21, 66, 90
 Description      : Your finishing moves have a $m1% chance per Combo Point to restore $14181s1 Energy.
 
 Name             : Relentless Strikes Effect (id=14181) 
@@ -4054,7 +4054,7 @@ Cooldown         : 120 seconds
 Labels           : 20: Rogue Spells
 Affecting Spells : Carnage (432275 effect#1)
 Family Flags     : 30
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Target Procs (113), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Suppress Target Procs (113), Not an Attack (194), Unknown (493)
 Effects          :
 #1 (id=691744)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
@@ -4110,7 +4110,7 @@ Category Cooldown: 1 seconds
 Proc Chance      : 101%
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 40
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Combat Feedback When Usable (137), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Combat Feedback When Usable (137), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=692276)   : Weapon Damage% (31)
                    Base Value: 150 | Scaled Value: 1.5 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -4287,7 +4287,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Silence
 Triggered By     : Improved Kick (13754)
-Attributes       : Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695774)   : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Targeted Enemy (6)
@@ -4332,7 +4332,7 @@ Duration         : 3 seconds
 Labels           : 25: Warrior Spells
 Mechanic         : Silence
 Triggered By     : Improved Shield Bash (12311)
-Attributes       : Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695862)   : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Targeted Enemy (6)
@@ -4610,7 +4610,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 10 seconds
 Affecting Spells : Carnage (432275 effect#1), Main Gauche (462752 effects: #1, #2, #3)
 Family Flags     : 101
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Track Target in Cast (Player Only) (22), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Unknown (493)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Track Target in Cast (Player Only) (22), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=1041221)  : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -4835,7 +4835,7 @@ Category Cooldown: 20 seconds
 Mechanic         : Stun
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 111
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Finishing Move - Damage (52), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Helpful Threat (131), Unknown (493)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Finishing Move - Damage (52), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Helpful Threat (131), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=1044559)  : School Damage (2): physical
                    Base Value: 67 | Scaled Value: 67 (delta=0.41791) | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -5321,7 +5321,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 101%
 Triggered By     : Waylay (408700)
-Attributes       : Is Ability (4), Suppress Target Procs (113), Do Not Display Range (126), Unknown (493)
+Attributes       : Is Ability (4), Suppress Target Procs (113), Do Not Display Range (126), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=1072987)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: -10 | Scaled Value: -10 | Target: Targeted Enemy (6)
@@ -5393,7 +5393,7 @@ Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), S03 - Item - T1 - Rogue - Damage 6P Bonus (457344 effect#1), Blade Dance (457351 effects: #1, #2), S03 - Item - T1 - Rogue - Tank 6P Bonus (457464 effect#1), Clearcasting (467735 effect#1), S03 - Item - RAQ - Rogue - Damage 3P Bonus (1213763 effect#1)
 Family Flags     : 81
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Finishing Move - Duration (54), Include In Advanced Combat Log (72), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Taps immediately (215), Aura Points On Client (268), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Finishing Move - Duration (54), Include In Advanced Combat Log (72), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=1079225)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5504,7 +5504,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting Spells : Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), S03 - Item - TAQ - Rogue - Damage 2P Bonus (1213713 effects: #1, #2)
 Family Flags     : 23, 98
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), Aura Points On Client (268), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), Show Mechanic as Combat Text (213), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=1102012)  : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
@@ -5847,7 +5847,7 @@ Duration         : 3 seconds
 Cooldown         : 15 seconds
 Affecting Spells : Improved Kick (24434 effect#1), Carnage (432275 effect#1), Clearcasting (457342 effect#1), Clearcasting (467735 effect#1), Eureka! (1259812 effects: #1, #2)
 Family Flags     : 4
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), Completely Blocked (99), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Include In Advanced Combat Log (72), Completely Blocked (99), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=1103559)  : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -6363,7 +6363,7 @@ Affecting Spells : Carnage (432275 effect#1)
 Family Flags     : 64, 120
 Attributes       : No Redirection (35), No Reflection (39), Do Not Display Range (126), Aura Points On Client (268), Unknown (493)
 Effects          :
-#1 (id=1132782)  : Apply Aura (6) | Resistance (22)
+#1 (id=1132782)  : Apply Aura (6) | Unknown(674)
                    Base Value: -1700 | Scaled Value: -1700 | Misc Value: 1 | Target: Targeted Enemy (6)
 Tooltip          : Armor reduced by $w1.
 

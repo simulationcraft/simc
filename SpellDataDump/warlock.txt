@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 1.60.1.70334 Live
+SimulationCraft 1210-01 for World of Warcraft 1.60.1.70425 Live
 Name             : Eye of Kilrogg (desc=Summon) (id=126) 
 Class            : Warlock
 School           : Shadow
@@ -46,7 +46,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -66,7 +66,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -96,7 +96,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 60 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 31, 33
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -138,7 +138,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 68
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=679301)   : Apply Aura (6) | Resistance (22)
+#1 (id=679301)   : Apply Aura (6) | Unknown(674)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=679302)   : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161)
@@ -175,7 +175,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -253,7 +253,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 68
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=679228)   : Apply Aura (6) | Resistance (22)
+#1 (id=679228)   : Apply Aura (6) | Unknown(674)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=679229)   : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161)
@@ -290,7 +290,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -301,6 +301,7 @@ Description      : Transfers $s1 health every $t1 second from the target to the 
 Tooltip          : Drains $s1 health every $t1 second to the caster.
 
 Name             : Curse of Weakness (desc=Rank 1) (id=702) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -310,16 +311,16 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689165)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Curse of Recklessness (desc=Rank 1) (id=704) [Spell Family (5)] 
 Class            : Warlock
@@ -336,12 +337,10 @@ Affecting Spells : Grim Reach (18218 effect#1), Metamorphosis (403789 effects: #
 Family Flags     : 31, 53
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
-#1 (id=686801)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
+#1 (id=686801)   : Apply Aura (6) | Unknown(92)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=686802)   : Apply Aura (6) | Unknown(674)
                    Base Value: -175 | Scaled Value: -175 | Misc Value: 1 | Target: Targeted Enemy (6)
-#3 (id=686803)   : Apply Aura (6) | Unknown(92)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Curses the target with recklessness, reducing the target's armor by $s2 for $d. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.
 Tooltip          : Decreases armor by $s2. Target will not flee and will ignore Fear and Horror effects.
 
@@ -377,7 +376,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=686133)   : Apply Aura (6) | Resistance (22)
+#1 (id=686133)   : Apply Aura (6) | Unknown(674)
                    Base Value: 210 | Scaled Value: 210 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=686134)   : Apply Aura (6) | Resistance (22)
@@ -400,7 +399,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -429,7 +428,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -455,7 +454,7 @@ Proc Chance      : 101%
 Mechanic         : Banish
 Affecting Spells : S03 - Item - T1 - Warlock - Tank 4P Bonus (457572 effect#1)
 Family Flags     : 59
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Immunity to Hostile & Friendly Effects (48), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Immunity to Hostile & Friendly Effects (48), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687311)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -495,7 +494,7 @@ Duration         : Aura (infinite)
 Labels           : 19: Warlock Spells
 Affecting Spells : Fel Domination (18708 effects: #1, #2), Master Summoner (18709 effects: #1, #2), Burning Shadow (18789 effect#2), Fel Stamina (18790 effect#2), Touch of Fire (18791 effect#2), Fel Energy (18792 effect#2), Grimoire of Synergy (1226981 effect#1)
 Family Flags     : 29
-Attributes       : Not Shapeshifted (16), Dismiss Pet First (32), No AutoCast (AI) (49), No Reagent Cost With Aura (161), Unknown (493)
+Attributes       : Not Shapeshifted (16), Dismiss Pet First (32), No AutoCast (AI) (49), Unknown (493)
 Effects          :
 #1 (id=679567)   : Summon Pet (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 185317 | Target: Summoner in Area (32)
@@ -530,6 +529,7 @@ Description      : Gives $s1 health to the caster's pet every second for $d as l
 Tooltip          : Transferring Life.$?s18703[ Threat generation increased by $w3%.][]
 
 Name             : Bane of Agony (desc=Rank 1) (id=980) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -539,15 +539,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686215)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 6 | Scaled Value: 6 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365366)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Curse of Idiocy (desc=Rank 1) (id=1010) [Spell Family (5)] 
 Class            : Warlock
@@ -575,6 +579,7 @@ Description      : Curse the target with idiocy, reducing Intellect and Spirit b
 Tooltip          : Intellect and Spirit reduced.
 
 Name             : Bane of Agony (desc=Rank 2) (id=1014) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -584,15 +589,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679932)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365370)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Demon Armor (desc=Rank 2) (id=1086) [Spell Family (5)] 
 Class            : Warlock
@@ -607,7 +616,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=680288)   : Apply Aura (6) | Resistance (22)
+#1 (id=680288)   : Apply Aura (6) | Unknown(674)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=680289)   : Apply Aura (6) | Resistance (22)
@@ -649,7 +658,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -683,7 +692,7 @@ Proc Chance      : 101%
 Mechanic         : Charm
 Affecting Spells : Improved Subjugate Demon (18821 effects: #1, #2, #3), Improved Subjugate Demon (18822 effects: #1, #2, #3), Improved Subjugate Demon (18823 effects: #1, #2, #3), Improved Subjugate Demon (18824 effects: #1, #2, #3), Improved Subjugate Demon (18825 effects: #1, #2, #3)
 Family Flags     : 11
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=680460)   : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: -40 | Scaled Value: -40 | Target: Targeted Enemy (6)
@@ -714,6 +723,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Curse of Weakness (desc=Rank 2) (id=1108) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -723,16 +733,16 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679610)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -7 | Scaled Value: -7 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Drain Soul (desc=Rank 1) (id=1120) [Spell Family (5)] 
 Class            : Warlock
@@ -746,7 +756,7 @@ Duration         : 15 seconds
 Labels           : 19: Warlock Spells
 Stacks           : 1 initial, 1 maximum
 Proc Flags       : Killing Blow
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 14
 Attributes       : Proc Failure Burns Charge (0), Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -856,7 +866,7 @@ Spell Level      : 30 (max 40)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 6
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Periodic Can Crit (265), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -900,7 +910,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -1103,7 +1113,7 @@ Range            : 30 yards
 Velocity         : 20 yards/sec
 Requires weapon  : Wand
 Category         : 351 (Type 0x0)
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Auto Repeat (69), Normal Ranged Attack (111), Auto Ranged Combat (152), Unknown (472), Unknown (493)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Auto Repeat (69), Normal Ranged Attack (111), Unknown (472), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Attacking (13), Damage Channel Duration (15), Action (Delayed) (17)
 Effects          :
 #1 (id=683674)   : Weapon Damage (17)
@@ -1120,7 +1130,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Malediction (1225177 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1)
 Family Flags     : 4
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -1149,7 +1159,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Grim Reach (18218 effect#1)
 Family Flags     : 31
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=683393)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | Radius: 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1263,7 +1273,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Grim Reach (18218 effect#1)
 Family Flags     : 31, 42
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=684249)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
@@ -1276,9 +1286,9 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 30 (max 40)
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Triggered By     : Hellfire (1949)
-Family Flags     : 6
+Family Flags     : 6, 40
 Attributes       : No Redirection (35), No Reflection (39), No Initial Threat (86), Periodic Can Crit (265), Unknown (493)
 Effects          :
 #1 (id=685538)   : School Damage (2): fire
@@ -1322,6 +1332,7 @@ Description      : Creates a Lesser Healthstone that can be used to instantly re
 Conjured items disappear if logged out for more than 15 minutes.
 
 Name             : Curse of Weakness (desc=Rank 3) (id=6205) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1331,16 +1342,16 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684996)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Fear (desc=Rank 2) (id=6213) [Spell Family (5)] 
 Class            : Warlock
@@ -1359,7 +1370,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Grim Reach (18218 effect#1)
 Family Flags     : 31, 42
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=684815)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
@@ -1383,7 +1394,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Grim Reach (18218 effect#1)
 Family Flags     : 31, 42
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=685247)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
@@ -1391,6 +1402,7 @@ Description      : Strikes fear in the enemy, causing it to run in fear for up t
 Tooltip          : Feared.
 
 Name             : Bane of Agony (desc=Rank 3) (id=6217) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1400,15 +1412,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685161)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 14 | Scaled Value: 14 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365369)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Rain of Fire (desc=Rank 2) (id=6219) [Spell Family (5)] 
 Class            : Warlock
@@ -1447,7 +1463,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -1467,7 +1483,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -1486,7 +1502,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Malediction (1225177 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1)
 Family Flags     : 4
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -1571,7 +1587,7 @@ Cooldown         : 60 seconds
 Category         : 631 (Type 0x0)
 Labels           : 19: Warlock Spells
 Category Cooldown: 60 seconds
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effect#2), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Decimation (440870 effect#2), Decimation (440873 effects: #1, #2), Soul Fire! (457643 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effect#2), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Decimation (440870 effect#2), Decimation (440873 effects: #1, #2), Soul Fire! (457643 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 6, 39
 Attributes       : Not Shapeshifted (16), Unknown (493)
 Effects          :
@@ -1594,8 +1610,8 @@ Proc Chance      : 101%
 Mechanic         : Charm
 Affecting Spells : Improved Sayaad (18754 effects: #1, #2)
 Family Flags     : 30
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), Track Target in Channel (46), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
-Aura Interrupt   : Damage (1)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), Track Target in Channel (46), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Damage (Script) (27)
 Channel Interrupt: Damage (2), Action (3), Moving (4), Turning (5), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=685015)   : Apply Aura (6) | Stun (12)
@@ -1658,9 +1674,9 @@ Category         : 633 (Type 0x0)
 Labels           : 19: Warlock Spells
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
 Family Flags     : 19
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684930)   : Health Leech (9)
                    Base Value: 272 | Scaled Value: 285.2 | Points Per Level: 2.2 | Value Multiplier: 1 | SP Coefficient: 0.214 | Target: Targeted Enemy (6)
@@ -1687,6 +1703,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Curse of Weakness (desc=Rank 4) (id=7646) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1696,16 +1713,16 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687124)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -18 | Scaled Value: -18 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Corruption (desc=Rank 4) (id=7648) [Spell Family (5)] 
 Class            : Warlock
@@ -1718,7 +1735,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -1737,7 +1754,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -1763,12 +1780,10 @@ Affecting Spells : Grim Reach (18218 effect#1), Metamorphosis (403789 effects: #
 Family Flags     : 31, 53
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
-#1 (id=686372)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | Target: Targeted Enemy (6)
+#1 (id=686372)   : Apply Aura (6) | Unknown(92)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=686373)   : Apply Aura (6) | Unknown(674)
                    Base Value: -285 | Scaled Value: -285 | Misc Value: 1 | Target: Targeted Enemy (6)
-#3 (id=686374)   : Apply Aura (6) | Unknown(92)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Curses the target with recklessness, reducing the target's armor by $s2 for $d. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.
 Tooltip          : Decreases armor by $s2. Target will not flee and will ignore Fear and Horror effects.
 
@@ -1787,12 +1802,10 @@ Affecting Spells : Grim Reach (18218 effect#1), Metamorphosis (403789 effects: #
 Family Flags     : 31, 53
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
-#1 (id=686502)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 65 | Scaled Value: 65 | Target: Targeted Enemy (6)
+#1 (id=686502)   : Apply Aura (6) | Unknown(92)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=686503)   : Apply Aura (6) | Unknown(674)
                    Base Value: -395 | Scaled Value: -395 | Misc Value: 1 | Target: Targeted Enemy (6)
-#3 (id=686504)   : Apply Aura (6) | Unknown(92)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Curses the target with recklessness, reducing the target's armor by $s2 for $d. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.
 Tooltip          : Decreases armor by $s2. Target will not flee and will ignore Fear and Horror effects.
 
@@ -2107,7 +2120,7 @@ Mechanic         : Stun
 Affecting Spells : Gladiator Stance Shield Passive (413479 effect#3)
 Triggered By     : Charge (100), Charge (6178), Charge (11578), Demon Charge (412788), Charge (1240287), Charge (1240288), Charge (1240289)
 Family Flags     : 24
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Initial Threat (86), Active Threat (94), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685389)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -2125,7 +2138,7 @@ Duration         : 15 seconds
 Labels           : 19: Warlock Spells
 Stacks           : 1 initial, 1 maximum
 Proc Flags       : Killing Blow
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 14
 Attributes       : Proc Failure Burns Charge (0), Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2149,7 +2162,7 @@ Duration         : 15 seconds
 Labels           : 19: Warlock Spells
 Stacks           : 1 initial, 1 maximum
 Proc Flags       : Killing Blow
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 14
 Attributes       : Proc Failure Burns Charge (0), Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2269,7 +2282,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -2299,7 +2312,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -2329,7 +2342,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -2359,7 +2372,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -2379,7 +2392,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -2400,7 +2413,7 @@ Duration         : 15 seconds
 Labels           : 19: Warlock Spells
 Stacks           : 1 initial, 1 maximum
 Proc Flags       : Killing Blow
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 14
 Attributes       : Proc Failure Burns Charge (0), Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2470,9 +2483,9 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 42 (max 52)
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Triggered By     : Hellfire (11683)
-Family Flags     : 6
+Family Flags     : 6, 40
 Attributes       : No Redirection (35), No Reflection (39), No Initial Threat (86), Periodic Can Crit (265), Unknown (493)
 Effects          :
 #1 (id=690749)   : School Damage (2): fire
@@ -2485,9 +2498,9 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 54 (max 64)
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Triggered By     : Hellfire (11684)
-Family Flags     : 6
+Family Flags     : 6, 40
 Attributes       : No Redirection (35), No Reflection (39), No Initial Threat (86), Periodic Can Crit (265), Unknown (493)
 Effects          :
 #1 (id=693052)   : School Damage (2): fire
@@ -2503,7 +2516,7 @@ Spell Level      : 42 (max 52)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 6
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Periodic Can Crit (265), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2526,7 +2539,7 @@ Spell Level      : 54 (max 64)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 6
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Periodic Can Crit (265), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2685,7 +2698,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2706,7 +2719,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2726,7 +2739,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Malediction (1225177 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1)
 Family Flags     : 4
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2746,7 +2759,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Malediction (1225177 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1)
 Family Flags     : 4
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -2757,6 +2770,7 @@ Description      : Transfers $s1 Mana every $t1 sec from the target to the caste
 Tooltip          : Drains $s1 Mana each second to the caster.
 
 Name             : Curse of Weakness (desc=Rank 5) (id=11707) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2766,18 +2780,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=690083)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -26 | Scaled Value: -26 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Curse of Weakness (desc=Rank 6) (id=11708) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2787,18 +2802,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
+Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689693)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -37 | Scaled Value: -37 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Bane of Agony (desc=Rank 4) (id=11711) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2808,17 +2824,22 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689366)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 21 | Scaled Value: 21 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365368)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Bane of Agony (desc=Rank 5) (id=11712) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2828,17 +2849,22 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689314)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 33 | Scaled Value: 33 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365367)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Bane of Agony (desc=Rank 6) (id=11713) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2848,15 +2874,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689623)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 46 | Scaled Value: 46 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365365)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Curse of Recklessness (desc=Rank 4) (id=11717) [Spell Family (5)] 
 Class            : Warlock
@@ -2873,12 +2903,10 @@ Affecting Spells : Grim Reach (18218 effect#1), Metamorphosis (403789 effects: #
 Family Flags     : 31, 53
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
-#1 (id=690025)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Target: Targeted Enemy (6)
+#1 (id=690025)   : Apply Aura (6) | Unknown(92)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=690026)   : Apply Aura (6) | Unknown(674)
                    Base Value: -505 | Scaled Value: -505 | Misc Value: 1 | Target: Targeted Enemy (6)
-#3 (id=690027)   : Apply Aura (6) | Unknown(92)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Curses the target with recklessness, reducing the target's armor by $s2 for $d. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.
 Tooltip          : Decreases armor by $s2. Target will not flee and will ignore Fear and Horror effects.
 
@@ -2917,7 +2945,7 @@ Proc Chance      : 101%
 Mechanic         : Charm
 Affecting Spells : Improved Subjugate Demon (18821 effects: #1, #2, #3), Improved Subjugate Demon (18822 effects: #1, #2, #3), Improved Subjugate Demon (18823 effects: #1, #2, #3), Improved Subjugate Demon (18824 effects: #1, #2, #3), Improved Subjugate Demon (18825 effects: #1, #2, #3)
 Family Flags     : 11
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=689479)   : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: -40 | Scaled Value: -40 | Target: Targeted Enemy (6)
@@ -2943,7 +2971,7 @@ Proc Chance      : 101%
 Mechanic         : Charm
 Affecting Spells : Improved Subjugate Demon (18821 effects: #1, #2, #3), Improved Subjugate Demon (18822 effects: #1, #2, #3), Improved Subjugate Demon (18823 effects: #1, #2, #3), Improved Subjugate Demon (18824 effects: #1, #2, #3), Improved Subjugate Demon (18825 effects: #1, #2, #3)
 Family Flags     : 11
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No AutoCast (AI) (49), Cannot cast on tapped (70), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=689869)   : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: -40 | Scaled Value: -40 | Target: Targeted Enemy (6)
@@ -3017,7 +3045,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=689078)   : Apply Aura (6) | Resistance (22)
+#1 (id=689078)   : Apply Aura (6) | Unknown(674)
                    Base Value: 390 | Scaled Value: 390 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=689079)   : Apply Aura (6) | Resistance (22)
@@ -3042,7 +3070,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=689710)   : Apply Aura (6) | Resistance (22)
+#1 (id=689710)   : Apply Aura (6) | Unknown(674)
                    Base Value: 480 | Scaled Value: 480 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=689711)   : Apply Aura (6) | Resistance (22)
@@ -3067,7 +3095,7 @@ Affecting Spells : Demonic Aegis (1235316 effect#1)
 Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Unknown (493)
 Effects          :
-#1 (id=689713)   : Apply Aura (6) | Resistance (22)
+#1 (id=689713)   : Apply Aura (6) | Unknown(674)
                    Base Value: 570 | Scaled Value: 570 | Misc Value: 1 | Target: Self (1)
                    Modified By: Demonic Aegis (1235316 effect#1)
 #2 (id=689714)   : Apply Aura (6) | Resistance (22)
@@ -3543,6 +3571,7 @@ Effects          :
 Description      : Reduces the Mana cost of your Destruction spells by $s1%.
 
 Name             : Fel Concentration (id=17783) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(23, 47, 70)]
 Class            : Warlock
@@ -3555,7 +3584,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | SP Coefficient: 1 | Misc Value: 9 | Target: Self (1)
                    Affected Spells: Drain Life (689), Drain Life (699), Drain Life (709), Drain Soul (1120), Drain Mana (5138), Drain Mana (6226), Drain Life (7651), Drain Soul (8288), Drain Soul (8289), Drain Soul (11675), Drain Life (11699), Drain Life (11700), Drain Mana (11703), Drain Mana (11704), Haunt (403501), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Haunt (403858), Wrack (1316697)
                    Family Flags: 3, 4, 14, 50
-Description      : Gives you a $s1% chance to avoid interruption caused by damage while channeling or casting your Drain Life, Drain Mana, Drain Soul, or Wrack spells.
+Description      : Gives your Drain Life, Drain Mana, Drain Soul, and Wrack spells a $s1% chance to not lose casting time when you take damage.
 
 Name             : Bane (id=17788) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=1, col=11, max_rank=5, req_points=0]
@@ -3867,13 +3896,9 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=694770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Corruption (172), Immolate (348), Bane of Doom (603), Shadow Bolt (686), Drain Life (689), Shadow Bolt (695), Drain Life (699), Curse of Weakness (702), Shadow Bolt (705), Immolate (707), Drain Life (709), Bane of Agony (980), Bane of Agony (1014), Shadow Bolt (1088), Immolate (1094), Shadow Bolt (1106), Curse of Weakness (1108), Drain Soul (1120), Hellfire (1949), Immolate (2941), Drain Mana (5138), Searing Pain (5676), Rain of Fire (5740), Hellfire Effect (5857), Curse of Weakness (6205), Bane of Agony (6217), Rain of Fire (6219), Corruption (6222), Corruption (6223), Drain Mana (6226), Soul Fire (6353), Death Coil (6789), Shadow Bolt (7641), Curse of Weakness (7646), Corruption (7648), Drain Life (7651), Drain Soul (8288), Drain Soul (8289), Shadow Bolt (11659), Shadow Bolt (11660), Shadow Bolt (11661), Immolate (11665), Immolate (11667), Immolate (11668), Corruption (11671), Corruption (11672), Drain Soul (11675), Rain of Fire (11677), Rain of Fire (11678), Hellfire Effect (11681), Hellfire Effect (11682), Hellfire (11683), Hellfire (11684), Drain Life (11699), Drain Life (11700), Drain Mana (11703), Drain Mana (11704), Curse of Weakness (11707), Curse of Weakness (11708), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Shadowburn (17877), Searing Pain (17919), Searing Pain (17920), Searing Pain (17921), Searing Pain (17922), Searing Pain (17923), Soul Fire (17924), Death Coil (17925), Death Coil (17926), Conflagrate (17962), Curse of Exhaustion (18223), Siphon Life (18265), Shadowburn (18867), Shadowburn (18868), Shadowburn (18869), Shadowburn (18870), Shadowburn (18871), Siphon Life (18879), Siphon Life (18880), Siphon Life (18881), Conflagrate (18930), Conflagrate (18931), Conflagrate (18932), Shadow Bolt (25307), Immolate (25309), Corruption (25311), Shadow Bolt (350026), Haunt (403501), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Haunt (403858), Incinerate (412758), Invocation (426241), Invocation (426245), Invocation (426246), Invocation (426247), Shadowflame (426320), Shadowflame (426325), Invocation (426331), Curse of the Elements (440892), Rain of Fire (460692), Rain of Fire (460698), Rain of Fire (460699), Rain of Fire (460700), Bane of Havoc (1225228), Rain of Fire (1282380), Rain of Fire (1282383), Rain of Fire (1282384), Rain of Fire (1282385), Incinerate (1293812), Incinerate (1293813), Conflagrate (1293817), Conflagrate (1293818), Curse of the Elements (1311676), Curse of the Elements (1311677), Curse of the Elements (1311680), Wrack (1316697)
-                   Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 19, 22, 32, 33, 38, 48, 50, 65, 118
-#2 (id=1131710)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Shadowflame (426320), Invocation (426331)
-                   Family Flags: 48
-Description      : Increases the range of your damaging spells by $s1%.
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Shadow Bolt (695), Shadow Bolt (705), Immolate (707), Shadow Bolt (1088), Immolate (1094), Shadow Bolt (1106), Hellfire (1949), Immolate (2941), Searing Pain (5676), Rain of Fire (5740), Hellfire Effect (5857), Rain of Fire (6219), Soul Fire (6353), Shadow Bolt (7641), Shadow Bolt (11659), Shadow Bolt (11660), Shadow Bolt (11661), Immolate (11665), Immolate (11667), Immolate (11668), Rain of Fire (11677), Rain of Fire (11678), Hellfire Effect (11681), Hellfire Effect (11682), Hellfire (11683), Hellfire (11684), Shadowburn (17877), Searing Pain (17919), Searing Pain (17920), Searing Pain (17921), Searing Pain (17922), Searing Pain (17923), Soul Fire (17924), Conflagrate (17962), Shadowburn (18867), Shadowburn (18868), Shadowburn (18869), Shadowburn (18870), Shadowburn (18871), Conflagrate (18930), Conflagrate (18931), Conflagrate (18932), Shadow Bolt (25307), Immolate (25309), Shadow Bolt (350026), Incinerate (412758), Invocation (426245), Rain of Fire (460692), Rain of Fire (460698), Rain of Fire (460699), Rain of Fire (460700), Bane of Havoc (1225228), Rain of Fire (1282380), Rain of Fire (1282383), Rain of Fire (1282384), Rain of Fire (1282385), Incinerate (1293812), Incinerate (1293813), Conflagrate (1293817), Conflagrate (1293818)
+                   Family Flags: 0, 2, 5, 6, 7, 8, 9, 38, 40, 118
+Description      : Increases the range of your Destruction spells by $s1%.
 
 Name             : Searing Pain (desc=Rank 2) (id=17919) [Spell Family (5)] 
 Class            : Warlock
@@ -3979,7 +4004,7 @@ Cooldown         : 60 seconds
 Category         : 631 (Type 0x0)
 Labels           : 19: Warlock Spells
 Category Cooldown: 60 seconds
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effect#2), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Decimation (440870 effect#2), Decimation (440873 effects: #1, #2), Soul Fire! (457643 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effect#2), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Intensity (18135 effect#1), Improved Rain of Fire/Hellfire (24430 effect#1), Massive Destruction (24543 effect#1), Decimation (440870 effect#2), Decimation (440873 effects: #1, #2), Soul Fire! (457643 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 6, 39
 Attributes       : Not Shapeshifted (16), Unknown (493)
 Effects          :
@@ -4002,9 +4027,9 @@ Category         : 633 (Type 0x0)
 Labels           : 19: Warlock Spells
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
 Family Flags     : 19
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695364)   : Health Leech (9)
                    Base Value: 359 | Scaled Value: 374.6 | Points Per Level: 2.6 | Value Multiplier: 1 | SP Coefficient: 0.214 | Target: Targeted Enemy (6)
@@ -4026,9 +4051,9 @@ Category         : 633 (Type 0x0)
 Labels           : 19: Warlock Spells
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#1), Eureka! (1259821 effects: #1, #2), Malevolence (1310949 effect#1)
 Family Flags     : 19
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696431)   : Health Leech (9)
                    Base Value: 454 | Scaled Value: 472 | Points Per Level: 3 | Value Multiplier: 1 | SP Coefficient: 0.214 | Target: Targeted Enemy (6)
@@ -4079,7 +4104,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Grim Reach (18218 effect#1)
 Family Flags     : 31
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #2 (id=696102)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 25 | Scaled Value: 25 | Radius: 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -4373,6 +4398,7 @@ Effects          :
 Description      : Increases the critical strike chance of your Destruction spells by $s1%.
 
 Name             : Intensity (id=18135) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(23, 47, 70)]
 Class            : Warlock
@@ -4385,7 +4411,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | SP Coefficient: 1 | Misc Value: 9 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Shadow Bolt (695), Shadow Bolt (705), Immolate (707), Shadow Bolt (1088), Immolate (1094), Shadow Bolt (1106), Hellfire (1949), Immolate (2941), Searing Pain (5676), Rain of Fire (5740), Hellfire Effect (5857), Rain of Fire (6219), Soul Fire (6353), Shadow Bolt (7641), Shadow Bolt (11659), Shadow Bolt (11660), Shadow Bolt (11661), Immolate (11665), Immolate (11667), Immolate (11668), Rain of Fire (11677), Rain of Fire (11678), Hellfire Effect (11681), Hellfire Effect (11682), Hellfire (11683), Hellfire (11684), Shadowburn (17877), Searing Pain (17919), Searing Pain (17920), Searing Pain (17921), Searing Pain (17922), Searing Pain (17923), Soul Fire (17924), Conflagrate (17962), Shadowburn (18867), Shadowburn (18868), Shadowburn (18869), Shadowburn (18870), Shadowburn (18871), Conflagrate (18930), Conflagrate (18931), Conflagrate (18932), Shadow Bolt (25307), Immolate (25309), Shadow Bolt (350026), Invocation (426245), Rain of Fire (460692), Rain of Fire (460698), Rain of Fire (460699), Rain of Fire (460700), Rain of Fire (1282380), Rain of Fire (1282383), Rain of Fire (1282384), Rain of Fire (1282385), Conflagrate (1293817), Conflagrate (1293818)
                    Family Flags: 0, 2, 5, 6, 7, 8, 9
-Description      : Gives you a $s1% chance to resist interruption caused by damage while casting or channeling any Destruction spell.
+Description      : Gives your Destruction spells a $s1% chance to not lose casting time when you take damage.
 
 Name             : Suppression (id=18174) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=5, req_points=0]
@@ -4459,6 +4485,8 @@ Effects          :
 Description      : Increases the amount of Mana awarded by your Life Tap spell by $s1%.
 
 Name             : Grim Reach (id=18218) [Spell Family (5), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(10, 20)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -4467,11 +4495,12 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=694804)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Corruption (172), Bane of Doom (603), Drain Life (689), Drain Life (699), Curse of Weakness (702), Curse of Recklessness (704), Drain Life (709), Bane of Agony (980), Curse of Idiocy (1010), Bane of Agony (1014), Curse of Weakness (1108), Drain Soul (1120), Curse of Tongues (1714), Drain Mana (5138), Howl of Terror (5484), Fear (5782), Curse of Weakness (6205), Fear (6213), Fear (6215), Bane of Agony (6217), Corruption (6222), Corruption (6223), Drain Mana (6226), Death Coil (6789), Curse of Weakness (7646), Corruption (7648), Drain Life (7651), Curse of Recklessness (7658), Curse of Recklessness (7659), Drain Soul (8288), Drain Soul (8289), Corruption (11671), Corruption (11672), Drain Soul (11675), Drain Life (11699), Drain Life (11700), Drain Mana (11703), Drain Mana (11704), Curse of Weakness (11707), Curse of Weakness (11708), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Curse of Recklessness (11717), Curse of Tongues (11719), Death Coil (17925), Death Coil (17926), Howl of Terror (17928), Curse of Exhaustion (18223), Corruption (25311), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Menace (403828), Invocation (426241), Invocation (426246), Unstable Affliction (427717), Curse of the Elements (440892), Menace (442226), Menace (442233), Curse of the Elements (1311676), Curse of the Elements (1311677), Curse of the Elements (1311680)
-                   Family Flags: 1, 3, 4, 10, 14, 15, 19, 22, 31, 40
+                   Affected Spells: Corruption (172), Bane of Doom (603), Drain Life (689), Drain Life (699), Curse of Weakness (702), Curse of Recklessness (704), Drain Life (709), Bane of Agony (980), Curse of Idiocy (1010), Bane of Agony (1014), Curse of Weakness (1108), Drain Soul (1120), Curse of Tongues (1714), Drain Mana (5138), Howl of Terror (5484), Fear (5782), Curse of Weakness (6205), Fear (6213), Fear (6215), Bane of Agony (6217), Corruption (6222), Corruption (6223), Drain Mana (6226), Death Coil (6789), Curse of Weakness (7646), Corruption (7648), Drain Life (7651), Curse of Recklessness (7658), Curse of Recklessness (7659), Drain Soul (8288), Drain Soul (8289), Corruption (11671), Corruption (11672), Drain Soul (11675), Drain Life (11699), Drain Life (11700), Drain Mana (11703), Drain Mana (11704), Curse of Weakness (11707), Curse of Weakness (11708), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Curse of Recklessness (11717), Curse of Tongues (11719), Death Coil (17925), Death Coil (17926), Howl of Terror (17928), Curse of Exhaustion (18223), Siphon Life (18265), Siphon Life (18879), Siphon Life (18880), Siphon Life (18881), Corruption (25311), Haunt (403501), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Menace (403828), Haunt (403858), Invocation (426241), Invocation (426246), Invocation (426247), Curse of the Elements (440892), Menace (442226), Menace (442233), Curse of the Elements (1311676), Curse of the Elements (1311677), Curse of the Elements (1311680), Wrack (1316697)
+                   Family Flags: 1, 3, 4, 10, 14, 15, 19, 22, 31, 32, 50
 Description      : Increases the range of your Affliction spells by $s1%.
 
 Name             : Curse of Exhaustion (id=18223) [Spell Family (5)] 
+Hotfixed         : Attributes, Affecting Spells, Tooltip
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -4482,15 +4511,15 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 19: Warlock Spells
 Mechanic         : Snare
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
-Family Flags     : 22
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Affecting Spells : Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Family Flags     : 22, 82
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695149)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1 | Target: Targeted Enemy (6)
                    Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Description      : Reduces the target's movement speed by $s1% for $d.  Only one Curse per Warlock can be active on any one target.
-Tooltip          : Movement speed slowed by $s1%.
+Tooltip          : Movement speed slowed by $w1%.
 
 Name             : Siphon Life (desc=Rank 1) (id=18265) [Spell Family (5)] 
 Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=0]
@@ -4503,9 +4532,9 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 32
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695794)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 11 | Scaled Value: 11 | Value Multiplier: 1 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
@@ -4514,8 +4543,8 @@ Tooltip          : Drains $s1 health to the caster every $t1 secs.
 
 Name             : Shadow Mastery (id=18271) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=5, req_points=0]
-                 : Effect#1 [op=set, values=(1, 2, 3, 4, 5)]
-                 : Effect#2 [op=set, values=(1, 2, 3, 4, 5)]
+                 : Effect#1 [op=set, values=(2, 4, 6, 8, 10)]
+                 : Effect#2 [op=set, values=(2, 4, 6, 8, 10)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -4547,12 +4576,14 @@ Attributes       : Not Shapeshifted (16), Cooldown On Event (25), Unknown (493)
 Effects          :
 #1 (id=695823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Curse of Weakness (702), Bane of Agony (980), Bane of Agony (1014), Curse of Weakness (1108), Curse of Weakness (6205), Bane of Agony (6217), Curse of Weakness (7646), Curse of Weakness (11707), Curse of Weakness (11708), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
-                   Family Flags: 10, 15
-#2 (id=695824)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Curse of Exhaustion (18223), Curse of the Elements (440892), Curse of the Elements (1311676), Curse of the Elements (1311677), Curse of the Elements (1311680)
-                   Family Flags: 22
+                   Affected Spells: Curse of Weakness (702), Curse of Weakness (1108), Curse of Weakness (6205), Curse of Weakness (7646), Curse of Weakness (11707), Curse of Weakness (11708)
+                   Family Flags: 15
+Hotfixed         : Affects Spells
+#2 (id=1365363)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Curse of Exhaustion (18223), Demonic Grace (425463)
+                   Family Flags: 82
+Hotfixed         : NEW EFFECT
 Description      : Increases the effect of your next Curse of Weakness or Bane of Agony by $s1%, or your next Curse of Exhaustion by $s2%.  Lasts $d.
 Tooltip          : Increases effect for your next Curse of Weakness or Bane of Agony by $s1%, or your next Curse of Exhaustion by $s2%.
 
@@ -4649,7 +4680,7 @@ Proc Chance      : 101%
 Mechanic         : Banish
 Affecting Spells : S03 - Item - T1 - Warlock - Tank 4P Bonus (457572 effect#1)
 Family Flags     : 59
-Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Immunity to Hostile & Friendly Effects (48), Limit N (165), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Immunity to Hostile & Friendly Effects (48), Limit N (165), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696662)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -4727,8 +4758,6 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=696832)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1 | Stat: Sta | Target: Self (1)
-#2 (id=696833)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: -1 | Scaled Value: -1 | SP Coefficient: 1 | Misc Value: 4 | Target: Self (1)
 Description      : Increases your total Stamina by $s1%.
 
 Name             : Improved Health Funnel (id=18703) [Spell Family (5), Passive, Hidden] 
@@ -5274,9 +5303,9 @@ Spell Level      : 38 (max 48)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting Spells : Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 32
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695884)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 19 | Scaled Value: 19 | Value Multiplier: 1 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
@@ -5292,9 +5321,9 @@ Spell Level      : 48 (max 58)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting Spells : Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 32
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696235)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 29 | Scaled Value: 29 | Value Multiplier: 1 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
@@ -5310,9 +5339,9 @@ Spell Level      : 58 (max 68)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting Spells : Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 32
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=696775)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 41 | Scaled Value: 41 | Value Multiplier: 1 | SP Coefficient: 0.05 | Target: Targeted Enemy (6)
@@ -5385,7 +5414,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 20% Base Mana (0) (id=184294)
-Spell Level      : 40
+Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
 Labels           : 19: Warlock Spells
@@ -5410,7 +5439,7 @@ Labels           : 19: Warlock Spells
 Category Cooldown: 30 seconds
 Affecting Spells : Improved Felhunter (1225217 effect#2)
 Family Flags     : 74
-Attributes       : Do Not Sheath (18), Unknown (493)
+Attributes       : Do Not Sheath (18), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=696254)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -5604,7 +5633,7 @@ Labels           : 19: Warlock Spells
 Category Cooldown: 30 seconds
 Affecting Spells : Improved Felhunter (1225217 effect#2)
 Family Flags     : 74
-Attributes       : Do Not Sheath (18), Unknown (493)
+Attributes       : Do Not Sheath (18), Show Mechanic as Combat Text (213), Unknown (493)
 Effects          :
 #1 (id=697408)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -6272,7 +6301,7 @@ Mechanic         : Silence
 Affecting Spells : Improved Felhunter (1225217 effect#2)
 Triggered By     : Spell Lock (19244), Spell Lock (19647)
 Family Flags     : 74
-Attributes       : Do Not Sheath (18), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Do Not Sheath (18), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=700341)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 126 | Target: Targeted Enemy (6)
@@ -6309,7 +6338,6 @@ Name             : Soul Link (id=25228)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Labels           : 19: Warlock Spells
@@ -6351,7 +6379,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -6381,7 +6409,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -6437,7 +6465,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Duration         : 12 seconds
 Cooldown         : 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 50
 Attributes       : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
@@ -6596,7 +6624,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -6617,7 +6645,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -6638,7 +6666,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -6659,7 +6687,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -6680,7 +6708,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -6701,7 +6729,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 2127 (Type 0x0)
 Category Cooldown: 15 seconds
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Haunt (403501 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -7100,7 +7128,7 @@ Name             : Haunt (id=403858) [Spell Family (5), Passive]
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 50
 Attributes       : Passive (6), Aura Points On Client (268), Spellcast Override In Spellbook (310), Spellbook Hidden Until Overridden (335), Unknown (493)
 Effects          :
@@ -7641,7 +7669,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Target: Self (1)
 #8 (id=1086447)  : Apply Aura (6) | Resistance (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 64 | Target: Self (1)
-#9 (id=1086448)  : Apply Aura (6) | Resistance (22)
+#9 (id=1086448)  : Apply Aura (6) | Unknown(674)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 #10 (id=1086449) : Apply Aura (6) | Modify Hit% (54)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -7673,13 +7701,16 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 6 seconds
 Cooldown         : 20 seconds
+Affecting Spells : Amplify Curse (18288 effect#2)
 Family Flags     : 82
 Attributes       : No Immunities (29), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Do Not Fail if No Target (431), Unknown (493)
 Effects          :
 #1 (id=1103307)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Modified By: Amplify Curse (18288 effect#2)
 #2 (id=1103308)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Amplify Curse (18288 effect#2)
 Description      : Surge with fel energy, increasing your pet's and your own dodge chance by $s1%, and your chance to critically strike with all attacks by $s2%. Lasts $d.
 Tooltip          : Dodge chance increased by $s1%. 
 Master's critical strike chance increased by $s2%.
@@ -7753,7 +7784,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Improved Corruption (17810 effects: #1, #2), Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Improved Corruption (17810 effects: #1, #2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effects: #1, #2), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 1
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
@@ -7780,7 +7811,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effects: #1, #2), Improved Immolate (17833 effects: #1, #2), Improved Immolate (17834 effects: #1, #2), Improved Immolate (17835 effects: #1, #2), Improved Immolate (17836 effects: #1, #2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #2)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effects: #1, #2), Improved Immolate (17833 effects: #1, #2), Improved Immolate (17834 effects: #1, #2), Improved Immolate (17835 effects: #1, #2), Improved Immolate (17836 effects: #1, #2), Destructive Reach (17917 effect#1), Agonizing Flames (17927 effects: #2, #3), Emberstorm (17954 effects: #1, #2), Ruin (17959 effect#1), Aftermath (18119 effect#2), Devastation (18130 effect#1), Intensity (18135 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Eureka! (1259821 effects: #1, #2)
 Family Flags     : 2, 87
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
@@ -7795,13 +7826,12 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
 #1 (id=1104591)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
 
 Name             : Invocation (id=426247) [Spell Family (5)] 
 Class            : Warlock
@@ -7811,7 +7841,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1), Malevolence (1310949 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1)
 Family Flags     : 32
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
@@ -7897,7 +7927,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Destructive Reach (17917 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effect#1), Improved Immolate (17833 effect#1), Improved Immolate (17834 effect#1), Improved Immolate (17835 effect#1), Improved Immolate (17836 effect#1), Ruin (17959 effect#1), Devastation (18130 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Unknown (493)
 Effects          :
@@ -7925,7 +7955,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting Spells : Improved Immolate (17815 effect#2), Improved Immolate (17833 effect#2), Improved Immolate (17834 effect#2), Improved Immolate (17835 effect#2), Improved Immolate (17836 effect#2), Destructive Reach (17917 effect#1), Devastation (18130 effect#1), Massive Destruction (24543 effect#1)
+Affecting Spells : Improved Immolate (17815 effect#2), Improved Immolate (17833 effect#2), Improved Immolate (17834 effect#2), Improved Immolate (17835 effect#2), Improved Immolate (17836 effect#2), Devastation (18130 effect#1), Massive Destruction (24543 effect#1)
 Family Flags     : 65
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Unknown (493)
 Effects          :
@@ -7941,7 +7971,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effects: #1, #2), Improved Immolate (17833 effects: #1, #2), Improved Immolate (17834 effects: #1, #2), Improved Immolate (17835 effects: #1, #2), Improved Immolate (17836 effects: #1, #2), Destructive Reach (17917 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1)
+Affecting Spells : Cataclysm (17778 effect#1), Bane (17788 effect#1), Improved Immolate (17815 effects: #1, #2), Improved Immolate (17833 effects: #1, #2), Improved Immolate (17834 effects: #1, #2), Improved Immolate (17835 effects: #1, #2), Improved Immolate (17836 effects: #1, #2), Ruin (17959 effect#1), Devastation (18130 effect#1), Massive Destruction (24543 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1)
 Family Flags     : 48, 65
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
@@ -8166,8 +8196,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malediction (1225177 effect#1)
-Family Flags     : 40
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=1107402)  : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
@@ -8187,9 +8215,8 @@ Range            : 50000 yards
 Duration         : 5 seconds
 Labels           : 19: Warlock Spells
 Proc Chance      : 101%
-Affecting Spells : Malediction (1225177 effect#2)
 Family Flags     : 43
-Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Ignore Line of Sight (66), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Ignore Line of Sight (66), Ignore Damage Taken Modifiers (136), Show Mechanic as Combat Text (213), Ignore Caster Damage Modifiers (221), Unknown (493)
 Effects          :
 #1 (id=1107405)  : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 1 | Target: Current Target (25)
@@ -8526,13 +8553,13 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Family Flags     : 22
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1135052)  : Apply Aura (6) | Resistance (22)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 126 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+                   Modified By: Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 #2 (id=1170254)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e | Target: Targeted Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9065,7 +9092,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1181309)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1 | Misc Value: 22 | Points Per Combo Point: 5 | Target: Self (1)
-                   Affected Spells: Corruption (172), Immolate (348), Drain Life (689), Drain Life (699), Immolate (707), Drain Life (709), Bane of Agony (980), Bane of Agony (1014), Immolate (1094), Drain Soul (1120), Immolate (2941), Rain of Fire (5740), Bane of Agony (6217), Rain of Fire (6219), Corruption (6222), Corruption (6223), Corruption (7648), Drain Life (7651), Drain Soul (8288), Drain Soul (8289), Immolate (11665), Immolate (11667), Immolate (11668), Corruption (11671), Corruption (11672), Drain Soul (11675), Rain of Fire (11677), Rain of Fire (11678), Drain Life (11699), Drain Life (11700), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Siphon Life (18265), Siphon Life (18879), Siphon Life (18880), Siphon Life (18881), Immolate (25309), Corruption (25311), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Invocation (426241), Invocation (426245), Invocation (426246), Invocation (426247), Shadowflame (426320), Invocation (426331), Unstable Affliction (427717), Immolation Aura (427725), Immolation Aura (427726), Rain of Fire (460692), Rain of Fire (460698), Rain of Fire (460699), Rain of Fire (460700), Rain of Fire (1282380), Rain of Fire (1282383), Rain of Fire (1282384), Rain of Fire (1282385)
+                   Affected Spells: Corruption (172), Immolate (348), Drain Life (689), Drain Life (699), Immolate (707), Drain Life (709), Bane of Agony (980), Bane of Agony (1014), Immolate (1094), Drain Soul (1120), Immolate (2941), Rain of Fire (5740), Hellfire Effect (5857), Bane of Agony (6217), Rain of Fire (6219), Corruption (6222), Corruption (6223), Corruption (7648), Drain Life (7651), Drain Soul (8288), Drain Soul (8289), Immolate (11665), Immolate (11667), Immolate (11668), Corruption (11671), Corruption (11672), Drain Soul (11675), Rain of Fire (11677), Rain of Fire (11678), Hellfire Effect (11681), Hellfire Effect (11682), Drain Life (11699), Drain Life (11700), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Siphon Life (18265), Siphon Life (18879), Siphon Life (18880), Siphon Life (18881), Immolate (25309), Corruption (25311), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Invocation (426241), Invocation (426245), Invocation (426246), Invocation (426247), Shadowflame (426320), Invocation (426331), Immolation Aura (427725), Immolation Aura (427726), Rain of Fire (460692), Rain of Fire (460698), Rain of Fire (460699), Rain of Fire (460700), Rain of Fire (1282380), Rain of Fire (1282383), Rain of Fire (1282384), Rain of Fire (1282385)
                    Family Flags: 1, 2, 3, 5, 10, 14, 32, 40, 48, 88
 #2 (id=1181392)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1 | Misc Value: 32 | Points Per Combo Point: 5 | Target: Self (1)
@@ -9298,26 +9325,6 @@ Effects          :
 #1 (id=1205875)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : The Soul of a fallen warrior can be engraved into this slot.
-
-Name             : Malediction (id=1225177) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=5, req_points=0]
-                 : Effect#1 [op=set, values=(1, 2, 3, 4, 5)]
-                 : Effect#2 [op=set, values=(1, 2, 3, 4, 5)]
-Class            : Warlock
-School           : Physical
-Spell Type       : None
-Labels           : 19: Warlock Spells
-Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Unknown (493)
-Effects          :
-#1 (id=1214195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Corruption (172), Immolate (348), Bane of Doom (603), Drain Life (689), Drain Life (699), Immolate (707), Drain Life (709), Bane of Agony (980), Bane of Agony (1014), Immolate (1094), Drain Soul (1120), Hellfire (1949), Immolate (2941), Drain Mana (5138), Hellfire Effect (5857), Bane of Agony (6217), Corruption (6222), Corruption (6223), Drain Mana (6226), Soul Fire (6353), Corruption (7648), Drain Life (7651), Drain Soul (8288), Drain Soul (8289), Immolate (11665), Immolate (11667), Immolate (11668), Corruption (11671), Corruption (11672), Drain Soul (11675), Hellfire Effect (11681), Hellfire Effect (11682), Hellfire (11683), Hellfire (11684), Drain Life (11699), Drain Life (11700), Drain Mana (11703), Drain Mana (11704), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Soul Fire (17924), Siphon Life (18265), Siphon Life (18879), Siphon Life (18880), Siphon Life (18881), Immolate (25309), Corruption (25311), Haunt (403501), Drain Life (403677), Drain Life (403685), Drain Life (403686), Drain Life (403687), Drain Life (403688), Drain Life (403689), Haunt (403858), Invocation (426241), Invocation (426245), Invocation (426246), Invocation (426247), Unstable Affliction (427717), Wrack (1316697)
-                   Family Flags: 1, 2, 3, 4, 6, 10, 14, 32, 33, 40, 50
-#2 (id=1296201)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Unstable Affliction (427719)
-                   Family Flags: 43
-Description      : Increases all periodic damage done by your Warlock spells by $s1%.
 
 Name             : Demonic Energies (id=1225214) [Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=2, col=8, max_rank=2, req_points=0]
@@ -9725,13 +9732,13 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Family Flags     : 22
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1342143)  : Apply Aura (6) | Resistance (22)
                    Base Value: -45 | Scaled Value: -45 | Misc Value: 126 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+                   Modified By: Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 #2 (id=1342144)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7e | Target: Targeted Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9749,13 +9756,13 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Family Flags     : 22
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1342147)  : Apply Aura (6) | Resistance (22)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 126 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+                   Modified By: Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 #2 (id=1342148)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 0x7e | Target: Targeted Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9773,13 +9780,13 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Destructive Reach (17917 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Affecting Spells : Grim Reach (18218 effect#1), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Family Flags     : 22
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=1342153)  : Apply Aura (6) | Resistance (22)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 126 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+                   Modified By: Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 #2 (id=1342154)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7e | Target: Targeted Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -9797,7 +9804,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Fel Concentration (17783 effect#1), Destructive Reach (17917 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Malediction (1225177 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
+Affecting Spells : Fel Concentration (17783 effect#1), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Drains (403511 effect#1), Pandemic (427712 effect#1), Eureka! (1259821 effects: #1, #3), Malevolence (1310949 effect#1)
 Family Flags     : 50
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
