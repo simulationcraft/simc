@@ -1,4 +1,4 @@
-static const dbc_item_data_t::stats_t __item_stats_data[14442] = {
+static const dbc_item_data_t::stats_t __item_stats_data[14444] = {
   {  4,  6667, 0.000000f },
   {  7,  5833, 0.000000f },
   {  6,  5714, 0.000000f },
@@ -14422,6 +14422,8 @@ static const dbc_item_data_t::stats_t __item_stats_data[14442] = {
   { 45,  6234, 0.000000f },
   {  5,  6172, 0.000000f },
   { 31,  6961, 0.000000f },
+  {  5,  6667, 0.000000f },
+  { 89,  9599, 0.000000f },
   {  6,  6667, 0.000000f },
   {  7,  4444, 0.000000f },
   { 41,  9777, 0.000000f },
@@ -14445,7 +14447,7 @@ static const dbc_item_data_t::stats_t __item_stats_data[14442] = {
 
 // Items, ilevel 33-1300, wow build 1.60.1.70425
 
-static const std::array<dbc_item_data_t, 12504> __item_data_chunk0 { {
+static const std::array<dbc_item_data_t, 12506> __item_data_chunk0 { {
   { "Worn Shortsword",     25, 0x00000000, 0x00006000, 0x00, 2, 1, 0, 0, 1, 21, 2, 7, 0, 1900, 0.600000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Bent Staff",     35, 0x00000000, 0x00006000, 0x00, 2, 1, 0, 0, 1, 17, 2, 10, 0, 2900, 0.400000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Worn Mace",     36, 0x00000000, 0x00006000, 0x00, 2, 1, 0, 0, 1, 21, 2, 4, 0, 1900, 0.600000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -26925,30 +26927,32 @@ static const std::array<dbc_item_data_t, 12504> __item_data_chunk0 { {
   { "Rotmender's Sash", 286980, 0x00000000, 0x00000000, 0x00, 22, 17, 0, 0, 3, 6, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[2301], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 2133, 0, 0, 0 },
   { "Death Bindings", 286981, 0x00000000, 0x00000000, 0x00, 21, 16, 0, 0, 3, 9, 4, 3, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[1384], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Unearthed Barrier", 286982, 0x00000000, 0x00000000, 0x00, 32, 27, 0, 0, 3, 14, 4, 6, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[43], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Ancient Cleaver", 286983, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 17, 2, 1, 2, 3600, 0.400000f, 0.000000f, &__item_stats_data[13916], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Mark of the Marsh", 286984, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 2, 4, 0, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14411], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Thicket Bindings", 286985, 0x00000000, 0x00000000, 0x00, 31, 26, 0, 0, 3, 9, 4, 2, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14413], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Abandoned Leggings", 286986, 0x00000000, 0x00000000, 0x00, 31, 26, 0, 0, 3, 7, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14415], 3, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Violet Sorcerer's Sandals", 286987, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 8, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[12140], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 2134, 0, 0, 0 },
   { "Violet Sorcerer's Leggings", 286988, 0x00000000, 0x00000000, 0x00, 34, 29, 0, 0, 3, 7, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14418], 3, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 2134, 0, 0, 0 },
   { "Violet Sorcerer's Wraps", 286989, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 10, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14421], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 2134, 0, 0, 0 },
-  { "Roused Nature Footwraps", 286991, 0x00000000, 0x00000000, 0x00, 32, 27, 0, 0, 3, 8, 4, 2, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14423], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Arcane Remnant Leggings", 286990, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 7, 4, 2, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14423], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Roused Nature Footwraps", 286991, 0x00000000, 0x00000000, 0x00, 32, 27, 0, 0, 3, 8, 4, 2, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14425], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Construct's Grips", 286992, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 10, 4, 3, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[12144], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Suffused Bindings", 286993, 0x00000000, 0x00000000, 0x00, 32, 27, 0, 0, 3, 6, 4, 3, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14427], 3, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Tattered Kirin Tor Cloak", 286994, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 16, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14430], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Guardian's Emblem", 286995, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 2, 4, 0, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14432], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Suffused Bindings", 286993, 0x00000000, 0x00000000, 0x00, 32, 27, 0, 0, 3, 6, 4, 3, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14429], 3, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Tattered Kirin Tor Cloak", 286994, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 16, 4, 1, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14432], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Guardian's Emblem", 286995, 0x00000000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 2, 4, 0, 2, 0, 0.000000f, 0.000000f, &__item_stats_data[14434], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "City Guard's Tarnished Blade", 286996, 0x00000000, 0x00000000, 0x00, 34, 29, 0, 0, 3, 13, 2, 7, 2, 2500, 0.600000f, 0.000000f, &__item_stats_data[14365], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Footman's Pocketknife", 287059, 0x00010000, 0x00000000, 0x00, 10, 1, 0, 0, 2, 25, 2, 16, 1, 2000, 0.000000f, 0.000000f, &__item_stats_data[15], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Rezlak's Spare Knife", 287060, 0x00010000, 0x00000000, 0x00, 11, 1, 0, 0, 2, 25, 2, 16, 1, 1800, 0.000000f, 0.000000f, &__item_stats_data[1737], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Cheese Knife", 287061, 0x00010000, 0x00000000, 0x00, 12, 1, 0, 0, 2, 25, 2, 16, 1, 1900, 0.000000f, 0.000000f, &__item_stats_data[3], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Darnassian Knife", 287062, 0x00010000, 0x00000000, 0x00, 14, 1, 0, 0, 2, 25, 2, 16, 1, 1600, 0.000000f, 0.000000f, &__item_stats_data[6], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Serrated Knife", 287063, 0x00010000, 0x00000000, 0x00, 17, 12, 0, 0, 2, 25, 2, 16, 2, 2000, 0.000000f, 0.000000f, &__item_stats_data[14119], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Beastculler's Knife", 287064, 0x00010000, 0x00000000, 0x00, 23, 1, 0, 0, 2, 25, 2, 16, 1, 1600, 0.000000f, 0.000000f, &__item_stats_data[14434], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Beastculler's Knife", 287064, 0x00010000, 0x00000000, 0x00, 23, 1, 0, 0, 2, 25, 2, 16, 1, 1600, 0.000000f, 0.000000f, &__item_stats_data[14436], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Wizlo's Tuning Wrench", 287066, 0x00010000, 0x00000000, 0x00, 30, 1, 0, 0, 2, 25, 2, 16, 1, 2000, 0.000000f, 0.000000f, &__item_stats_data[14369], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Dragonmaw Skinflayer", 287067, 0x00010000, 0x00000000, 0x00, 32, 1, 0, 0, 2, 25, 2, 16, 1, 1800, 0.000000f, 0.000000f, &__item_stats_data[14136], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Excavated Dagger", 287068, 0x00010000, 0x00000000, 0x00, 33, 28, 0, 0, 3, 25, 2, 16, 2, 1800, 0.000000f, 0.000000f, &__item_stats_data[96], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Yeti Skinner", 287069, 0x00010000, 0x00000000, 0x00, 34, 1, 0, 0, 2, 25, 2, 16, 1, 1900, 0.000000f, 0.000000f, &__item_stats_data[14436], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Skypierce Javelin", 287070, 0x00010000, 0x00000000, 0x00, 45, 40, 0, 0, 3, 25, 2, 16, 2, 2900, 0.000000f, 0.000000f, &__item_stats_data[14438], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Goblin Switchblade", 287071, 0x00010000, 0x00000000, 0x00, 41, 1, 0, 0, 2, 25, 2, 16, 1, 1500, 0.000000f, 0.000000f, &__item_stats_data[14440], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Yeti Skinner", 287069, 0x00010000, 0x00000000, 0x00, 34, 1, 0, 0, 2, 25, 2, 16, 1, 1900, 0.000000f, 0.000000f, &__item_stats_data[14438], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Skypierce Javelin", 287070, 0x00010000, 0x00000000, 0x00, 45, 40, 0, 0, 3, 25, 2, 16, 2, 2900, 0.000000f, 0.000000f, &__item_stats_data[14440], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Goblin Switchblade", 287071, 0x00010000, 0x00000000, 0x00, 41, 1, 0, 0, 2, 25, 2, 16, 1, 1500, 0.000000f, 0.000000f, &__item_stats_data[14442], 2, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Letter Opener", 287090, 0x00008000, 0x00007000, 0x00, 17, 2, 0, 0, 1, 23, 4, 0, 1, 1700, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
 } };
 
