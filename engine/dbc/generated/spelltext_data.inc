@@ -1,5 +1,5 @@
 // Spell text, wow build 1.60.1.70425
-static constexpr std::array<spelltext_data_t, 7138> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 7139> __spelltext_data { {
   {      10, "Ice shards pelt the target area doing ${$1279976m1*$d*$<frostdamage>} Frost damage over $d.", "$1279976s1 Frost damage every $t3 $lsecond:seconds;.", "Rank 1" },
   {      17, "Draws on the soul of the party member to shield them, absorbing $?a14748[${$s1*(1+$14748s1/100)}][$s1] damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage.", "Rank 1" },
   {      53, "Backstab the target, causing $s2% weapon damage plus $s1 to the target.  Must be behind the target.  Requires a dagger in the main hand.  Awards $s3 combo $lpoint:points;.", 0, "Rank 1" },
@@ -7003,6 +7003,7 @@ static constexpr std::array<spelltext_data_t, 7138> __spelltext_data { {
   { 1316057, "Increases all Resistances by $s1. Gain an additional $1316058s1 to all Resistances in Forest and Grassland areas.", 0, 0 },
   { 1316058, 0, "In a Forest or Grassland area, all Resistances increased by an additional $w1.", 0 },
   { 1316101, "Increases the duration of your Repentance by ${$m1/1000} sec.", 0, 0 },
+  { 1316346, "Slice the target's ankle, slowing movement speed by $s1% for $d.", "Movement slowed by $w1%.", 0 },
   { 1316697, "Tears the target apart from within, inflicting $s1 Shadow damage every $t sec and increasing the damage they take from your other Shadow damage over time effects by $s2% for $d.", "Inflicts $s1 Shadow damage every $t1 sec and increases damage taken from the caster's other Shadow damage over time effects by $s2%.", "Rank 1" },
   { 1316794, "$@spelldesc1270940", 0, 0 },
   { 1316865, "Burns the target for $s1 Fire damage every $t1 sec for $d.", "$s1 Fire damage inflicted every $t1 sec.", 0 },
