@@ -1,5 +1,5 @@
 // Item effects, wow build 1.60.1.70425
-static constexpr std::array<item_effect_t, 1281> __item_effect_data { {
+static constexpr std::array<item_effect_t, 1282> __item_effect_data { {
   { 212548, 1241821,      0,   0,   0,    0,      -1,      -1 }, // Stock Ore
   { 213334,  13669,      0,   0,   1,    0,      -1,      -1 }, // Increased Dodge 1
   {  97072, 1248687,    733,   0,   0,    0,      -1,      -1 }, // Nutritious Food
@@ -1281,9 +1281,10 @@ static constexpr std::array<item_effect_t, 1281> __item_effect_data { {
   { 238143, 1320498, 286537,   0,   2,    0,      -1,      -1 }, // Thunderstomp
   { 238145,   1133, 286541,   0,   0,    0,  600000,      -1 }, // Drink
   { 238154, 1320579, 286556,   0,   0, 2554,  300000,   10000 }, // Desert Winds
+  { 238814, 1324686, 286982,   0,   1,    0,      -1,      -1 }, // Unearthed Barrier
 } };
 
-static const std::array<uint16_t, 1281> __item_effect_id_index { {
+static const std::array<uint16_t, 1282> __item_effect_id_index { {
      12,    24,     5,     2,   679,     9,    11,    23,
      13,    14,     7,    33,    34,    36,    39,    21,
      22,    15,    16,    29,    30,     3,    38,    35,
@@ -1443,7 +1444,7 @@ static const std::array<uint16_t, 1281> __item_effect_id_index { {
    1272,  1273,  1077,  1078,  1274,  1083,  1084,  1081,
    1082,  1071,  1072,  1275,  1276,  1277,  1207,   470,
    1062,   345,   605,  1059,  1168,  1278,  1279,  1280,
-    217,   149,  1248,  1070,   103,   141,    20,     6,
-     53,
+    217,   149,  1248,  1070,   103,   141,  1281,    20,
+      6,    53,
 } };
 

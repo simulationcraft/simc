@@ -6442,11 +6442,11 @@ static constexpr std::array<spelltext_data_t, 7137> __spelltext_data { {
   { 1259799, "Increases your critical strike chance with all spells and attacks by $s1% for $d.", "Critical strike chance with all spells and attacks increased by $s1%.", "Racial" },
   { 1259802, "Maximum Rage increased by $s1%.", 0, "Racial Passive" },
   { 1259803, "Maximum Energy increased by $s1%.", 0, "Racial Passive" },
-  { 1259812, "Your non-periodic damaging abilities have their Energy cost reduced by $s1% and deal $s2% more damage.", "Non-periodic damaging abilities cost $s1% less Energy and deal $s2% more damage.", "Racial" },
-  { 1259813, "Your non-periodic damaging abilities have their Rage cost reduced by $s1% and deal $s2% more damage.", "Non-periodic damaging abilities cost $s1% less Rage and deal $s2% more damage.", "Racial" },
-  { 1259817, "Your damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage.", "Damaging abilities cost $w1% less Mana and deal $w2% more damage.", "Racial" },
-  { 1259821, "Your non-periodic damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage.", "Non-periodic damaging abilities cost $s1% less Mana and deal $s2% more damage.", "Racial" },
-  { 1259823, "Your non-periodic damaging or healing abilities have their Mana cost reduced by $s1% and deal $s2% more damage or healing.", "Non-periodic damaging or healing abilities cost $w1% less Mana and deal $w2% more damage or healing.", "Racial" },
+  { 1259812, "Your non-periodic damaging abilities have their Energy cost reduced by $s1% and deal $s2% more damage for $d.", "Non-periodic damaging abilities cost $s1% less Energy and deal $s2% more damage.", "Racial" },
+  { 1259813, "Your non-periodic damaging abilities have their Rage cost reduced by $s1% and deal $s2% more damage for $d.", "Non-periodic damaging abilities cost $s1% less Rage and deal $s2% more damage.", "Racial" },
+  { 1259817, "Your damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage for $d.", "Damaging abilities cost $w1% less Mana and deal $w2% more damage.", "Racial" },
+  { 1259821, "Your non-periodic damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage for $d.", "Non-periodic damaging abilities cost $s1% less Mana and deal $s2% more damage.", "Racial" },
+  { 1259823, "Your non-periodic damaging or healing abilities have their Mana cost reduced by $s1% and deal $s2% more damage or healing for $d.", "Non-periodic damaging or healing abilities cost $w1% less Mana and deal $w2% more damage or healing.", "Racial" },
   { 1259918, "Gain $s1% increased movement speed every $s2 sec spent moving, up to a maximum of $s3% increase. Taking damage or standing still will reduce this effect. In addition, you move $s4% faster while mounted.", 0, "Racial Passive" },
   { 1260189, "Your spells and attacks have a $h% chance to drain Health from the target, up to $s1% of your maximum Health.", 0, "Racial Passive" },
   { 1260201, "Your spells and attacks have a $h% chance to drain Health from the target, up to $s1% of your maximum Health.", 0, "Racial Passive" },
@@ -7140,7 +7140,7 @@ static constexpr std::array<spelltext_data_t, 7137> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 1.60.1.70425
-static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 15> __spelltext_hotfix_data { {
   {   11180,  0, "Gives your Frost damage spells a $m2% chance to apply the Winter's Chill effect, which increases the damage done by your Cone of Cold spell to the target by $12579s1%, stacking up to $s1 times.", "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a $m2% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by $12579s1% and it gains an additional $s3% of your spell damage, stacking up to $s1 times." },
   {   11237,  0, "Gives you a $m1% chance to avoid interruption caused by damage while channeling Arcane Missiles and a $m2% chance while casting Arcane Blast or Arcane Wrath.", "Gives your Arcane Missiles spell a $m1% chance and your Arcane Blast and Arcane Wrath spells a $m2% chance to not lose casting time when you take damage." },
   {   12579,  1, "Taking $s1% increased damage from the caster's Cone of Cold spell.", "Taking $s1% increased damage and $s2% increased spell power coefficient from the caster's next Cone of Cold spell." },
@@ -7151,6 +7151,11 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfi
   {   18135,  0, "Gives you a $s1% chance to resist interruption caused by damage while casting or channeling any Destruction spell.", "Gives your Destruction spells a $s1% chance to not lose casting time when you take damage." },
   {   29062,  0, "Reduces the pushback suffered from damaging attacks while casting Lightning Bolt, Chain Lightning, and Lava Burst by $m1%.", "Gives your Lightning Bolt, Chain Lightning, and Lava Burst spells a $m1% chance to not lose casting time when you take damage." },
   {  400588,  0, "Gives your Arcane Blast spell a $m1% chance, your Arcane Missile hits a ${$m1/4}% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a ${$m1/2}% chance to reduce the channeled duration of your next Arcane Missiles spell by $400589s1%, reduce the Mana cost by $400589s3%, and missiles fire every ${$m2/10}.1 sec.", "Gives your Arcane Blast spell a $m1% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a ${$m1/2}% chance to reduce the channeled duration of your next Arcane Missiles spell by $400589s1%, reduce the Mana cost by $400589s3%, and missiles fire every ${$m2/10}.1 sec." },
+  { 1259812,  0, "Your non-periodic damaging abilities have their Energy cost reduced by $s1% and deal $s2% more damage.", "Your non-periodic damaging abilities have their Energy cost reduced by $s1% and deal $s2% more damage for $d." },
+  { 1259813,  0, "Your non-periodic damaging abilities have their Rage cost reduced by $s1% and deal $s2% more damage.", "Your non-periodic damaging abilities have their Rage cost reduced by $s1% and deal $s2% more damage for $d." },
+  { 1259817,  0, "Your damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage.", "Your damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage for $d." },
+  { 1259821,  0, "Your non-periodic damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage.", "Your non-periodic damaging abilities have their Mana cost reduced by $s1% and deal $s2% more damage for $d." },
+  { 1259823,  0, "Your non-periodic damaging or healing abilities have their Mana cost reduced by $s1% and deal $s2% more damage or healing.", "Your non-periodic damaging or healing abilities have their Mana cost reduced by $s1% and deal $s2% more damage or healing for $d." },
 } };
 
 // Spell description variables, wow build 1.60.1.70425
