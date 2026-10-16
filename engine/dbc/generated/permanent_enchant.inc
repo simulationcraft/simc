@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 1.60.1.70334
+// Permanent item enchants, wow build 1.60.1.70425
 static constexpr std::array<permanent_enchant_entry_t, 210> __permanent_enchant_data { {
   {   33,  0,  2, 0x00000000, 0x0004000c, "accurate_scope"                    },
   { 2523,  0,  2, 0x00000000, 0x0004000c, "biznicks_247x128_accurascope"      },
@@ -49,7 +49,7 @@ static constexpr std::array<permanent_enchant_entry_t, 210> __permanent_enchant_
   { 8204,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_agility"    },
   {  925,  0,  4, 0x00000200, 0x0000001e, "enchant_bracer__lesser_deflection" },
   { 8209,  0,  4, 0x00000200, 0x0000001e, "enchant_bracer__lesser_healing_power" },
-  {  723,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_intellect"  },
+  { 8734,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_intellect"  },
   { 8203,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_spirit"     },
   {  254,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_stamina"    },
   {  823,  0,  4, 0x00000200, 0x0000001f, "enchant_bracer__lesser_strength"   },
@@ -104,7 +104,7 @@ static constexpr std::array<permanent_enchant_entry_t, 210> __permanent_enchant_
   {  256,  0,  4, 0x00010000, 0x0000001f, "enchant_cloak__lesser_fire_resistance" },
   {  744,  0,  4, 0x00010000, 0x00000000, "enchant_cloak__lesser_protection"  },
   {  804,  0,  4, 0x00010000, 0x0000001f, "enchant_cloak__lesser_shadow_resistance" },
-  {  247,  0,  2, 0x00010000, 0x00000000, "enchant_cloak__minor_agility"      },
+  {  247,  0,  4, 0x00010000, 0x0000001e, "enchant_cloak__minor_agility"      },
   {  783,  0,  4, 0x00010000, 0x0000001f, "enchant_cloak__minor_protection"   },
   {   65,  0,  4, 0x00010000, 0x0000001f, "enchant_cloak__minor_resistance"   },
   {  903,  0,  4, 0x00010000, 0x0000001e, "enchant_cloak__resistance"         },
