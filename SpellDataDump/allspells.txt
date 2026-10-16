@@ -127693,6 +127693,20 @@ Effects          :
                    Family Flags: 2
 Description      : Increases the duration of your Repentance by ${$m1/1000} sec.
 
+Name             : Sliced Ankle (id=1316346) 
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 30
+Range            : 100 yards
+Duration         : 6 seconds
+Proc Chance      : 101%
+Attributes       : Is Ability (4), Suppress Caster Procs (112), Instant Target Procs (115), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Unknown (493)
+Effects          :
+#1 (id=1348985)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Snare | Target: Targeted Enemy (6)
+Description      : Slice the target's ankle, slowing movement speed by $s1% for $d.
+Tooltip          : Movement slowed by $w1%.
+
 Name             : Wrack (desc=Rank 1) (id=1316697) [Spell Family (5)] 
 Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=0]
 Class            : Warlock
