@@ -78939,9 +78939,10 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 400589 | Target: Self (1)
 #2 (id=1237675)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 400589 | Target: Self (1)
-Description      : Gives your Arcane Blast spell a $m1% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a ${$m1/2}% chance to reduce the channeled duration of your next Arcane Missiles spell by $400589s1%, reduce the Mana cost by $400589s3%, and missiles fire every ${$m2/10}.1 sec.
+Description      : Gives your Arcane Blast spell a $m1% chance, and your Arcane Wrath, Fireball, Frostbolt, Frost Blast, and Frostfire Bolt spells a ${$m1/2}% chance to reduce the channeled duration of your next Arcane Missiles spell by $400589s1%, reduce the Mana cost by $400589s3%, and missiles fire every ${$m2/10}.1 sec.
 
 Name             : Missile Barrage (id=400589) [Spell Family (3)] 
+Hotfixed         : Description
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -78963,7 +78964,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Misc Value 2: 111 | Target: Self (1)
                    Affected Spells: Arcane Missiles (5143), Arcane Missiles (5144), Arcane Missiles (5145), Arcane Missiles (8416), Arcane Missiles (8417), Arcane Missiles (10211), Arcane Missiles (10212), Arcane Missiles (25345)
                    Family Flags: 11
-Description      : Gives your Arcane Blast, Fireball, and Frostbolt spells a chance to reduce the channeled duration of the next Arcane Missiles spell by $400589s1%, reduce the mana cost by $s3%, and missiles fire every ${$400588m2/10}.1 sec.
+Description      : Reduces the channeled duration of your next Arcane Missiles spell by $s1%, reduces the mana cost by $s3%, and missiles fire every ${$400588w2/10}.1 sec.
 Tooltip          : Reduces the channeled duration of your next Arcane Missiles spell by $s1%, reduces the mana cost by $s3%, and missiles fire every ${$400588w2/10}.1 sec.
 
 Name             : Arcane Barrage (id=400610) [Spell Family (3)] 
