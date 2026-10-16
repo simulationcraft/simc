@@ -486,10 +486,13 @@ class SpecializationEnumGenerator(DataGenerator):
 
         max_specialization = 0
         for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
-            # Ignore "Initial" and "Adventurer" specializations for now
-            # TODO: Revisit
-            if spec_data.name == 'Initial' or spec_data.name == 'Adventurer':
+            # Ignore "Initial"
+            if spec_data.name == 'Initial':
                 continue
+
+            # ignore any classes not in the explicit list. Ignores things like Traveler from Talebound game mode
+            if spec_data.class_id not in list(Class):
+                continue;
 
             if spec_data.class_id > 0:
                 spec_name = '%s_%s' % (
