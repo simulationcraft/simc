@@ -44474,6 +44474,15 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 (delta=0.2) | Target: Self (1)
 Description      : Deals $s1 Holy damage every time you block.
 
+Name             : Improved Revival (id=1293540) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
+Effects          :
+#1 (id=1314273)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Reduces the cast time of spells and effects that revive targets by $s1%.
+
 Name             : Frost Blast (id=1293653) 
 School           : Frost
 Spell Type       : Magic
