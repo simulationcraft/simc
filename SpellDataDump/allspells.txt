@@ -2013,6 +2013,7 @@ Description      : Transfers $s1 health every $t1 second from the target to the 
 Tooltip          : Drains $s1 health every $t1 second to the caster.
 
 Name             : Curse of Weakness (desc=Rank 1) (id=702) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2024,14 +2025,14 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689165)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Garrote (desc=Rank 1) (id=703) [Spell Family (8)] 
 Class            : Rogue
@@ -2989,6 +2990,7 @@ Description      : Increases the target's resistance to Shadow spells by $s1 for
 Tooltip          : Shadow resistance increased by $s1.
 
 Name             : Bane of Agony (desc=Rank 1) (id=980) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2998,15 +3000,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=686215)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 6 | Scaled Value: 6 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365366)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Smite (desc=Rank 4) (id=984) [Spell Family (6)] 
 Class            : Priest
@@ -3218,6 +3224,7 @@ Description      : Curse the target with idiocy, reducing Intellect and Spirit b
 Tooltip          : Intellect and Spirit reduced.
 
 Name             : Bane of Agony (desc=Rank 2) (id=1014) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3227,15 +3234,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679932)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365370)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Divine Shield (desc=Rank 2) (id=1020) [Spell Family (10)] 
 Class            : Paladin
@@ -3673,6 +3684,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Curse of Weakness (desc=Rank 2) (id=1108) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3684,14 +3696,14 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=679610)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -7 | Scaled Value: -7 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Drain Soul (desc=Rank 1) (id=1120) [Spell Family (5)] 
 Class            : Warlock
@@ -10961,6 +10973,7 @@ Description      : Creates a Lesser Healthstone that can be used to instantly re
 Conjured items disappear if logged out for more than 15 minutes.
 
 Name             : Curse of Weakness (desc=Rank 3) (id=6205) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -10972,14 +10985,14 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=684996)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Fear (desc=Rank 2) (id=6213) [Spell Family (5)] 
 Class            : Warlock
@@ -11030,6 +11043,7 @@ Description      : Strikes fear in the enemy, causing it to run in fear for up t
 Tooltip          : Feared.
 
 Name             : Bane of Agony (desc=Rank 3) (id=6217) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -11039,15 +11053,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=685161)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 14 | Scaled Value: 14 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365369)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Rain of Fire (desc=Rank 2) (id=6219) [Spell Family (5)] 
 Class            : Warlock
@@ -14162,6 +14180,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Curse of Weakness (desc=Rank 4) (id=7646) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -14173,14 +14192,14 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=687124)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -18 | Scaled Value: -18 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Corruption (desc=Rank 4) (id=7648) [Spell Family (5)] 
 Class            : Warlock
@@ -30641,6 +30660,7 @@ Description      : Transfers $s1 Mana every $t1 sec from the target to the caste
 Tooltip          : Drains $s1 Mana each second to the caster.
 
 Name             : Curse of Weakness (desc=Rank 5) (id=11707) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -30652,16 +30672,17 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=690083)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -26 | Scaled Value: -26 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Curse of Weakness (desc=Rank 6) (id=11708) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -30673,16 +30694,17 @@ Duration         : 120 seconds
 Labels           : 19: Warlock Spells
 Affecting Spells : Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Grim Reach (18218 effect#1), Amplify Curse (18288 effect#1)
 Family Flags     : 15
-Attributes       : Not Shapeshifted (16), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689693)   : Apply Aura (6) | Damage Done (13)
                    Base Value: -37 | Scaled Value: -37 | Misc Value: 0x1 | Target: Targeted Enemy (6)
                    Affected School(s): Physical
                    Modified By: Improved Curse of Weakness (18179 effect#1), Improved Curse of Weakness (18180 effect#1), Improved Curse of Weakness (18181 effect#1), Amplify Curse (18288 effect#1)
 Description      : Physical damage caused by the target is reduced by $s1 for $d. Only one Curse per Warlock can be active on any one target.
-Tooltip          : Physical damage done reduced by $s1.
+Tooltip          : Physical damage done reduced by $w1.
 
 Name             : Bane of Agony (desc=Rank 4) (id=11711) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -30692,17 +30714,22 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689366)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 21 | Scaled Value: 21 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365368)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Bane of Agony (desc=Rank 5) (id=11712) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -30712,17 +30739,22 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689314)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 33 | Scaled Value: 33 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365367)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Bane of Agony (desc=Rank 6) (id=11713) [Spell Family (5)] 
+Hotfixed         : Attributes, Tooltip
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -30732,15 +30764,19 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 19: Warlock Spells
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=689623)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 46 | Scaled Value: 46 | SP Coefficient: 0.133 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
+#2 (id=1365365)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Bane of Agony (980), Bane of Agony (1014), Bane of Agony (6217), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
+                   Family Flags: 10
+Hotfixed         : NEW EFFECT
 Description      : Afflicts the target with agony, causing $o1 Shadow damage over $d. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.
-Tooltip          : $o1 Shadow damage over $d.
+Tooltip          : $?$w2>0[${$o1*($w2/100+1)}][$o1] Shadow damage over $d.
 
 Name             : Curse of Recklessness (desc=Rank 4) (id=11717) [Spell Family (5)] 
 Class            : Warlock
@@ -53491,6 +53527,7 @@ Effects          :
 Description      : Increases the range of your Affliction spells by $s1%.
 
 Name             : Curse of Exhaustion (id=18223) [Spell Family (5)] 
+Hotfixed         : Attributes, Affecting Spells, Tooltip
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -53501,15 +53538,15 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 19: Warlock Spells
 Mechanic         : Snare
-Affecting Spells : Grim Reach (18218 effect#1), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
-Family Flags     : 22
-Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
+Affecting Spells : Grim Reach (18218 effect#1), Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+Family Flags     : 22, 82
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Unknown (493)
 Effects          :
 #1 (id=695149)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1 | Target: Targeted Enemy (6)
-                   Modified By: Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
+                   Modified By: Amplify Curse (18288 effect#2), Improved Curse of Exhaustion (18310 effect#1), Improved Curse of Exhaustion (18311 effect#1), Improved Curse of Exhaustion (18312 effect#1), Improved Curse of Exhaustion (18313 effect#1)
 Description      : Reduces the target's movement speed by $s1% for $d.  Only one Curse per Warlock can be active on any one target.
-Tooltip          : Movement speed slowed by $s1%.
+Tooltip          : Movement speed slowed by $w1%.
 
 Name             : Spotted Yellowtail (id=18238) 
 School           : Physical
@@ -53656,8 +53693,14 @@ Attributes       : Not Shapeshifted (16), Cooldown On Event (25), Unknown (493)
 Effects          :
 #1 (id=695823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Curse of Weakness (702), Bane of Agony (980), Bane of Agony (1014), Curse of Weakness (1108), Curse of Weakness (6205), Bane of Agony (6217), Curse of Weakness (7646), Curse of Weakness (11707), Curse of Weakness (11708), Bane of Agony (11711), Bane of Agony (11712), Bane of Agony (11713), Invocation (426246)
-                   Family Flags: 10, 15
+                   Affected Spells: Curse of Weakness (702), Curse of Weakness (1108), Curse of Weakness (6205), Curse of Weakness (7646), Curse of Weakness (11707), Curse of Weakness (11708)
+                   Family Flags: 15
+Hotfixed         : Affects Spells
+#2 (id=1365363)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Curse of Exhaustion (18223), Demonic Grace (425463)
+                   Family Flags: 82
+Hotfixed         : NEW EFFECT
 Description      : Increases the effect of your next Curse of Weakness or Bane of Agony by $s1%, or your next Curse of Exhaustion by $s2%.  Lasts $d.
 Tooltip          : Increases effect for your next Curse of Weakness or Bane of Agony by $s1%, or your next Curse of Exhaustion by $s2%.
 
@@ -91359,13 +91402,16 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 6 seconds
 Cooldown         : 20 seconds
+Affecting Spells : Amplify Curse (18288 effect#2)
 Family Flags     : 82
 Attributes       : No Immunities (29), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Do Not Fail if No Target (431), Unknown (493)
 Effects          :
 #1 (id=1103307)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Modified By: Amplify Curse (18288 effect#2)
 #2 (id=1103308)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Amplify Curse (18288 effect#2)
 Description      : Surge with fel energy, increasing your pet's and your own dodge chance by $s1%, and your chance to critically strike with all attacks by $s2%. Lasts $d.
 Tooltip          : Dodge chance increased by $s1%. 
 Master's critical strike chance increased by $s2%.
@@ -92223,13 +92269,12 @@ Spell Level      : 1
 Range            : 50000 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Amplify Curse (18288 effect#1), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
+Affecting Spells : Bane of Agony (980 effect#2), Bane of Agony (1014 effect#2), Bane of Agony (6217 effect#2), Bane of Agony (11711 effect#2), Bane of Agony (11712 effect#2), Bane of Agony (11713 effect#2), Grim Reach (18218 effect#1), Shadow Mastery (18271 effect#2), Improved Bane of Agony (18827 effect#1), Haunt (403501 effect#2), Pandemic (427712 effect#1), S03 - Item - T2 - Warlock - Damage 2P Bonus (467917 effect#1), Malevolence (1310949 effect#1), Wrack (1316697 effect#2)
 Family Flags     : 10
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Unknown (493)
 Effects          :
 #1 (id=1104591)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-                   Modified By: Amplify Curse (18288 effect#1)
 
 Name             : Invocation (id=426247) [Spell Family (5)] 
 Class            : Warlock
@@ -126592,7 +126637,7 @@ Description      : Gives your Judgement ability a $m1% chance to return $m2% of 
 
 Name             : Champion of the Light (id=1311084) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=10, max_rank=3, req_points=0]
-                 : Effect#1 [op=set, values=(10, 20, 30)]
+                 : Effect#1 [op=set, values=(20, 40, 60)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

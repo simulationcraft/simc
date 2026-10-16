@@ -8664,7 +8664,7 @@ Description      : Gives your Judgement ability a $m1% chance to return $m2% of 
 
 Name             : Champion of the Light (id=1311084) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=10, max_rank=3, req_points=0]
-                 : Effect#1 [op=set, values=(10, 20, 30)]
+                 : Effect#1 [op=set, values=(20, 40, 60)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
