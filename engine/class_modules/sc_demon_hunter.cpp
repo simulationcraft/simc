@@ -8734,7 +8734,8 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
       if ( effect.type() != E_TRIGGER_SPELL )
         continue;
 
-      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>( "fury_of_the_aldrachi", effect ) );
+      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>(
+          fmt::format( "fury_of_the_aldrachi{}", effect.spell_effect_num() ), effect ) );
     }
   }
 
