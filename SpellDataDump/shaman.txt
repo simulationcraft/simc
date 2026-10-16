@@ -5991,6 +5991,7 @@ Effects          :
 Description      : Instantly inflicts $408428s1 fire damage to enemies within $408428a1 yd of your active Fire totem.
 
 Name             : Fire Nova (desc=Rank 1) (id=408423) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -5999,12 +6000,13 @@ Range            : 36 yards
 Labels           : 24: Shaman Spells
 Affecting Spells : Call of Flame (16038 effect#1), Trial by Fire (16086 effects: #1, #2), Elemental Fury (16089 effect#1), Elemental Reach (28999 effect#1), S03 - Item - TAQ - Shaman - Elemental 4P Bonus (1213902 effect#1)
 Family Flags     : 30, 50
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Unknown (493)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Always AOE Line of Sight (186), Unknown (493)
 Effects          :
 #1 (id=1072539)  : School Damage (2): fire
                    Base Value: 33 | Scaled Value: 35 (delta=0.153846) | Points Per Level: 0.4 | SP Coefficient: 0.143 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 
 Name             : Fire Nova (desc=Rank 2) (id=408424) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -6013,12 +6015,13 @@ Range            : 36 yards
 Labels           : 24: Shaman Spells
 Affecting Spells : Call of Flame (16038 effect#1), Trial by Fire (16086 effects: #1, #2), Elemental Fury (16089 effect#1), Elemental Reach (28999 effect#1), S03 - Item - TAQ - Shaman - Elemental 4P Bonus (1213902 effect#1)
 Family Flags     : 30, 50
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Unknown (493)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Always AOE Line of Sight (186), Unknown (493)
 Effects          :
 #1 (id=1072540)  : School Damage (2): fire
                    Base Value: 55 | Scaled Value: 58 (delta=0.12844) | Points Per Level: 0.6 | SP Coefficient: 0.143 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 
 Name             : Fire Nova (desc=Rank 3) (id=408426) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -6027,12 +6030,13 @@ Range            : 36 yards
 Labels           : 24: Shaman Spells
 Affecting Spells : Call of Flame (16038 effect#1), Trial by Fire (16086 effects: #1, #2), Elemental Fury (16089 effect#1), Elemental Reach (28999 effect#1), S03 - Item - TAQ - Shaman - Elemental 4P Bonus (1213902 effect#1)
 Family Flags     : 30, 50
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Unknown (493)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Always AOE Line of Sight (186), Unknown (493)
 Effects          :
 #1 (id=1072542)  : School Damage (2): fire
                    Base Value: 130 | Scaled Value: 134.5 (delta=0.122449) | Points Per Level: 0.9 | SP Coefficient: 0.143 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 
 Name             : Fire Nova (desc=Rank 4) (id=408427) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -6041,12 +6045,13 @@ Range            : 36 yards
 Labels           : 24: Shaman Spells
 Affecting Spells : Call of Flame (16038 effect#1), Trial by Fire (16086 effects: #1, #2), Elemental Fury (16089 effect#1), Elemental Reach (28999 effect#1), S03 - Item - TAQ - Shaman - Elemental 4P Bonus (1213902 effect#1)
 Family Flags     : 30, 50
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Unknown (493)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Always AOE Line of Sight (186), Unknown (493)
 Effects          :
 #1 (id=1072544)  : School Damage (2): fire
                    Base Value: 179 | Scaled Value: 184.5 (delta=0.120401) | Points Per Level: 1.1 | SP Coefficient: 0.143 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 
 Name             : Fire Nova (desc=Rank 5) (id=408428) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -6055,7 +6060,7 @@ Range            : 36 yards
 Labels           : 24: Shaman Spells
 Affecting Spells : Call of Flame (16038 effect#1), Trial by Fire (16086 effects: #1, #2), Elemental Fury (16089 effect#1), Elemental Reach (28999 effect#1), S03 - Item - TAQ - Shaman - Elemental 4P Bonus (1213902 effect#1)
 Family Flags     : 30, 50
-Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Unknown (493)
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Active Threat (94), No Avoidance (102), Always AOE Line of Sight (186), Unknown (493)
 Effects          :
 #1 (id=1072545)  : School Damage (2): fire
                    Base Value: 239 | Scaled Value: 245.5 (delta=0.109785) | Points Per Level: 1.3 | SP Coefficient: 0.143 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
