@@ -431,9 +431,10 @@
       { "data_type": "I", "field": "recharing_amount_per_cycle" },
       { "data_type": "I", "field": "recharging_cycle_duration_ms" },
       { "data_type": "f", "field": "warband_transfer_pct" },
-      { "data_type": "B", "field": "unk_17" },
-      { "data_type": "f", "field": "unk_18" },
-      { "data_type": "B", "field": "unk_19" },
+      { "data_type": "i", "field": "id_max_qty_curve" },
+      { "data_type": "B", "field": "order_index" },
+      { "data_type": "f", "field": "recraft_reagent_count_percentage" },
+      { "data_type": "B", "field": "order_source" },
       { "data_type": "i", "field": "id_mcr_currency" },
       { "data_type": "i", "field": "flags", "elements": 2 }
     ]
@@ -2059,6 +2060,7 @@
       { "data_type": "i", "field": "id_achievement" },
       { "data_type": "i", "field": "player_level" },
       { "data_type": "i", "field": "id_trait_node_entry" },
+      { "data_type": "i", "field": "id_super_district_set" },
       { "data_type": "i", "field": "order_index" }
     ]
   },
@@ -2244,6 +2246,7 @@
     "fields": [
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "i", "field": "id_ui_texture_atlas_set" },
       { "data_type": "H", "field": "width" },
       { "data_type": "H", "field": "height" },
       { "data_type": "B", "field": "id_ui_canvas" }
