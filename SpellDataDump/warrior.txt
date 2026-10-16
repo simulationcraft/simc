@@ -3108,12 +3108,13 @@ Effects          :
 Description      : Regenerates $m1% of your total Health over $16488d after being the victim of a critical strike or suffering more than $m2% of your maximum Health from a single attack.
 
 Name             : Blood Craze (id=16488) 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
 Triggered By     : Blood Craze (16487)
-Attributes       : Is Ability (4), Aura Points On Client (268), Unknown (493)
+Attributes       : Is Ability (4), No Threat (42), Aura Points On Client (268), Unknown (493)
 Effects          :
 #1 (id=694573)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
