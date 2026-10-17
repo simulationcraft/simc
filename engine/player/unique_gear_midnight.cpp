@@ -6156,13 +6156,18 @@ stat_buff_t* create_omnium_stat_buff( const special_effect_t& effect )
       { 1279609, 1287772 },  // Rune of Critical Power
   } };
 
+  double empower_mult = 1.0;
+  if ( auto empower = find_special_effect( effect.player, 1324888 ) )
+    empower_mult += empower->driver()->effectN( 1 ).percent();
+
   for ( const auto& [ driver_id, buff_id ] : runes )
   {
     if ( !find_special_effect( effect.player, driver_id ) )
       continue;
 
     auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( buff_id ) );
-    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coefficient * buff->data().effectN( 2 ).base_value() );
+    buff->set_stat_from_effect_type( A_MOD_RATING,
+                                     stat_coefficient * buff->data().effectN( 2 ).base_value() * empower_mult );
     return buff;
   }
 
@@ -6627,6 +6632,8 @@ void register_special_effects()
   register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
   register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
   register_special_effect( 1279616, DISABLED_EFFECT );  // rune of echoes
+  set_min_version( wowv_t( 12, 1, 7 ) );
+  register_special_effect( 1324888, DISABLED_EFFECT );  // Rune of Empowerment
   reset_version_check();
 }
 
