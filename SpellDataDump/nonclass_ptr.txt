@@ -188107,6 +188107,27 @@ Effects          :
 Description      : Toss the Moonfish back into the waters of Amirdrassil, applying a stack of Moonfish Essence.
 Tooltip          : The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.
 
+Name             : Sunfish Essence (id=427134) 
+School           : Physical
+Spell Type       : None
+Range            : 12 - 15 yards
+GCD              : 1.5 seconds
+Velocity         : 20 yards/sec
+Duration         : 300 seconds
+Labels           : 1396
+                 : 1632
+                 : 2954
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : Do Not Log (8), Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
+Effects          :
+#1 (id=1106301)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1106328)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Fishing Target (39)
+Description      : Toss the Sunfish back into the waters of Amirdrassil, applying a stack of Sunfish Essence.
+Tooltip          : The essence of the Dream fades fast. Applying more Sunfish Essence might strengthen its resolve.
+
 Name             : Essence Splice (id=427161) 
 School           : Nature
 Spell Type       : Magic
