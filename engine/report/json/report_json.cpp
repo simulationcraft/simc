@@ -394,6 +394,8 @@ void gear_to_json( JsonOutput root, const player_t& p )
     slotnode[ "encoded_item" ] = item.encoded_item();
     slotnode[ "ilevel" ] = item.item_level();
 
+    std::map<std::string, int> item_stats;
+
     for ( size_t i = 0; i < std::size( item.parsed.data.stat_type_e ); i++ )
     {
       auto val = item.stat_value( i );
@@ -401,8 +403,11 @@ void gear_to_json( JsonOutput root, const player_t& p )
       {
         continue;
       }
-      slotnode[ util::stat_type_string( item.stat( i ) ) ] = val;
+      item_stats[ util::stat_type_string( item.stat( i ) ) ] += val;
     }
+
+    for ( const auto& [ stat, amount ] : item_stats )
+      slotnode[ stat ] = amount;
   }
 }
 
