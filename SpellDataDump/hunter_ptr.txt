@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70340 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.7.70424 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -20963,7 +20963,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1352752)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Aimed Shot critical strikes now cause the Master Marksman bleed effect at $s1% of damage dealt. For $1319016d after a critical Aimed Shot, the target will take an additional $1319015s1 bleed damage any time your abilities damage that target.
+Description      : Aimed Shot critical strikes now cause the Master Marksman bleed effect at $s1% of damage dealt. For $1319016d after a critical Aimed Shot, the target will take an additional $1319015s1 Bleed damage any time your abilities damage that target.
 
 Name             : Blood Fletching (id=1319015) [Spell Family (9)] 
 Class            : Hunter
