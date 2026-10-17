@@ -111,6 +111,8 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
 		<ClInclude Include="..\engine\player\ground_aoe.hpp" />
 		<ClInclude Include="..\engine\player\instant_absorb.hpp" />
+		<ClInclude Include="..\engine\player\nn_policy.hpp" />
+		<ClInclude Include="..\engine\player\nn_trajectory.hpp" />
 		<ClInclude Include="..\engine\player\pet.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner_impl.hpp" />
@@ -313,6 +315,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\effect_callbacks.cpp" />
 		<ClCompile Include="..\engine\player\ground_aoe.cpp" />
 		<ClCompile Include="..\engine\player\instant_absorb.cpp" />
+		<ClCompile Include="..\engine\player\nn_policy.cpp" />
 		<ClCompile Include="..\engine\player\pet.cpp" />
 		<ClCompile Include="..\engine\player\player.cpp" />
 		<ClCompile Include="..\engine\player\player_collected_data.cpp" />
@@ -343,6 +346,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\report\report_html_player.cpp" />
 		<ClCompile Include="..\engine\report\report_html_sim.cpp" />
 		<ClCompile Include="..\engine\report\report_text.cpp" />
+		<ClCompile Include="..\engine\report\report_trajectory.cpp" />
 		<ClCompile Include="..\engine\report\reports.cpp" />
 		<ClCompile Include="..\engine\sim\cooldown.cpp" />
 		<ClCompile Include="..\engine\sim\cooldown_waste_data.cpp" />

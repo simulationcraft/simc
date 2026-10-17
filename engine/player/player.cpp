@@ -38,6 +38,8 @@
 #include "player/consumable.hpp"
 #include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
+#include "player/nn_policy.hpp"
+#include "player/nn_trajectory.hpp"
 #include "player/pet.hpp"
 #include "player/player_demise_event.hpp"
 #include "player/player_event.hpp"
@@ -728,6 +730,16 @@ bool parse_world_lag( sim_t* sim, std::string_view, std::string_view value )
   return true;
 }
 
+// parse_policy ==========================================================
+
+bool parse_policy( sim_t* sim, std::string_view, std::string_view value )
+{
+  // TODO: This is currently performed by each thread, which is not necessary. The files
+  // are relatively small so it's not a big issue, but there's no reason to duplicate work.
+  sim->active_player->parsed_policy = std::make_unique<nn_policy_data_t>( read_nn_policy( std::string( value ) ) );
+  return true;
+}
+
 // parse_world_lag ==========================================================
 
 bool parse_world_lag_stddev( sim_t* sim, std::string_view, std::string_view value )
@@ -1097,6 +1109,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Damage
     iteration_dmg( 0 ),
     priority_iteration_dmg( 0 ),
+    current_dmg( 0 ),
     iteration_dmg_taken( 0 ),
     dpr( 0 ),
     // Heal
@@ -4160,6 +4173,46 @@ void player_t::create_actions()
     }
   }
 
+  bool has_nothing = false;
+  // Set the policy as the default APL so the sim doesn't blow up; grab the
+  // actions from it later
+  if ( parsed_policy )
+  {
+    action_priority_list_t* default_ = nullptr;
+    // Keep precombat, reuse default, throw everything else away
+    for ( auto apl : action_priority_list )
+    {
+      if ( apl->name_str == "precombat" )
+        continue;
+      if ( apl->name_str == "default" )
+        default_ = apl;
+
+      apl->action_list.clear();
+      apl->action_list_str.clear();
+    }
+
+    assert( default_ );
+    std::string apl_str = "";
+    size_t actions = parsed_policy->actions.size();
+    for ( size_t i = 0; i < actions; i++ )
+    {
+      // TODO: Better support for offgcd/cwc waits. This is very coarse grained.
+      if ( parsed_policy->actions[ i ] == "nothing" )
+      {
+        if ( i != actions - 1 )
+          throw new sc_initialization_error( "'nothing' action has to be last" );
+        has_nothing = true;
+        continue;
+      }
+      if ( !apl_str.empty() )
+        apl_str += "/";
+      apl_str += parsed_policy->actions[ i ];
+    }
+
+    default_->action_list_str = apl_str;
+    action_list_str = apl_str;
+  }
+
   std::string modify_action_options;
 
   if ( !modify_action.empty() )
@@ -4248,6 +4301,9 @@ void player_t::create_actions()
         throw sc_initialization_error( fmt::format( "Unable to create action '{}'.", action_str ) );
       }
 
+      if ( parsed_policy && apl->name_str == "default" )
+        policy_actions.push_back( a );
+
       // When using the assisted combat system, certain action options need different default values.
       // TODO: Should this check for something instead of the name of the action list?
       if ( apl->name_str == "assisted_combat" )
@@ -4301,6 +4357,37 @@ void player_t::create_actions()
     int capacity = std::max( 3000, static_cast<int>( sim->max_time.total_seconds() ) );
     collected_data.action_sequence.reserve( capacity );
     collected_data.action_sequence.clear();
+  }
+
+  if ( parsed_policy )
+  {
+    bool actions_ok = true;
+    for ( size_t i = 0; i < policy_actions.size(); i++ )
+    {
+      if ( policy_actions[ i ]->signature_str != parsed_policy->actions[ i ] )
+        actions_ok = false;
+    }
+
+    if ( has_nothing )
+      policy_actions.push_back( nullptr );
+
+    if ( policy_actions.size() != parsed_policy->output_size() )
+      actions_ok = false;
+
+    if ( !actions_ok )
+      throw new sc_initialization_error( "Mismatched policy actions (check for any weird actions)" );
+
+    // TODO: This is bit of a hack to get expressions that depend on having an action working (e.g. debuffs).
+    // There isn't a player-scope "debuff" (or similar) expression so we use the first action as the context.
+    // This can obviously blow up if that action has some targetting stuff (e.g., target_if=)
+    for ( const auto& input : parsed_policy->inputs )
+      policy_input.push_back( expr_t::parse( policy_actions.front(), input.expression ) );
+
+    if ( trajectory_out.size() )
+    {
+      trajectory = std::make_unique<nn_trajectory_t>( parsed_policy->input_size(), parsed_policy->output_size() );
+      trajectory->reserve( 5000 );
+    }
   }
 }
 
@@ -6270,6 +6357,7 @@ void player_t::datacollection_begin()
   iteration_executed_foreground_actions = 0;
   iteration_dmg                         = 0;
   priority_iteration_dmg                = 0;
+  current_dmg                           = 0;
   iteration_heal                        = 0;
   iteration_absorb                      = 0.0;
   iteration_absorb_taken                = 0.0;
@@ -6295,6 +6383,9 @@ void player_t::datacollection_begin()
   range::for_each( pet_list, std::mem_fn( &pet_t::datacollection_begin ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_begin ) );
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
+
+  if ( trajectory )
+    trajectory->begin_episode();
 }
 
 /**
@@ -6358,6 +6449,9 @@ void player_t::datacollection_end()
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_end ) );
   range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_end ) );
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
+
+  if ( trajectory )
+    trajectory->end_episode( current_dmg );
 }
 
 // player_t::merge ==========================================================
@@ -6608,6 +6702,12 @@ void player_t::merge( player_t& other )
     const auto& theirs = other.cooldown_waste_data_list[ i ];
     assert( ours->cd->name_str == theirs->cd->name_str );
     ours->merge( *theirs );
+  }
+
+  if ( trajectory )
+  {
+    assert( other.trajectory );
+    trajectory->append( *other.trajectory );
   }
 }
 
@@ -13259,6 +13359,8 @@ void player_t::create_options()
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
   add_option( opt_bool( "load_default_gear", load_default_gear ) );
   add_option( opt_bool( "collect_pet_sequence_data", collect_pet_sequence_data ) );
+  add_option( opt_func( "policy", parse_policy ) );
+  add_option( opt_string( "trajectory", trajectory_out ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );
@@ -14180,6 +14282,9 @@ action_t* player_t::select_action( const action_priority_list_t& list,
                                    execute_type                  et,
                                    const action_t*               context )
 {
+  if ( parsed_policy )
+    return select_policy_action( et );
+
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
 
@@ -14273,6 +14378,126 @@ action_t* player_t::select_action( const action_priority_list_t& list,
   }
 
   return nullptr;
+}
+
+action_t* player_t::select_policy_action( execute_type et )
+{
+  assert( parsed_policy );
+
+  const std::size_t n_in  = parsed_policy->input_size();
+  const std::size_t n_act = parsed_policy->output_size();
+
+  // Legality first: if nothing is usable there is no decision to make or record.
+  std::vector<uint8_t> available( n_act );
+  std::size_t available_count = 0;
+  std::size_t available_pos = 0;
+  for ( std::size_t a = 0; a < n_act; a++ )
+  {
+    if ( policy_actions[ a ] == nullptr )
+    {
+      available[ a ] = 1;
+    }
+    else
+    {
+      bool et_ok = true;
+      if ( et == execute_type::OFF_GCD && !policy_actions[ a ]->use_off_gcd )
+        et_ok = false;
+      if ( et == execute_type::CAST_WHILE_CASTING && !policy_actions[ a ]->use_while_casting )
+        et_ok = false;
+      available[ a ] = et_ok && !policy_actions[ a ]->background && policy_actions[ a ]->action_ready() ? 1 : 0;
+    }
+
+    if ( available[ a ] )
+    {
+      available_count++;
+      available_pos = a;
+    }
+  }
+  if ( available_count == 0 )
+    return nullptr;
+  if ( available_count == 1 )  // forced: nothing to decide, nothing to learn; don't record
+    return policy_actions[ available_pos ];
+
+  // Features: raw values are stored, normalized values feed the network.
+  std::vector<float> raw( n_in );
+  std::vector<double> cur( n_in );
+  for ( std::size_t i = 0; i < n_in; i++ )
+  {
+    const nn_input_t& input = parsed_policy->inputs[ i ];
+    double v = policy_input[ i ]->eval();
+    if ( std::isnan( v ) )
+      throw std::runtime_error( fmt::format( "policy input '{}' evaluated to NaN", input.expression ) );
+    raw[ i ] = static_cast<float>( std::clamp( v, -RAW_LIMIT, RAW_LIMIT ) );  // also maps +-inf
+    cur[ i ] = std::clamp( ( static_cast<double>( raw[ i ] ) - input.offset ) / input.scale, -NORM_LIMIT, NORM_LIMIT );
+  }
+
+  // Forward pass: y = act(W x + b) for each layer; the last layer gives one logit per action.
+  std::vector<double> next;
+  for ( const nn_layer_t& layer : parsed_policy->layers )
+  {
+    next.assign( layer.n_out, 0.0 );
+    for ( std::size_t o = 0; o < layer.n_out; o++ )
+    {
+      const double* w = &layer.weights[ o * layer.n_in ];
+      double s = layer.bias[ o ];
+      for ( std::size_t k = 0; k < layer.n_in; k++ )
+        s += w[ k ] * cur[ k ];
+      switch ( layer.activation )
+      {
+        case nn_activation_e::RELU:   s = std::max( s, 0.0 ); break;
+        case nn_activation_e::TANH:   s = std::tanh( s );     break;
+        case nn_activation_e::LINEAR: break;
+      }
+      next[ o ] = s;
+    }
+    std::swap( cur, next );
+  }
+  const std::vector<double>& logits = cur;
+
+  // Masked softmax (max-subtracted for numerical stability).
+  double max_logit = -std::numeric_limits<double>::infinity();
+  for ( std::size_t a = 0; a < n_act; a++ )
+    if ( available[ a ] )
+      max_logit = std::max( max_logit, logits[ a ] );
+
+  std::vector<double> weight( n_act, 0.0 );  // unnormalized probabilities; 0 for illegal actions
+  double sum = 0.0;
+  for ( std::size_t a = 0; a < n_act; a++ )
+    if ( available[ a ] )
+      sum += weight[ a ] = std::exp( logits[ a ] - max_logit );
+
+  std::size_t chosen = n_act;
+  if ( trajectory )
+  {
+    // Training: sample from the masked softmax.
+    double u = rng().real() * sum;
+    for ( std::size_t a = 0; a < n_act; a++ )
+    {
+      if ( !available[ a ] ) continue;
+      chosen = a;  // falls back to the last legal action if rounding leaves u >= 0
+      u -= weight[ a ];
+      if ( u < 0 ) break;
+    }
+  }
+  else
+  {
+    // Evaluation: argmax over legal actions.
+    for ( std::size_t a = 0; a < n_act; a++ )
+      if ( available[ a ] && ( chosen == n_act || logits[ a ] > logits[ chosen ] ) )
+        chosen = a;
+  }
+
+  if ( trajectory )
+  {
+    // TODO: Allow for different score types
+    double score = current_dmg;  // cumulative damage so far, incl. pets
+    double time  = sim->current_time().total_seconds();
+    float log_prob = static_cast<float>( logits[ chosen ] - max_logit - std::log( sum ) );
+    trajectory->record_decision( time, score, raw.data(), available.data(),
+                                 static_cast<uint32_t>( chosen ), log_prob );
+  }
+
+  return policy_actions[ chosen ];
 }
 
 player_t* player_t::actor_by_name_str( util::string_view name ) const

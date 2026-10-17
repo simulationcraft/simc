@@ -510,6 +510,34 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
     return std::make_unique<react_expr_t>( buff_name, action, static_buff );
   }
+  else if ( type == "react_remains" )
+  {
+    struct react_remains_expr_t : public buff_expr_t
+    {
+      react_remains_expr_t( util::string_view bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react_remains", bn, a, b )
+      {
+        if ( b )
+          b->reactable = true;
+      }
+
+      buff_t* create() const override
+      {
+        auto b = buff_expr_t::create();
+        b->reactable = true;
+        return b;
+      }
+
+      double evaluate() override
+      { return buff()->stack_react() > 0 ? buff()->remains().total_seconds() : 0.0; }
+
+      bool is_constant() override
+      {
+        return buff()->default_chance == 0;
+      }
+    };
+
+    return std::make_unique<react_remains_expr_t>( buff_name, action, static_buff );
+  }
   else if ( type == "react_pct" )
   {
     struct react_pct_expr_t : public buff_expr_t

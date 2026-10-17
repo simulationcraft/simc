@@ -117,6 +117,7 @@ SRC += \
     player$(PATHSEP)effect_callbacks.cpp \
     player$(PATHSEP)ground_aoe.cpp \
     player$(PATHSEP)instant_absorb.cpp \
+    player$(PATHSEP)nn_policy.cpp \
     player$(PATHSEP)pet.cpp \
     player$(PATHSEP)player.cpp \
     player$(PATHSEP)player_collected_data.cpp \
@@ -147,6 +148,7 @@ SRC += \
     report$(PATHSEP)report_html_player.cpp \
     report$(PATHSEP)report_html_sim.cpp \
     report$(PATHSEP)report_text.cpp \
+    report$(PATHSEP)report_trajectory.cpp \
     report$(PATHSEP)reports.cpp \
     sim$(PATHSEP)cooldown.cpp \
     sim$(PATHSEP)cooldown_waste_data.cpp \

@@ -8,6 +8,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
+#include "player/nn_policy.hpp"
 #include "player/player.hpp"
 #include "report/report_helper.hpp"
 #include "sim/sim.hpp"
@@ -276,6 +277,15 @@ void print_suite( sim_t* sim )
   catch ( const std::exception& )
   {
     std::throw_with_nested( sc_report_output_error( "Profile output" ) );
+  }
+
+  try
+  {
+    report::print_trajectories( *sim );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_report_output_error( "Trajectory output" ) );
   }
 }
 }  // namespace report

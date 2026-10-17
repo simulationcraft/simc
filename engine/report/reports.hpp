@@ -31,5 +31,6 @@ void print_text( sim_t*, bool detail );
 void print_html( sim_t& );
 void print_json( sim_t& );
 void print_html_player( report::sc_html_stream&, player_t& );
+void print_trajectories( sim_t& );
 void print_suite( sim_t* );
 }  // namespace report

@@ -2149,6 +2149,13 @@ void action_t::assess_damage( result_amount_type rt, action_state_t* state )
       player->priority_iteration_dmg += state->result_amount;
     }
 
+    // Pet damage has to be attributed immediately rather than merged at the end of the iteration.
+    // The trainer needs to see the rewards as they come.
+    if ( player->is_pet() )
+      player->cast_pet()->owner->current_dmg += state->result_amount;
+    else
+      player->current_dmg += state->result_amount;
+
     record_data( state );
   }
 }

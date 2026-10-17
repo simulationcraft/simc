@@ -13,6 +13,8 @@
 #include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
 #include "gear_stats.hpp"
+#include "player/nn_policy.hpp"
+#include "player/nn_trajectory.hpp"
 #include "player_collected_data.hpp"
 #include "player_processed_report_information.hpp"
 #include "player_resources.hpp"
@@ -426,7 +428,7 @@ struct player_t : public actor_t
 
 
   // Damage
-  double iteration_dmg, priority_iteration_dmg, iteration_dmg_taken; // temporary accumulators
+  double iteration_dmg, priority_iteration_dmg, current_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
   struct incoming_damage_entry_t {
     timespan_t time;
@@ -633,6 +635,13 @@ struct player_t : public actor_t
 
   /// Current execution type
   execute_type current_execute_type;
+
+  /// Machine learning helpers
+  std::unique_ptr<nn_policy_data_t> parsed_policy;
+  std::vector<std::unique_ptr<expr_t>> policy_input;
+  std::vector<action_t*> policy_actions;
+  std::unique_ptr<nn_trajectory_t> trajectory;
+  std::string trajectory_out;
 
   using resource_callback_function_t = std::function<void( bool )>;
 
@@ -1310,6 +1319,7 @@ public:
   virtual void leave_combat();
   virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
+  virtual action_t* select_policy_action( execute_type type = execute_type::FOREGROUND );
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
