@@ -1,7 +1,7 @@
-// Hit points per stamina for level 1 - 90, wow build 12.1.5.70077
+// Hit points per stamina for level 1 - 90, wow build 12.1.7.70424
 static constexpr double _ptr__hp_per_sta[90] = {
-    1,	1,	1,	1,	1,	//    5
-    1,	1,	1,	1,	2,	//   10
+    1,	2,	2,	2,	2,	//    5
+    2,	2,	2,	2,	2,	//   10
     2,	2,	3,	3,	3,	//   15
     4,	4,	5,	5,	5,	//   20
     6,	6,	6,	7,	7,	//   25
@@ -20,7 +20,7 @@ static constexpr double _ptr__hp_per_sta[90] = {
     20,	20,	20,	20,	20,	//   90
 };
 
-// Spell scaling multipliers for levels 1 - 90, wow build 12.1.5.70077
+// Spell scaling multipliers for levels 1 - 90, wow build 12.1.7.70424
 static constexpr double _ptr__spell_scaling[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -506,7 +506,7 @@ static constexpr double _ptr__spell_scaling[][90] = {
   },
 };
 
-// Base mana points for levels 1 - 90, wow build 12.1.5.70077
+// Base mana points for levels 1 - 90, wow build 12.1.7.70424
 static constexpr double _ptr__base_mp[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -803,7 +803,7 @@ static constexpr double _ptr__base_mp[][90] = {
   },
 };
 
-// Combat rating values for level 1 - 90, wow build 12.1.5.70077
+// Combat rating values for level 1 - 90, wow build 12.1.7.70424
 static constexpr double _ptr__combat_ratings[][90] = {
   // Dodge
   {
@@ -1311,7 +1311,7 @@ static constexpr double _ptr__combat_ratings[][90] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 12.1.5.70077
+// Combat rating multipliers for item level 1 - 1300, wow build 12.1.7.70424
 static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2367,7 +2367,7 @@ static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 12.1.5.70077
+// Item level translation for item level 1 - 1300, wow build 12.1.7.70424
 static constexpr double _ptr__item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2631,7 +2631,7 @@ static constexpr double _ptr__item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 12.1.5.70077
+// Item socket costs for item levels 1 - 1300, wow build 12.1.7.70424
 static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2835,7 +2835,7 @@ static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 12.1.5.70077
+// Stamina multipliers for item level 1 - 1300, wow build 12.1.7.70424
 static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -3891,7 +3891,7 @@ static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   },
 };
 
-// Azerite level to item level 1 - 300, wow build 12.1.5.70077
+// Azerite level to item level 1 - 300, wow build 12.1.7.70424
 static constexpr unsigned _ptr__azerite_level_to_item_level[300] = {
     1,	2,	3,	4,	5,	//    5
     6,	7,	9,	11,	13,	//   10
