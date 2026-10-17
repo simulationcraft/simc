@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70391 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70448 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4735,7 +4735,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Rebirth (20484)
                    Family Flags: 28
-Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> -100), Misc Value (0 -> 34), Affects Spells
 #11 (id=887526)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x3f | Target: Self (1)
                    Affected School(s): Fire, Frost, Holy, Nature, Shadow, Physical
@@ -76583,18 +76582,14 @@ Effects          :
                    Base Value: 29 | Scaled Value: 29 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
                    Family Flags: 54
-Hotfixed         : Base Value (13 -> 29)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 29 | Scaled Value: 29 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
                    Family Flags: 54
-Hotfixed         : Base Value (13 -> 29)
 #3 (id=191061)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 29 | Scaled Value: 29 | Target: Self (1)
-Hotfixed         : Base Value (13 -> 29)
 #4 (id=191062)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 29 | Scaled Value: 29 | Target: Self (1)
-Hotfixed         : Base Value (13 -> 29)
 #5 (id=191063)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 218 | Scaled Value: 218 | Target: Self (1)
 #6 (id=260977)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -187344,7 +187339,6 @@ Description      : $@spelldesc278697
 Tooltip          : Haste increased by $w1.
 
 Name             : Shadow Blades (id=279043) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -250909,6 +250903,7 @@ Effects          :
 Description      : Eat me! Results are unpredictable. Only usable in the Shadowlands.
 
 Name             : Execution Sentence (id=343527) [Spell Family (10)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Talent Entry     : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
@@ -250924,7 +250919,8 @@ Labels           : 16: Class Spells
                  : 2564
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effects: #3, #4), Consecration (204242 effect#3), Avenging Wrath (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Retribution Paladin (1258011 effect#4), Holy Paladin (1258016 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Family Flags     : 27, 31, 65
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Duration (170), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), DoT Stacking Rule (103), Can Proc From Procs (122), Aura Expires Offline (130), Do Not Display Duration (170), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Leave World (19), Disconnect (42)
 Effects          :
 #1 (id=845382)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -300413,7 +300409,6 @@ Description      : Taunts all enemies within $A1 yds to attack you for $d, inter
 Tooltip          : Taunted.
 
 Name             : Lingering Shadow (id=386081) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Magic
@@ -517368,7 +517363,6 @@ Effects          :
 Description      : Your spells have a high chance to resonate with the blade, beseeching the Light for aid. Healing spells will smite a nearby foe for $s2 Radiant damage, and damaging spells will heal a nearby ally for $s1 health.
 
 Name             : Luminescent Phoenixblade (id=1310255) 
-Hotfixed         : Attributes
 School           : Holyfire
 Spell Type       : Magic
 Range            : 50 yards
@@ -517381,7 +517375,6 @@ Effects          :
 Description      : $@spelldesc1310252
 
 Name             : Luminescent Phoenixblade (id=1310258) 
-Hotfixed         : Attributes
 School           : Holyfire
 Spell Type       : Magic
 Range            : 60 yards
@@ -518252,7 +518245,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1347195)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 106042.6 (coefficient=829.732) | Target: Self (1)
-Hotfixed         : Trigger Spell (1315096 -> 0)
 Description      : While inside a delve, you have a chance during combat to shield yourself absorbing $s1 damage for $1315096d.
 Tooltip          : While inside a delve, you have a chance during combat to shield yourself absorbing $w1 damage for $1315096d.
 
@@ -518321,7 +518313,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1347204)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 10375.71 (coefficient=81.18485) | Target: Self (1)
-Hotfixed         : Trigger Spell (1315117 -> 0)
 Description      : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $s1 Fire damage split between nearby enemies.
 Tooltip          : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $w1 Fire damage split between nearby enemies.
 
