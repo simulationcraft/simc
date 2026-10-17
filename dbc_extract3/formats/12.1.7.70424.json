@@ -176,7 +176,8 @@
       { "data_type": "b", "field": "id_class", "ref": "ChrClasses" },
       { "data_type": "i", "field": "purpose" },
       { "data_type": "B", "field": "id_mod" },
-	    { "data_type": "i", "field": "race_mask", "elements": 2 }
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "race_mask", "elements": 2 }
     ]
   },
   "CharacterLoadoutItem": {
