@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.7.70424
-static constexpr std::array<spelltext_data_t, 29449> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29450> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20746,6 +20746,7 @@ static constexpr std::array<spelltext_data_t, 29449> __ptr_spelltext_data { {
   {  427072, "$@spelldesc422956", "Mastery increased by $w1.", 0 },
   {  427113, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },
   {  427130, "Toss the Moonfish back into the waters of Amirdrassil, applying a stack of Moonfish Essence.", "The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.", 0 },
+  {  427134, "Toss the Sunfish back into the waters of Amirdrassil, applying a stack of Sunfish Essence.", "The essence of the Dream fades fast. Applying more Sunfish Essence might strengthen its resolve.", 0 },
   {  427161, "$@spelldesc422956", 0, 0 },
   {  427209, "$@spelldesc427113", 0, 0 },
   {  427212, "$@spelldesc427113", "Slowed by $w1%.", 0 },
