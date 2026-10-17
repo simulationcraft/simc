@@ -250903,6 +250903,7 @@ Effects          :
 Description      : Eat me! Results are unpredictable. Only usable in the Shadowlands.
 
 Name             : Execution Sentence (id=343527) [Spell Family (10)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Talent Entry     : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
@@ -250918,7 +250919,8 @@ Labels           : 16: Class Spells
                  : 2564
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effects: #3, #4), Consecration (204242 effect#3), Avenging Wrath (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Retribution Paladin (1258011 effect#4), Holy Paladin (1258016 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Family Flags     : 27, 31, 65
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Duration (170), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), DoT Stacking Rule (103), Can Proc From Procs (122), Aura Expires Offline (130), Do Not Display Duration (170), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Leave World (19), Disconnect (42)
 Effects          :
 #1 (id=845382)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
