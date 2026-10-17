@@ -117013,6 +117013,7 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk2 { {
   { "Ichor-Dripping Shoulderpads", 104672, 0x00001000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 3, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[46933], 4, 0xffff, 0xffffffffffffffff, { 7, 7, 0 }, 0, 4848, 0, 0, 0, 0 },
   { "Hood of Swirling Senses", 104673, 0x00000000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 1, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[44339], 4, 0xffff, 0xffffffffffffffff, { 1, 7, 0 }, 0, 4860, 0, 0, 0, 0 },
   { "Cloak of Misguided Power", 104674, 0x00001000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 16, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[33176], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Purified Bindings of Immerseus", 104675, 0x00081000, 0x00004000, 0x00, 41, 35, 0, 0, 4, 12, 4, 0, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Salt Water Sandals", 104677, 0x00000000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 8, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[46937], 4, 0xffff, 0xffffffffffffffff, { 7, 0, 0 }, 0, 4838, 0, 0, 0, 0 },
   { "Bracers of Purified Spirit", 104678, 0x00001000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 9, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[38900], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Soul-Soaked Gloves", 104679, 0x00001000, 0x00002000, 0x00, 41, 35, 0, 0, 4, 10, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[45998], 4, 0xffff, 0xffffffffffffffff, { 7, 7, 0 }, 0, 4848, 0, 0, 0, 0 },
@@ -117430,9 +117431,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk2 { {
   { "Kil'ruk's Furious Blade", 105135, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 13, 2, 7, 1, 2600, 0.500000f, 0.000000f, &__ptr_item_stats_data[47327], 4, 0xffff, 0xffffffffffffffff, { 7, 0, 0 }, 0, 4830, 0, 0, 0, 0 },
   { "Kor'kron Spire of Supremacy", 105136, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 17, 2, 10, 1, 3600, 0.300000f, 0.000000f, &__ptr_item_stats_data[47336], 4, 0xffff, 0xffffffffffffffff, { 7, 0, 0 }, 0, 4827, 0, 0, 0, 0 },
   { "Cord of Black Dreams", 105137, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 6, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[44323], 4, 0xffff, 0xffffffffffffffff, { 7, 7, 0 }, 0, 4828, 0, 0, 0, 0 },
-  { "Kor'kron Elite Skullmask", 105138, 0x00001000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[46877], 4, 0xffff, 0xffffffffffffffff, { 1, 7, 0 }, 0, 4829, 0, 0, 0, 0 },
 } };
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk3 { {
+  { "Kor'kron Elite Skullmask", 105138, 0x00001000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[46877], 4, 0xffff, 0xffffffffffffffff, { 1, 7, 0 }, 0, 4829, 0, 0, 0, 0 },
   { "Chestguard of Relentless Tyranny", 105139, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 5, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[46659], 4, 0xffff, 0xffffffffffffffff, { 7, 7, 7 }, 0, 4829, 0, 0, 0, 0 },
   { "Penetrating Gaze of Y'Shaarj", 105140, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 1, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[43270], 4, 0xffff, 0xffffffffffffffff, { 1, 7, 0 }, 0, 4829, 0, 0, 0, 0 },
   { "Shoulderguards of Intended Power", 105141, 0x00000000, 0x00002000, 0x01, 40, 35, 0, 0, 4, 3, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[47093], 4, 0xffff, 0xffffffffffffffff, { 7, 7, 0 }, 0, 4828, 0, 0, 0, 0 },
@@ -133816,9 +133817,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk3 { {
   { "Infernal Contract", 140807, 0x00080040, 0x00002000, 0x00, 50, 45, 0, 0, 4, 12, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[36808], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draught of Souls", 140808, 0x00080040, 0x00002000, 0x00, 50, 45, 0, 0, 4, 12, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[351], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Whispers in the Dark", 140809, 0x00080000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 12, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52011], 1, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Farsight Spiritjewel", 140810, 0x00000000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 0, 3, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 3013, 0, 0, 0, 0, 0 },
 } };
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk4 { {
+  { "Farsight Spiritjewel", 140810, 0x00000000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 0, 3, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 3013, 0, 0, 0, 0, 0 },
   { "Soggy Manascrubber Brush", 140812, 0x00000000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 0, 3, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 3011, 0, 0, 0, 0, 0 },
   { "Arcana Crux", 140813, 0x00000000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 0, 3, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 3007, 0, 0, 0, 0, 0 },
   { "Infused Chitin Fragment", 140815, 0x00000000, 0x00002000, 0x00, 50, 45, 0, 0, 4, 0, 3, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 3066, 0, 0, 0, 0, 0 },
@@ -150202,9 +150203,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk4 { {
   { "Corrupted Aspirant's Chain Waistguard", 172838, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 6, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[55871], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Corrupted Aspirant's Leather Belt", 172839, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 6, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[2141], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Corrupted Aspirant's Silk Cuffs", 172840, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 9, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[57072], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Corrupted Aspirant's Plate Armguards", 172841, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 9, 4, 4, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52299], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
 } };
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk5 { {
+  { "Corrupted Aspirant's Plate Armguards", 172841, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 9, 4, 4, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52299], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Corrupted Aspirant's Chain Armbands", 172842, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 9, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[5411], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Corrupted Aspirant's Leather Bindings", 172843, 0x00001000, 0x00002002, 0x00, 60, 50, 0, 0, 4, 9, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[56892], 4, 0xffff, 0x55155555b1354c4d, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Corrupted Aspirant's Ring", 172844, 0x00081000, 0x00002000, 0x00, 60, 50, 0, 0, 4, 11, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[84], 3, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -166588,9 +166589,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk5 { {
   { "Draconic Aspirant's Plate Stompers", 216341, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 8, 4, 4, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[57682], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draconic Aspirant's Silk Footwraps", 216342, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 8, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[55408], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draconic Aspirant's Chain Stompers", 216343, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 8, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[62699], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Draconic Aspirant's Leather Footpads", 216344, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 8, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52615], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
 } };
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
+  { "Draconic Aspirant's Leather Footpads", 216344, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 8, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52615], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draconic Aspirant's Leather Grips", 216345, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 10, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[3230], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draconic Aspirant's Plate Handguards", 216346, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 10, 4, 4, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[62703], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Draconic Aspirant's Silk Handwraps", 216347, 0x00001000, 0x00002000, 0x00, 454, 70, 0, 0, 2, 10, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[62695], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -182974,9 +182975,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Twilight Captain's Short Sword", 271040, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 13, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Blade of the Deeplurk Honorguard", 271041, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 13, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Myrmidon's Cutlass", 271042, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 13, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Twilight Assassin's Glaive", 271043, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 13, 2, 9, 2, 2600, 0.450000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
 } };
-static const std::array<dbc_item_data_t, 1625> __ptr_item_data_chunk7 { {
+static const std::array<dbc_item_data_t, 1626> __ptr_item_data_chunk7 { {
+  { "Twilight Assassin's Glaive", 271043, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 13, 2, 9, 2, 2600, 0.450000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Deeplurk Shock Wand", 271044, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 26, 2, 19, 2, 2000, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Crystal Focus Spellslinger", 271045, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 26, 2, 19, 2, 2000, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Voodoo Hex Stick", 271046, 0x00008000, 0x00006000, 0x00, 1, 1, 0, 0, 3, 26, 2, 19, 2, 2000, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
