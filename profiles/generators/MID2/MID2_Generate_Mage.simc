@@ -21,14 +21,14 @@ chest=crest_of_the_primal_leywarden,id=271567,enchant_id=7987,bonus_id=12854/133
 wrist=martyrs_bindings,id=239648,gem_id=240894,bonus_id=8960/12384/13668/13751,crafted_stats=32/40,crafting_quality=5,ilevel=331
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13335/13848,redirected_base_stats=268243,ilevel=344
 waist=cincture_of_the_abyssal_grotto,id=268232,gem_id=240894,bonus_id=13668/12854/13335,ilevel=334
-legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=12854/13335,ilevel=334
+legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=14049/12854/13335,ilevel=334,redirected_base_stats=281235
 feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13335/13848,ilevel=344
-finger1=jade_ophidian_band,id=162544,enchant_id=7967,gem_id=240894,bonus_id=13668/12854/13440,ilevel=334
+finger1=band_of_the_swarmcaller,id=281029,enchant_id=7967,gem_id=240916,bonus_id=12854/13750,ilevel=334
 finger2=pilfered_precious_band,id=251148,enchant_id=7967,gem_id=240894,bonus_id=12854/13440/13668,ilevel=334
-trinket1=,id=250215,bonus_id=12854/13440,ilevel=334
-trinket2=,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
-off_hand=,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
+trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=twisted_horrors_tendril,id=281215,bonus_id=12854,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
+off_hand=alnhara_lantern,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
 
 save=MID2_Mage_Arcane.simc
 
@@ -55,14 +55,14 @@ chest=crest_of_the_primal_leywarden,id=271567,enchant_id=7987,bonus_id=12854/133
 wrist=martyrs_bindings,id=239648,gem_id=240894,bonus_id=8960/12384/13668/13751,crafted_stats=32/40,crafting_quality=5,ilevel=331
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13335/13848,redirected_base_stats=268243,ilevel=344
 waist=cincture_of_the_abyssal_grotto,id=268232,gem_id=240894,bonus_id=13668/12854/13335,ilevel=334
-legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=12854/13335,ilevel=334
+legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=14049/12854/13335,ilevel=334,redirected_base_stats=281235
 feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13335/13848,ilevel=344
-finger1=jade_ophidian_band,id=162544,enchant_id=7967,gem_id=240894,bonus_id=13668/12854/13440,ilevel=334
+finger1=band_of_the_swarmcaller,id=281029,enchant_id=7967,gem_id=240916,bonus_id=12854/13750,ilevel=334
 finger2=pilfered_precious_band,id=251148,enchant_id=7967,gem_id=240894,bonus_id=12854/13440/13668,ilevel=334
-trinket1=,id=250215,bonus_id=12854/13440,ilevel=334
-trinket2=,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
-off_hand=,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
+trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=twisted_horrors_tendril,id=281215,bonus_id=12854,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
+off_hand=alnhara_lantern,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
 
 save=MID2_Mage_Arcane_Sunfury.simc
 
@@ -149,22 +149,22 @@ food=harandar_celebration
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=crown_of_the_primal_leywarden,id=271564,bonus_id=13692/13698/13750/13846/13848,gem_id=240967,redirected_base_stats=271874
-neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240898/240898
-shoulder=primal_leywardens_manaflux,id=271562,bonus_id=12854/13694/13697,redirected_base_stats=239031
+head=crown_of_the_primal_leywarden,id=271564,bonus_id=13692/13698/13750/13846/13848,gem_id=240967,enchant_id=8017,redirected_base_stats=271874
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240906/240906
+shoulder=primal_leywardens_manaflux,id=271562,bonus_id=4786/4800/12854/13694/13697,enchant_id=8001
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=4786/4800/12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
 wrist=winters_embrace_bracers,id=251154,bonus_id=4786/12854/13750,gem_id=240918
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13691/13697/13848,redirected_base_stats=268243
-waist=martyrs_waistwrap,id=239649,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
-legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=159234
-feet=cackling_soultreads,id=268255,bonus_id=13662/13848
-finger1=signet_of_snarling_servitude,id=251136,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
-finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
-trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
+waist=martyrs_waistwrap,id=239649,bonus_id=8790/8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
+legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=4786/4800/12854/13693/13698/14049,enchant_id=7935,redirected_base_stats=281235
+feet=cackling_soultreads,id=268255,bonus_id=13662/13848,enchant_id=7993
+finger1=band_of_the_swarmcaller,id=281029,bonus_id=4786/4800/12854/13750,gem_id=240898,enchant_id=7967
+finger2=apex_brutes_claw_ring,id=268252,bonus_id=4786/4800/12854/13750,gem_id=240906,enchant_id=7967
+trinket1=twisted_horrors_tendril,id=281215,bonus_id=4786/4800/12854
 trinket2=font_of_venomous_rage,id=270168,bonus_id=13662/13848
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=8689
-off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/49
+off_hand=alnhara_lantern,id=245769,bonus_id=8790/8960/13751/13771/13836/9627,crafted_stats=32/49
 
 save=MID2_Mage_Frost.simc
 
@@ -183,21 +183,21 @@ food=harandar_celebration
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=crown_of_the_primal_leywarden,id=271564,bonus_id=13692/13698/13750/13846/13848,gem_id=240967,redirected_base_stats=271874
-neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240898/240898
-shoulder=primal_leywardens_manaflux,id=271562,bonus_id=12854/13694/13697,redirected_base_stats=239031
+head=crown_of_the_primal_leywarden,id=271564,bonus_id=13692/13698/13750/13846/13848,gem_id=240967,enchant_id=8017,redirected_base_stats=271874
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240906/240906
+shoulder=primal_leywardens_manaflux,id=271562,bonus_id=4786/4800/12854/13694/13697,enchant_id=8001
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=4786/4800/12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
 wrist=winters_embrace_bracers,id=251154,bonus_id=4786/12854/13750,gem_id=240918
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13691/13697/13848,redirected_base_stats=268243
-waist=martyrs_waistwrap,id=239649,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
-legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=159234
-feet=cackling_soultreads,id=268255,bonus_id=13662/13848
-finger1=signet_of_snarling_servitude,id=251136,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
-finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
-trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
+waist=martyrs_waistwrap,id=239649,bonus_id=8790/8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
+legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=4786/4800/12854/13693/13698/14049,enchant_id=7935,redirected_base_stats=281235
+feet=cackling_soultreads,id=268255,bonus_id=13662/13848,enchant_id=7993
+finger1=band_of_the_swarmcaller,id=281029,bonus_id=4786/4800/12854/13750,gem_id=240898,enchant_id=7967
+finger2=apex_brutes_claw_ring,id=268252,bonus_id=4786/4800/12854/13750,gem_id=240906,enchant_id=7967
+trinket1=twisted_horrors_tendril,id=281215,bonus_id=4786/4800/12854
 trinket2=font_of_venomous_rage,id=270168,bonus_id=13662/13848
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=8689
-off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/49
+off_hand=alnhara_lantern,id=245769,bonus_id=8790/8960/13751/13771/13836/9627,crafted_stats=32/49
 
 save=MID2_Mage_Frost_Frostfire.simc

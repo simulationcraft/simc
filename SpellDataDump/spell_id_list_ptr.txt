@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.5.70077
+Class Spell ID List, wow build 12.1.7.70424
 
 Death Knight
 3714     Path of Frost
@@ -11207,8 +11207,10 @@ Mage
 1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
 1284108 *Conjure Refreshment Table
 1285457 *Frost Mage
+1285931 *Teleport to Dalaran [DNT]
 1286314 *Dissolve Delay and Transport
 1286444  Cauterize
+1292908 *teleport (DNT)
 1294067 *Shimmer
 1294068 *Blink
 1295923  Prismatic Bolt
@@ -15279,6 +15281,7 @@ Paladin
 1283660  Paladin - Midnight PrePatch - 11.2 Class Set 4pc
 1283662  Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283663  Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1286661 *Storyteller's Borrowed Power
 1289616  Divine Steed
 1289617  Divine Steed
 1289728  Holy Armaments

@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.1.5.70077
-static constexpr std::array<specialization_spell_entry_t, 614> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.1.7.70424
+static constexpr std::array<specialization_spell_entry_t, 617> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -614,5 +614,8 @@ static constexpr std::array<specialization_spell_entry_t, 614> __ptr_specializat
   { 13, 1473, 1256942,      0, "Augmentation Evoker"               , 0 },
   { 13, 1465,  356816,      0, "Initial Evoker"                    , 0 },
   { 13, 1465,  365261,      0, "Emerald Blossom"                   , 0 },
+  { 15, 1496, 1249328,      0, "[DNT] Check Armor"                 , 0 },
+  { 15, 1497, 1249330,      0, "[DNT] Check Armor"                 , 0 },
+  { 15, 1498, 1249329,      0, "[DNT] Check Armor"                 , 0 },
 } };
 

@@ -81,7 +81,7 @@ trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=4800/4786/13848,ilevel=344
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=4800/4786/13848,ilevel=344
 main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13846/4800/4786/13848,ilevel=344,enchant_id=8039
 
-save=MID2\MID2_Druid_Feral.simc
+save=MID2_Druid_Feral.simc
 
 # druid=MID2_Druid_Guardian
 # level=90

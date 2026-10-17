@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.1.0.69933
-static constexpr std::array<item_name_description_t, 1056> __item_name_description_data { {
+// Item name descriptions, wow build 12.1.5.70448
+static constexpr std::array<item_name_description_t, 1064> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1054,7 +1054,15 @@ static constexpr std::array<item_name_description_t, 1056> __item_name_descripti
   { 14465, "Corrosive"                                   },
   { 14477, "Delves and War Mode"                         },
   { 14478, "Aspirant and War Mode"                       },
+  { 14484, "Ascendant Venomforged"                       },
+  { 14485, "Ascendant Venomforged: Myth"                 },
+  { 14486, "Ascendant Venomforged: Hero"                 },
   { 14528, "Adventurer"                                  },
   { 14530, "Midnight Season 1"                           },
+  { 14532, "Rank 5/5"                                    },
+  { 14572, "Rank 2/5"                                    },
+  { 14573, "Rank 1/5"                                    },
+  { 14574, "Rank 3/5"                                    },
+  { 14575, "Rank 4/5"                                    },
 } };
 

@@ -5182,6 +5182,8 @@ struct blood_fletching_damage_t : public hunter_ranged_attack_t
   blood_fletching_damage_t( hunter_t* p ) : hunter_ranged_attack_t( "blood_fletching", p, p->talents.blood_fletching_damage )
   {
     background = dual = true;
+    // Bleed damage ignores armor, but the spell is modeled as direct School Damage rather than Periodic Damage, so it does not pick up ignores_armor from the spell data.
+    ignores_armor = true;
   }
 };
 
@@ -5350,6 +5352,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::composite_target_crit_chance( target );
 
+    // 2026-10-14: Arcane Talons causes the Spotters Mark debuff to also increase the crit chance of Aimed Shots until it is consumed by a Rapid Fire.
+    // The regular spotters mark is also affected by Arcane Talons, but since it gets replaced by Sentinels Mark which is not affected by this bug we don't implement it.
+    if ( p()->bugs && p()->talents.arcane_talons.ok() && td( target )->debuffs.spotters_mark_rapid_fire->check() )
+      c += p()->talents.arcane_talons->effectN( 2 ).percent();
+
     return c;
   }
 
@@ -5402,7 +5409,15 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     hunter_td_t* target_data = td( s->target );
 
     if ( p()->talents.blood_fletching.ok() && s->result == RESULT_CRIT )
-      target_data->debuffs.blood_fletching->trigger();
+    {
+      // The bleed is only proc'd by damage dealt after the debuff is applied, so the Aimed Shot crit that 
+      // applies it does not trigger it. The dbc proc callback resolves once impact has fully executed, 
+      //so applying the debuff on a delay puts the potential proc after the applying Aimed Shot crit has resolved.
+      make_event( sim, 1_ms, [ this, t = s->target ]() {
+        if ( !t->is_sleeping() )
+          td( t )->debuffs.blood_fletching->trigger();
+      } );
+    }
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
@@ -6915,6 +6930,12 @@ struct volley_t : public hunter_spell_t
     {
       aoe = -1;
       background = dual = ground_aoe = true;
+
+      // 2026-10-14: Volley's damage is not buffed by Unnatural Causes, despite spelldata suggesting so.
+      if ( p->bugs )
+      {
+        affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      }
 
       if ( p->talents.salvo.ok() )
       {
@@ -9000,10 +9021,6 @@ private:
   hunter_t& p;
 };
 
-namespace live_hunter {
-#include "class_modules/sc_hunter_live.inc"
-};
-
 // HUNTER MODULE INTERFACE ==================================================
 
 struct hunter_module_t: public module_t
@@ -9012,19 +9029,9 @@ struct hunter_module_t: public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove version check and the live hunter file
-    if ( sim->dbc->wowv() >= wowv_t{ 12, 1, 5 } )
-    {
-      auto  p = new hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
-      return p;
-    }
-    else
-    {
-      auto  p = new live_hunter::hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new live_hunter::hunter_report_t( *p ) );
-      return p;
-    }
+    auto  p = new hunter_t( sim, name, r );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
+    return p;
   }
 
   bool valid() const override { return true; }

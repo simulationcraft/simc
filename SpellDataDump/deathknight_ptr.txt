@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70077 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.7.70424 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1177,7 +1177,7 @@ Effects          :
 #4 (id=739365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
 #5 (id=1203568)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 400 | Scaled Value: 400 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 #6 (id=1203569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -1952,8 +1952,8 @@ Effects          :
                    Family Flags: 12, 36, 73, 78, 86, 91
 #6 (id=1226056)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 12, 36, 73, 78, 86, 91
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), A Murder of Crows (131900), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Frenzy (272795), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 12, 36, 73, 78, 86, 91, 99
 #7 (id=1257982)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
@@ -18139,7 +18139,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1226884)  : Apply Aura (6) | Modify Min Speed% (305)
-                   Base Value: 90 | Scaled Value: 90 | Value Multiplier: 1 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=1226885)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
 #4 (id=1226886)  : Apply Aura (6) | Resist Forced Movement% (485)
@@ -21198,7 +21198,7 @@ Effects          :
 #1 (id=1284994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1285178)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1293674)  : Apply Aura (6) | Proc Trigger Spell (42): Blightfall
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1271975 | Target: Self (1)
 Description      : Dark Transformation grants access to Blightfall.
