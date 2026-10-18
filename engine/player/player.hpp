@@ -638,8 +638,18 @@ struct player_t : public actor_t
 
   /// Machine learning helpers
   std::unique_ptr<nn_policy_data_t> parsed_policy;
+
   std::vector<std::unique_ptr<expr_t>> policy_input;
   std::vector<action_t*> policy_actions;
+  std::vector<std::uint8_t> cached_avail;
+
+  struct nothing_opt_t
+  {
+    size_t ctx_mask;
+    bool wait_for_avail;
+  };
+  std::vector<nothing_opt_t> nothing_opts;
+
   std::unique_ptr<nn_trajectory_t> trajectory;
   std::string trajectory_out;
 

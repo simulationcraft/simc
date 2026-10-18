@@ -97,13 +97,43 @@ priority list. Action options such as `use_item,slot=trinket1` work.
   that action's usability check. The network can never choose the action while the
   condition is false. This is useful for rules you are certain of, but every condition
   narrows what the trainer can discover, so leave them out when in doubt.
-- **The special action `nothing`** lets the network deliberately do nothing. It must be
-  the last action line. At a regular decision point it makes the actor wait for a short
-  moment, about 0.1 s. While a cast-while-casting or off-GCD action is available, it
-  means "don't use it now". Include it when waiting can be the right choice, for example
-  to hold an off-GCD spell for a better moment. Leave it out otherwise, since it slows
-  down early training.
 - Leave out actions the actor can never use; they only add noise.
+
+### Waiting: the `nothing` action
+
+The special action `nothing` lets the network deliberately do nothing. What that means
+depends on when the network is asked:
+
+- At a **regular decision point**, the actor waits for a short moment, about 0.1 s, and
+  then decides again.
+- During **off-GCD or cast-while-casting checks**, which simc runs repeatedly while those
+  actions are possible, it means "don't use any of them now".
+
+Options are added after a comma, like action options:
+
+| Option | Meaning |
+|---|---|
+| `ctx=<mask>` | Where this `nothing` can be chosen, as a sum of: `1` regular decisions, `2` off-GCD checks, `4` cast-while-casting checks. For example, `ctx=6` allows it only during off-GCD and cast-while-casting checks. Default: everywhere. |
+| `avail=1` | After choosing it during an off-GCD or cast-while-casting check, skip the following checks until the set of usable actions changes, or until the next regular decision. This turns "not now" into "not until something changes", one decision instead of a series of repeated ones. At regular decision points it behaves like a plain `nothing`. |
+
+Rules:
+
+- A template can contain several `nothing` lines with different options. Each one is a
+  separate choice for the network. All `nothing` lines must come after all other actions.
+- Include `nothing` only when waiting can be the right choice, such as holding an
+  off-GCD spell for a better moment. Choosing it at regular decision points wastes time
+  early in training, while the policy is still mostly random, so restrict it with
+  `ctx=6` unless waiting at regular decision points is genuinely useful.
+
+A typical setup for an actor with off-GCD or cast-while-casting spells:
+
+```
+nothing,ctx=6
+nothing,ctx=6,avail=1
+```
+
+The first skips a single check, for precise timing within a cast. The second holds until
+something changes.
 
 ### Reusing a policy file as a template
 

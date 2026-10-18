@@ -4173,7 +4173,7 @@ void player_t::create_actions()
     }
   }
 
-  bool has_nothing = false;
+  size_t real_actions = 0;
   // Set the policy as the default APL so the sim doesn't blow up; grab the
   // actions from it later
   if ( parsed_policy )
@@ -4194,19 +4194,23 @@ void player_t::create_actions()
     assert( default_ );
     std::string apl_str = "";
     size_t actions = parsed_policy->actions.size();
+    bool last_nothing = false;
     for ( size_t i = 0; i < actions; i++ )
     {
-      // TODO: Better support for offgcd/cwc waits. This is very coarse grained.
-      if ( parsed_policy->actions[ i ] == "nothing" )
+      const auto& act = parsed_policy->actions[ i ];
+      if ( util::str_compare_ci( util::string_split( act, "," )[ 0 ], "nothing" ) )
       {
-        if ( i != actions - 1 )
-          throw new sc_initialization_error( "'nothing' action has to be last" );
-        has_nothing = true;
+        last_nothing = true;
         continue;
       }
+      else if ( last_nothing )
+      {
+        throw sc_initialization_error( "'nothing' actions have to be at the end" );
+      }
+      real_actions++;
       if ( !apl_str.empty() )
         apl_str += "/";
-      apl_str += parsed_policy->actions[ i ];
+      apl_str += act;
     }
 
     default_->action_list_str = apl_str;
@@ -4361,21 +4365,39 @@ void player_t::create_actions()
 
   if ( parsed_policy )
   {
-    bool actions_ok = true;
-    for ( size_t i = 0; i < policy_actions.size(); i++ )
+    if ( policy_actions.size() != real_actions )
+      throw sc_initialization_error( "Mismatched policy actions" );
+
+    for ( size_t i = 0; i < real_actions; i++ )
     {
       if ( policy_actions[ i ]->signature_str != parsed_policy->actions[ i ] )
-        actions_ok = false;
+        throw sc_initialization_error( "Mismatched policy action signatures" );
     }
 
-    if ( has_nothing )
+    for ( size_t i = real_actions; i < parsed_policy->output_size(); i++ )
+    {
+      const auto tokens = util::string_split( parsed_policy->actions[ i ], "," );
+      if ( !util::str_compare_ci( tokens[ 0 ], "nothing" ) )
+        throw sc_initialization_error( fmt::format( "Unknown action '{}'", tokens[ 0 ] ) );
+
+      bool avail_wait = false;
+      size_t exec_ctx = ~0ull;
+      for ( size_t j = 1; j < tokens.size(); j++ )
+      {
+        if ( util::str_prefix_ci( tokens[ j ], "ctx=" ) )
+          exec_ctx = util::to_unsigned( tokens[ j ].substr( 4 ) );
+        else if ( util::str_prefix_ci( tokens[ j ], "avail=" ) )
+          avail_wait = util::to_int( tokens[ j ].substr( 6 ) ) != 0;
+        else
+          throw sc_initialization_error( fmt::format( "Unknown nothing option '{}'", tokens[ j ] ) );
+      }
+
+      if ( exec_ctx == 0 )
+        throw sc_initialization_error( "Unusable nothing action (0 ctx)" );
+
       policy_actions.push_back( nullptr );
-
-    if ( policy_actions.size() != parsed_policy->output_size() )
-      actions_ok = false;
-
-    if ( !actions_ok )
-      throw new sc_initialization_error( "Mismatched policy actions (check for any weird actions)" );
+      nothing_opts.push_back( { exec_ctx, avail_wait } );
+    }
 
     // TODO: This is bit of a hack to get expressions that depend on having an action working (e.g. debuffs).
     // There isn't a player-scope "debuff" (or similar) expression so we use the first action as the context.
@@ -6764,6 +6786,7 @@ void player_t::reset()
     in_boss_encounter = 1;
 
   current_execute_type = execute_type::FOREGROUND;
+  cached_avail.clear();
 
   current_auto_attack_speed = 1.0;
   gcd_current_haste_value   = 1.0;
@@ -14391,11 +14414,15 @@ action_t* player_t::select_policy_action( execute_type et )
   std::vector<uint8_t> available( n_act );
   std::size_t available_count = 0;
   std::size_t available_pos = 0;
+  std::size_t first_wait = n_act;
   for ( std::size_t a = 0; a < n_act; a++ )
   {
     if ( policy_actions[ a ] == nullptr )
     {
-      available[ a ] = 1;
+      if ( first_wait == n_act )
+        first_wait = a;
+
+      available[ a ] = ( nothing_opts[ a - first_wait ].ctx_mask >> static_cast<unsigned>( et ) ) & 1;
     }
     else
     {
@@ -14413,10 +14440,25 @@ action_t* player_t::select_policy_action( execute_type et )
       available_pos = a;
     }
   }
-  if ( available_count == 0 )
+
+  if ( et != execute_type::FOREGROUND && cached_avail.size() && std::equal( available.begin(), available.begin() + first_wait, cached_avail.begin() ) )
     return nullptr;
+  else
+    cached_avail.clear();
+
+  auto pick = [ & ] ( std::size_t ix ) -> action_t*
+  {
+    if ( ix >= n_act )
+      return nullptr;
+    if ( ix >= first_wait && nothing_opts[ ix - first_wait ].wait_for_avail )
+      cached_avail = std::move( available );
+    return policy_actions[ ix ];
+  };
+
+  if ( available_count == 0 )
+    return pick( n_act );
   if ( available_count == 1 )  // forced: nothing to decide, nothing to learn; don't record
-    return policy_actions[ available_pos ];
+    return pick( available_pos );
 
   // Features: raw values are stored, normalized values feed the network.
   std::vector<float> raw( n_in );
@@ -14497,7 +14539,7 @@ action_t* player_t::select_policy_action( execute_type et )
                                  static_cast<uint32_t>( chosen ), log_prob );
   }
 
-  return policy_actions[ chosen ];
+  return pick( chosen );
 }
 
 player_t* player_t::actor_by_name_str( util::string_view name ) const
