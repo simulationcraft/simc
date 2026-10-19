@@ -10318,7 +10318,7 @@ Description      : Restores ${$s1*$d/5} health over $d.  Must remain seated whil
 Tooltip          : Restores $/5;s1 health per second.
 
 Name             : Roasted Moongraze Tenderloin (id=33277) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -18817,7 +18817,7 @@ Effects          :
 Description      : Permanently enchant bracers to increase spell power by $ec1. Cannot be applied to items higher than level $ecix.
 
 Name             : Mechano-Hog (id=60866) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -18830,7 +18830,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Mekgineer's Chopper (id=60867) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -19100,7 +19100,7 @@ Description      : Increases attack power by $s1 for $d.
 Tooltip          : Increases attack power by $s1.
 
 Name             : Pumpkin Pie (id=62044) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19115,7 +19115,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=62045) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19130,7 +19130,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=62049) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19145,7 +19145,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=62050) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19160,7 +19160,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34737 | Target: Self (1)
 
 Name             : Candied Sweet Potato (id=62051) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20253,7 +20253,7 @@ Description      : Restores health and mana every sec for $d. Must remain seated
 Tooltip          : Restores ${$w1/5} health per second.
 
 Name             : Candied Sweet Potato (id=66034) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20268,7 +20268,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34739 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=66035) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20283,7 +20283,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Pumpkin Pie (id=66036) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20298,7 +20298,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=66037) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20313,7 +20313,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=66038) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -24155,7 +24155,7 @@ Effects          :
 Description      : Permanently adds $ec1 Intellect and $ec2 haste to shoulder armor.|n|nCan only be applied to your own armor, and doing so will cause it to become soulbound. Cannot be applied to items above level $ecix.
 
 Name             : Forged Documents (id=86654) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -25005,7 +25005,7 @@ Effects          :
 Description      : Your healing spells have a chance to increase your Versatility by $89182s1 for $89182d.  This effect can stack up to $89182u times.
 
 Name             : Forged Documents (id=89244) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -27012,7 +27012,7 @@ Effects          :
 Description      : Instantly heals you for $s1.
 
 Name             : Enchanted Lantern (id=93841) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -27025,7 +27025,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Magic Lamp (id=93843) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -73361,7 +73361,7 @@ Effects          :
 Description      : Apply the musical track "Songs of the Alliance" to your Sonic Environment Enhancer.
 
 Name             : Songs of the Horde (id=223940) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -73375,7 +73375,7 @@ Effects          :
 Description      : Craft a Songs of the Horde scroll.
 
 Name             : Songs of the Alliance (id=223941) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -89511,7 +89511,7 @@ Effects          :
 Description      : Set out a codex, allowing nearby players to adjust their talents and azerite essences. Cannot affect targets above level $maxcast.
 
 Name             : Sanguine Feather Quill of Lana'thel (id=256301) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -91315,7 +91315,7 @@ Effects          :
 Description      : $@spelldesc259483
 
 Name             : Summon Guardian - Avatar of Sacrifice (id=259663) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -91326,7 +91326,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 151957 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Blood Contract: Sacrifice (id=259665) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -108217,7 +108217,7 @@ Description      : Use the anchor as a weapon.
 Tooltip          : Anchors away!
 
 Name             : Glyph of Storm's Wake (id=289356) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -109370,7 +109370,7 @@ Effects          :
 Description      : Tosses a wad of chum into the water.
 
 Name             : Blood Contract: Bloodshed (id=292012) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -109421,7 +109421,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 149862 | Target: Self (1)
 
 Name             : Blood Contract: Bloodguard (id=292320) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -109445,7 +109445,7 @@ Description      : Summon an Avatar of the Bloodguard to fight by your side whil
 Tooltip          : An Avatar of the Bloodguard is protecting you.
 
 Name             : Blood Contract: Oblivion (id=292322) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -110413,7 +110413,7 @@ Description      : Increases your Intellect by $s1 for $d. Only usable in a Braw
 Tooltip          : Intellect increased by $w1.
 
 Name             : Summon Guardian - Avatar of Bloodshed (id=294628) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -110424,7 +110424,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150805 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Summon Guardian - Avatar of the Bloodguard (id=294629) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -110435,7 +110435,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 151956 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Summon Guardian - Avatar of Oblivion (id=294630) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -113975,7 +113975,7 @@ Effects          :
 Description      : Vision of Perfection gains an enhanced appearance.
 
 Name             : Maintain Summon Guardian - Avatar of Sacrifice (DNT) (id=296357) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -113991,7 +113991,7 @@ Description      : Summon an Avatar of Sacrifice to heal by your side while outd
 Tooltip          : An Avatar of Sacrifice is supporting you.
 
 Name             : Maintain Summon Guardian - Avatar of Oblivion (DNT) (id=296376) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -114007,7 +114007,7 @@ Description      : Summon an Avatar of Oblivion to fight by your side while outd
 Tooltip          : An Avatar of Oblivion is fighting by your side.
 
 Name             : Maintain Summon Guardian - Avatar of Bloodshed (DNT) (id=296377) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -114023,7 +114023,7 @@ Description      : Summon an Avatar of Bloodshed to fight by your side while out
 Tooltip          : An Avatar of Bloodshed is fighting by your side.
 
 Name             : Maintain Summon Guardian - Avatar of Bloodguard (DNT) (id=296379) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -126694,7 +126694,7 @@ Effects          :
 Description      : $@spelldesc268595
 
 Name             : Glyph of Lavish Servings (id=309443) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -147066,7 +147066,7 @@ Tooltip          : Immune to crowd control effects.
 
 Name             : Spectate (id=362709) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -167803,7 +167803,7 @@ Description      : $@spelldesc385804
 
 Name             : [DNT] Activate GCD (id=391221) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 0.75 seconds
@@ -179877,7 +179877,7 @@ Description      : $@spelldesc405076
 
 Name             : Leave Match (id=405882) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore Default Rated Battleground Restrictions (302), Allow Cast While Channeling (308), Ignore instance lock and farm limit on teleport (327), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
@@ -189109,7 +189109,7 @@ Description      : Heals $o1 damage over $d.
 Tooltip          : Healing $w1 damage every second.
 
 Name             : Expedited Takeoff (desc=Racial Passive) (id=430935) [Passive, Hidden] 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -246508,7 +246508,7 @@ $@spelldesc1251666
 
 Name             : Chosen Identity (desc=Racial) (id=1253989) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -246522,7 +246522,7 @@ Description      : Activate to automatically assume your Visage when you leave c
 
 Name             : Chosen Identity (desc=Racial) (id=1253991) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -246538,7 +246538,7 @@ Activate to disable this effect.
 
 Name             : Chosen Identity (desc=Racial) (id=1253992) [Hidden] 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -246550,7 +246550,7 @@ Effects          :
 
 Name             : Visage (desc=Racial) (id=1253994) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -246564,7 +246564,7 @@ Tooltip          : You are in your Visage form.
 
 Name             : Visage (desc=Racial) (id=1253995) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Cooldown         : 1.5 seconds
@@ -246577,7 +246577,7 @@ Description      : Switch between your Dracthyr and Visage forms.
 
 Name             : Visage (desc=Racial Passive) (id=1254008) [Passive, Hidden] 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
@@ -259892,7 +259892,7 @@ Description      : $@spelldesc1279616
 
 Name             : Activating Class (id=1303137) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards

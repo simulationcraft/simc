@@ -1542,7 +1542,7 @@
       { "data_type": "h", "field": "index" },
       { "data_type": "h", "field": "id_filter", "ref": "TradeSkillCategory" },
       { "data_type": "h", "field": "id_skill_up" },
-      { "data_type": "i", "field": "unk_1"},
+      { "data_type": "i", "field": "unk_1", "elements": 2 },
       { "data_type": "I", "field": "mask_race", "elements": 2, "formats": { "cpp": "%#.8x" } }
     ]
   },
