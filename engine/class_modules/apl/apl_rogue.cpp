@@ -161,7 +161,7 @@ void outlaw( player_t* p )
   default_->add_action( "bag_of_tricks" );
 
   build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders  High priority Ambush with Hidden Opportunity." );
-  build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=3", "With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets." );
+  build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=3-(combo_points.deficit=2)", "With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets. At 2 targets, use to fill a remaining 2 CPs." );
   build->add_action( "pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity if at max stacks or if it will expire." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+talent.quick_draw+(talent.quick_draw*talent.fan_the_hammer.rank))&(combo_points>1|rtb_buffs<2|!talent.deal_fate))", "With Fan the Hammer, consume Opportunity if it will not overcap CPs. Fatebound with stage 2 RTB tries to avoid consuming PS at 1CP." );
@@ -174,8 +174,8 @@ void outlaw( player_t* p )
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
   cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&!cooldown.killing_spree.ready|fight_remains<30", "Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=3", "Use Keep it Rolling with at least stage 3 of RtB." );
-  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+(buff.loaded_dice.up&cooldown.between_the_eyes.ready)", "Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and BtE is ready." );
-  cds->add_action( "blade_rush,if=set_bonus.mid1_2pc|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2", "Use Blade Rush if using MID1 tier, or in AoE, or if you will not overcap energy within the gcd on ST." );
+  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+buff.loaded_dice.up&talent.keep_it_rolling", "Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and using KIR." );
+  cds->add_action( "blade_rush,if=set_bonus.mid1_2pc|spell_targets>=3|!buff.adrenaline_rush.up&talent.menacing_rush", "Use Blade Rush if using MID1 tier, or at 3+ targets. At 1-2 targets, avoid pressing during Adrenaline Rush if using Menacing Rush." );
   cds->add_action( "vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up", "Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs." );
   cds->add_action( "shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
