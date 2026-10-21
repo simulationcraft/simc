@@ -9231,10 +9231,18 @@ struct berserking_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    // Make a fallback since it's possible some APLs may want to use haste buffs like this as a conditional
-    buff = make_buff_fallback( data().ok(), p, "berserking", &data() )
-      ->set_cooldown( 0_ms )
-      ->set_pct_buff_type_from_data( true );
+    if ( !data().ok() )
+    {
+      background = true;
+    }
+
+    if ( ! ( buff = buff_t::find( p, "berserking" ) ) )
+    {
+      // Make a fallback since it's possible some APLs may want to use haste buffs like this as a conditional
+      buff = make_buff_fallback( data().ok(), p, "berserking", &data() )
+        ->set_cooldown( 0_ms )
+        ->set_pct_buff_type_from_data( true );
+    }
   }
 
   void execute() override
@@ -9258,7 +9266,12 @@ struct blood_fury_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    if ( data().ok() )
+    if ( ! data().ok() )
+    {
+      background = true;
+    }
+
+    if ( ! ( buff = buff_t::find( p, "blood_fury" ) ) )
     {
       buff = make_buff<stat_buff_t>( p, "blood_fury", &data() )
         ->add_invalidate( CACHE_SPELL_POWER )
@@ -9287,8 +9300,15 @@ struct darkflight_t : public racial_spell_t
     parse_options( options_str );
     target = p;
 
-    if ( data().ok() )
+    if ( ! data().ok() )
+    {
+      background = true;
+    }
+
+    if ( ! ( buff = buff_t::find( p, "darkflight" ) ) )
+    {
       buff = make_buff( p, "darkflight", &data() )->set_movement_speed_buff_from_data();
+    }
   }
 
   void execute() override
@@ -9527,7 +9547,12 @@ struct fireblood_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    if ( data().ok() )
+    if ( ! data().ok() )
+    {
+      background = true;
+    }
+
+    if ( ! ( buff = buff_t::find( p, "fireblood" ) ) )
     {
       auto stat_amount = p->find_spell( 265226 )->effectN( 1 ).average( p ) * 3.0;
 
@@ -12139,7 +12164,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         weapon_status =
             static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
       }
-      else 
+      else
       {
         weapon_e weapon_type = util::parse_weapon_type( splits[ 1 ] );
         if ( weapon_type != WEAPON_NONE )
