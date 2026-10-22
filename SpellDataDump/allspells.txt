@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70448 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70529 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -250903,7 +250903,6 @@ Effects          :
 Description      : Eat me! Results are unpredictable. Only usable in the Shadowlands.
 
 Name             : Execution Sentence (id=343527) [Spell Family (10)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Talent Entry     : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
