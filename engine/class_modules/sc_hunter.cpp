@@ -3807,7 +3807,8 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
 
   if ( up )
   {
-    cooldowns.barbed_shot->adjust( -talents.pack_mentality->effectN( 2 ).time_value() * up );
+    // 2026-10-22: Pack Mentality reduces the cooldown of Barbed Shot by the Wildfire Bomb value (6 sec per Beast) instead of its own (4 sec).
+    cooldowns.barbed_shot->adjust( -talents.pack_mentality->effectN( bugs ? 3 : 2 ).time_value() * up );
     cooldowns.wildfire_bomb->adjust( -talents.pack_mentality->effectN( 3 ).time_value() * up );
 
     if ( buffs.stampede_incoming->check() )
