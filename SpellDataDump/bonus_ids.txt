@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70448 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70529 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8173,7 +8173,6 @@ bonus_id={ 13651 }, base_ilevel={ 246 }, req_ilevel={ 90 }
 bonus_id={ 13652 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 13653 }, base_ilevel={ 285 }, req_ilevel={ 90 }, desc={ Ascendant Voidforged: Hero }, quality={ epic }
 bonus_id={ 13654 }, base_ilevel={ 298 }, req_ilevel={ 90 }, desc={ Ascendant Voidforged: Myth }, quality={ epic }
-bonus_id={ 13655 }, desc={ Ascendant Voidforged }, ilevel_adjust={ 10 }
 bonus_id={ 13660 }, base_ilevel={ 126 }
 bonus_id={ 13661 }, base_ilevel={ 259 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 13668 }, socket={ 1 }
