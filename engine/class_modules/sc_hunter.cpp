@@ -7288,8 +7288,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     hydra_priority = p->rng().range( INT_MAX );
 
   double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
-  if ( p->bugs )
-    outland_venom_value /= 2; // 2026-01-24: Outland Venom is only giving half of its value.
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     ->set_default_value( outland_venom_value )
     ->disable_ticking( true );
