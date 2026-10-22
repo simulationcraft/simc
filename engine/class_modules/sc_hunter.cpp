@@ -3663,7 +3663,8 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
 
     procs.eagles_mark->occur();
 
-    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
+    // 2026-10-22: Moon's Blessing reduces the cooldown of Aimed Shot by 2 sec per Sentinel's Mark instead of 1 sec.
+    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() * ( bugs ? 2 : 1 ) );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
 
     return;
@@ -3707,7 +3708,8 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
 
     procs.eagles_mark->occur();
 
-    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
+    // 2026-10-22: Moon's Blessing reduces the cooldown of Aimed Shot by 2 sec per Sentinel's Mark instead of 1 sec.
+    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() * ( bugs ? 2 : 1 ) );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
   }
 }
