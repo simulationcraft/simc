@@ -5,12 +5,12 @@ level=90
 race=dwarf
 role=attack
 position=back
-talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLmxYGzgx0MAAAADAmxyyMzsYMzMjZmBAzYZDGDjNDAA
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLmxYGzgx0MAAAADAmZ2WmZmFMzMjZmBAzYZDGDjNDAA
 omnium_talents=136822:1/136819:1/136817:1/136821:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
-flask=flask_of_the_magisters_2
+flask=flask_of_the_shattered_sun_2
 food=silvermoon_parade
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
@@ -39,8 +39,9 @@ actions+=/call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_t
 
 # CDS
 actions.cds=blood_fury,if=buff.takedown.up|cooldown.takedown.ready
+actions.cds+=/use_item,name=voracious_heart_of_ulatek
 actions.cds+=/use_item,name=font_of_venomous_rage,if=!buff.takedown.up&!cooldown.takedown.ready|fight_remains<3
-actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!equipped.font_of_venomous_rage
+actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!this_trinket.is.font_of_venomous_rage
 actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)
 actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)
 actions.cds+=/use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown
@@ -97,29 +98,29 @@ actions.sentst+=/kill_command,if=cooldown.takedown.remains
 actions.sentst+=/wildfire_bomb
 actions.sentst+=/takedown
 
-head=skulking_vipers_weeping_fangs,id=271492,bonus_id=1808/13692/13698,ilevel=334,gem_id=240983,enchant_id=7961
-neck=aqirbane_reliquary,id=268265,bonus_id=13668/13708,ilevel=344,gem_id=240898/240898
+head=crushing_coiler_coif,id=271441,bonus_id=12854/13695,ilevel=334,gem_id=240983,enchant_id=7961,crafted_stats=36/32
+neck=aqirbane_reliquary,id=268265,bonus_id=13668/13987,ilevel=344,gem_id=240898/240898
 shoulders=jaws_of_the_skulking_viper,id=271490,bonus_id=13662,ilevel=344,enchant_id=8031,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=skulking_vipers_scuteplate,id=271495,bonus_id=13662/13708,ilevel=344,enchant_id=7987,redirected_base_stats=271876
-wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8793/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
-hands=skulking_vipers_hidepiercers,id=271493,bonus_id=13662,ilevel=334,redirected_base_stats=160213
-waist=farstriders_trophy_belt,id=244581,bonus_id=1808/8793/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
+chest=skulking_vipers_scuteplate,id=271495,bonus_id=13662/13846,ilevel=344,enchant_id=7987,redirected_base_stats=271876
+wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/36
+hands=skulking_vipers_hidepiercers,id=271493,bonus_id=13662/14049,ilevel=334,redirected_base_stats=281238
+waist=farstriders_trophy_belt,id=244581,bonus_id=1808/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/36
 legs=skulking_vipers_coiled_legwraps,id=271491,bonus_id=13662,ilevel=344,enchant_id=8159,redirected_base_stats=268237
-feet=ferocious_scaleboots,id=268233,ilevel=334,enchant_id=7993
-finger1=sickening_signet_of_atroxus,id=252258,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
-finger2=vile_alchemists_band,id=268249,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
+feet=greaves_of_the_noxious_depths,id=271440,bonus_id=12854,ilevel=334,enchant_id=7993,crafted_stats=36/32
+finger1=band_of_the_swarmcaller,id=281029,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,ilevel=344
 trinket2=zuljins_guillotine_technique,id=270173,ilevel=344
-main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=7983
+main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=8689
 
 # Gear Summary
 # gear_ilvl=338.93
 # gear_agility=1924
 # gear_stamina=40850
-# gear_crit_rating=583
-# gear_haste_rating=966
-# gear_mastery_rating=1566
+# gear_crit_rating=1006
+# gear_haste_rating=1038
+# gear_mastery_rating=1070
 # gear_versatility_rating=107
 # gear_leech_rating=249
 # gear_armor=1740

@@ -32,6 +32,7 @@ actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped
 actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.font_of_venomous_rage|equipped.vexhuls_everflowing_gland|equipped.spiritrending_poison|equipped.ophidian_bone_whistle
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
+actions.precombat+=/use_item,name=stormbound_emblem_of_dazar,if=!equipped.vile_vial_of_volatile_venom|active_enemies<3
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
@@ -147,7 +148,7 @@ actions.sf_filler+=/pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.he
 actions.sf_filler+=/flamestrike,if=buff.pyroclasm.up&active_enemies>=variable.sf_filler_flamestrike
 actions.sf_filler+=/pyroblast,if=buff.pyroclasm.up
 # Cast Scorch in execute or with a Heat Shimmer proc.
-actions.sf_filler+=/scorch,if=talent.scald&scorch_execute.active|buff.heat_shimmer.react&(firestarter.active|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike)
+actions.sf_filler+=/scorch,if=talent.scald&scorch_execute.active|buff.heat_shimmer.react&(firestarter.active|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike|active_enemies<variable.sf_filler_flamestrike)
 actions.sf_filler+=/fireball
 actions.sf_filler+=/call_action_list,name=fireblast
 
@@ -158,24 +159,24 @@ back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
 wrists=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=36/40
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13335/13848,ilevel=344,redirected_base_stats=268243
-waist=caustic_chainwrapped_sash,id=268257,bonus_id=12854/13335/13668,ilevel=334,gem_id=240894
+waist=caustic_chainwrapped_sash,id=268257,bonus_id=12854/13335/13668,ilevel=334,gem_id=240916
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13335,ilevel=334,enchant_id=7935,redirected_base_stats=268236
 feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
-finger1=alluring_bubbleband,id=268266,bonus_id=12854/13335/13668,ilevel=334,gem_id=240916,enchant_id=7967
+finger1=band_of_the_swarmcaller,id=281029,bonus_id=12854/13335/13668,ilevel=334,gem_id=240916,enchant_id=7967
 finger2=ritual_binders_ring,id=159459,bonus_id=12854/13440/13668,ilevel=334,gem_id=240906,enchant_id=7967
-trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
-trinket2=wavecallers_seastone,id=270167,bonus_id=12854/13335,ilevel=334
+trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440/13852,ilevel=340
+trinket2=stormbound_emblem_of_dazar,id=273649,bonus_id=12854/13440/13852,ilevel=340
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8689
-off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13852,ilevel=338,crafted_stats=36/40
 
 # Gear Summary
-# gear_ilvl=337.38
-# gear_stamina=40526
-# gear_intellect=2572
+# gear_ilvl=338.56
+# gear_stamina=40685
+# gear_intellect=2792
 # gear_crit_rating=186
-# gear_haste_rating=1577
-# gear_mastery_rating=774
-# gear_versatility_rating=674
+# gear_haste_rating=1220
+# gear_mastery_rating=1069
+# gear_versatility_rating=595
 # gear_avoidance_rating=167
 # gear_armor=733
 # set_bonus=midnight_season_2_2pc=1
