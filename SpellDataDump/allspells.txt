@@ -194963,6 +194963,7 @@ Effects          :
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282448) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Spell Type       : None
@@ -194971,7 +194972,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742088)   : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: Source (22) -> Enemy in Area (15)
@@ -462984,6 +462985,7 @@ Effects          :
 Description      : $@spelldesc1243807
 
 Name             : Frantic Frenzy (id=1243996) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -462992,7 +462994,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1244517)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -486119,6 +486121,7 @@ Effects          :
 Description      : Slash the target, dealing $1263890s1 Physical damage and an additional ${$1271863s2*$1271863d/$1271863t2} Bleed damage over $1271863d. If this effect is reapplied, any remaining damage is added to the new Bleed.
 
 Name             : Unseen Slash (id=1263840) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -486127,7 +486130,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1274761)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -486258,6 +486261,7 @@ Effects          :
 Description      : Swipe nearby targets, dealing $1263908s1 Physical damage. Damage reduced beyond 5 targets.
 
 Name             : Unseen Swipe (id=1263903) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -486266,7 +486270,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1274853)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
