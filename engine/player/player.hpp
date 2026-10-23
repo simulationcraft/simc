@@ -638,6 +638,7 @@ struct player_t : public actor_t
 
   /// Machine learning helpers
   std::unique_ptr<nn_policy_data_t> parsed_policy;
+  bool force_argmax = false;
 
   std::vector<std::unique_ptr<expr_t>> policy_input;
   std::vector<action_t*> policy_actions;

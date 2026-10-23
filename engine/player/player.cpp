@@ -13409,6 +13409,7 @@ void player_t::create_options()
   add_option( opt_bool( "collect_pet_sequence_data", collect_pet_sequence_data ) );
   add_option( opt_func( "policy", parse_policy ) );
   add_option( opt_string( "trajectory", trajectory_out ) );
+  add_option( opt_bool( "force_argmax", force_argmax ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );
@@ -14534,7 +14535,7 @@ action_t* player_t::select_policy_action( execute_type et )
       sum += weight[ a ] = std::exp( logits[ a ] - max_logit );
 
   std::size_t chosen = n_act;
-  if ( trajectory )
+  if ( trajectory && !force_argmax )
   {
     // Training: sample from the masked softmax.
     double u = rng().real() * sum;
