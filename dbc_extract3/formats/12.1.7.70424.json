@@ -1730,6 +1730,7 @@
   "SpellDuration": {
     "fields": [
       { "data_type": "i", "field": "duration_1" },
+      { "data_type": "i", "field": "duration_per_level" },
       { "data_type": "i", "field": "duration_2" },
       { "data_type": "i", "field": "duration_3" }
     ]
