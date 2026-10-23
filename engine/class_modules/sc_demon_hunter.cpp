@@ -5515,16 +5515,19 @@ struct the_hunt_base_t
 
     void impact( action_state_t* s ) override
     {
-      base_t::impact( s );
-
       // 10/21/2026 The Hunt Dot won't repply or refresh any current Hunt Dot on the primary target of the Hunt but will
-      // refresh/reapply the non-primary targets
+      // refresh/reapply the non-primary targets. This is replicated by checking the primary target of the_hunt_damage
+      // impact action and removing the target if the_hunt_dot is already ticking
+      impact_action->target_cache.is_valid = false;
+
       if ( s->chain_target == 0 && td( s->target )->dots.the_hunt->is_ticking() )
       {
-        impact_action->target_cache.is_valid = false;
-        impact_action->set_target( s->target );
-        impact_action->target_filter_callback = secondary_targets_only();
+        std::vector<player_t*>& target_list = impact_action->target_list();
+        impact_action->target_list().erase( std::remove( target_list.begin(), target_list.end(), s->target ),
+                                            target_list.end() );
       }
+
+      base_t::impact( s );
 
       if ( s->chain_target == 0 && dh()->talent.devourer.devourers_bite->ok() )
       {
