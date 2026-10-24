@@ -194963,6 +194963,7 @@ Effects          :
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282448) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Spell Type       : None
@@ -194971,7 +194972,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742088)   : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: Source (22) -> Enemy in Area (15)
@@ -357299,13 +357300,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108026)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -41 | Scaled Value: -41
+                   Base Value: -38 | Scaled Value: -38
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 38, 46, 90
+Hotfixed         : Base Value (-41 -> -38)
 #2 (id=1108027)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -41 | Scaled Value: -41 | Misc Value: 1
+                   Base Value: -38 | Scaled Value: -38 | Misc Value: 1
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 46
+Hotfixed         : Base Value (-41 -> -38)
 #3 (id=1108028)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
@@ -357390,9 +357393,13 @@ Effects          :
 #9 (id=1266555)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Target: Self (1)
 #10 (id=1315666) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value 2: 3448 (Label) | Target: Self (1)
+                   Base Value: -32 | Scaled Value: -32 | Misc Value 2: 3448 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-50 -> -32)
 #11 (id=1315671) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 6 | Misc Value 2: 4586 (Label) | Target: Self (1)
+#12 (id=1364784) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
+                   Base Value: -32 | Scaled Value: -32 | Misc Value: 6 | Misc Value 2: 3448 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Scars of Suffering (id=428232) [Spell Family (107), Passive] 
@@ -366587,7 +366594,8 @@ Family Flags     : 0, 24, 43, 59, 78, 127
 Attributes       : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123513)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.69884 | PvP Coefficient: 2.704 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.69884 | PvP Coefficient: 2.1632 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (2.704 -> 2.1632)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
@@ -371422,7 +371430,8 @@ Family Flags     : 3, 96, 122
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131321)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.25 | PvP Coefficient: 0.667 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.25 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.667 -> 0.8)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 
@@ -379076,11 +379085,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
                  : 3385
+                 : 7439
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138787)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | PvP Coefficient: 1.25 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 #2 (id=1138788)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1138789)  : Dummy (3)
@@ -426175,8 +426186,9 @@ Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwal
 Family Flags     : 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1184878)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
+#1 (id=1184878)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : Attribute (2048 -> 133120)
 #2 (id=1185192)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
                    Modified By: Fire Nova (1260666 effect#1)
@@ -441348,7 +441360,8 @@ Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.741 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.89 | Radius: 8 yards | Target: at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.741 -> 0.89)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
@@ -462984,6 +462997,7 @@ Effects          :
 Description      : $@spelldesc1243807
 
 Name             : Frantic Frenzy (id=1243996) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -462992,7 +463006,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1244517)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -476347,13 +476361,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264664)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -9.0644 | Scaled Value: -9.0644 | Target: Self (1)
+                   Base Value: -18 | Scaled Value: -18 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
+Hotfixed         : Base Value (-9.0644 -> -18)
 #2 (id=1264855)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -9.0644 | Scaled Value: -9.0644 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -18 | Scaled Value: -18 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
+Hotfixed         : Base Value (-9.0644 -> -18)
 #3 (id=1264856)  : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 2 (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
@@ -484933,7 +484949,8 @@ Family Flags     : 3, 22, 67
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1273366)  : School Damage (2): fire | Attributes: Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.813 | PvP Coefficient: 0.33 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.813 | PvP Coefficient: 0.396 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.33 -> 0.396)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1262843
 
@@ -486119,6 +486136,7 @@ Effects          :
 Description      : Slash the target, dealing $1263890s1 Physical damage and an additional ${$1271863s2*$1271863d/$1271863t2} Bleed damage over $1271863d. If this effect is reapplied, any remaining damage is added to the new Bleed.
 
 Name             : Unseen Slash (id=1263840) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -486127,7 +486145,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1274761)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -486258,6 +486276,7 @@ Effects          :
 Description      : Swipe nearby targets, dealing $1263908s1 Physical damage. Damage reduced beyond 5 targets.
 
 Name             : Unseen Swipe (id=1263903) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -486266,7 +486285,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Active Defense (21), No Threat (42), Require All Targets (58), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1274853)  : Apply Aura (6) | Fixate (128)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -496909,9 +496928,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1283343)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 3 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
+Hotfixed         : PvP Coefficient (3 -> 5)
 #2 (id=1283344)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
