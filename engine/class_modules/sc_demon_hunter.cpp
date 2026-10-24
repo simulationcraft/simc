@@ -5491,7 +5491,6 @@ struct the_hunt_dot_t : public demon_hunter_spell_t
   {
     dual         = true;
     aoe          = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
-    dot_behavior = DOT_NONE;
 
     // 09/20/2026 The Hunt does not benefit from chaotic disposition
     affected_by.chaotic_disposition = false;
@@ -5516,6 +5515,18 @@ struct the_hunt_base_t
 
     void impact( action_state_t* s ) override
     {
+      // 10/21/2026 The Hunt Dot won't repply or refresh any current Hunt Dot on the primary target of the Hunt but will
+      // refresh/reapply the non-primary targets. This is replicated by checking the primary target of the_hunt_damage
+      // impact action and removing the target if the_hunt_dot is already ticking
+      impact_action->target_cache.is_valid = false;
+
+      if ( s->chain_target == 0 && td( s->target )->dots.the_hunt->is_ticking() )
+      {
+        std::vector<player_t*>& target_list = impact_action->target_list();
+        impact_action->target_list().erase( std::remove( target_list.begin(), target_list.end(), s->target ),
+                                            target_list.end() );
+      }
+
       base_t::impact( s );
 
       if ( s->chain_target == 0 && dh()->talent.devourer.devourers_bite->ok() )
