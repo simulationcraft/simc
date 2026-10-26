@@ -240,7 +240,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10" );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|target.time_to_pct_20>60)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10" );
   default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>20|raid_event.pull.in>45|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
   default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
