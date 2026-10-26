@@ -5969,6 +5969,15 @@ struct explosive_shot_t final : public explosive_shot_base_t
     return explosive_shot_base_t::ready();
   }
 
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    // Recasting under Unstable Trigger does not restart the cooldown.
+    if ( p()->buffs.unstable_trigger->check() )
+      return;
+
+    explosive_shot_base_t::update_ready( cd_duration );
+  }
+
   double cost() const override
   {
     if ( p()->buffs.unstable_trigger->check() )
