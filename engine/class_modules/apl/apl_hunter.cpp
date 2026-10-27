@@ -135,13 +135,15 @@ void beast_mastery( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd|full_recharge_time<gcd" );
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
-  st->add_action( "kill_command,if=howl_summon.ready|(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1.8)" );
+  st->add_action( "barbed_shot,if=howl_summon.ready&!buff.natures_ally.react&cooldown.barbed_shot.charges_fractional>1.5" );
+  st->add_action( "kill_command,if=howl_summon.ready|(cooldown.bestial_wrath.remains>full_recharge_time&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1.8)" );
   st->add_action( "cobra_shot,if=buff.cobra_fang.at_max_stacks" );
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
+  trinkets->add_action( "use_item,name=voracious_heart_of_ulatek,if=cooldown.bestial_wrath.remains<6" );
   trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(cooldown.bestial_wrath.ready|cooldown.bestial_wrath.remains<this_trinket.proc.any_dps.duration-15)|fight_remains<21" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!potion.liquid_luster|!equipped.font_of_venomous_rage|((buff.liquid_luster.up&buff.liquid_luster.remains<6)|(fight_remains<cooldown.potion.remains&!buff.liquid_luster.up))|fight_remains<10" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&(!potion.liquid_luster|!equipped.font_of_venomous_rage|((buff.liquid_luster.up&buff.liquid_luster.remains<6)|(fight_remains<cooldown.potion.remains&!buff.liquid_luster.up)))|fight_remains<10" );
 }
 //beast_mastery_apl_end
 
@@ -240,7 +242,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10" );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|target.time_to_pct_20>60)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10" );
   default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>20|raid_event.pull.in>45|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
   default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
@@ -450,7 +452,7 @@ void survival( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_item,name=voracious_heart_of_ulatek" );
+  cds->add_action( "use_item,name=voracious_heart_of_ulatek,if=buff.tip_of_the_spear.up" );
   cds->add_action( "use_item,name=font_of_venomous_rage,if=!buff.takedown.up&!cooldown.takedown.ready|fight_remains<3" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&!this_trinket.is.font_of_venomous_rage" );
   cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)" );
@@ -474,11 +476,11 @@ void survival( player_t* p )
   plst->add_action( "kill_command,if=cooldown.takedown.remains" );
   plst->add_action( "takedown" );
 
-  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
-  sentst->add_action( "boomstick" );
+  sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs|time<10&cooldown.boomstick.ready&focus<110)", "ST - Sent" );
+  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentst->add_action( "wildfire_bomb,if=(debuff.sentinels_mark.remains|full_recharge_time<4)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
+  sentst->add_action( "takedown,if=(buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs)&!(time<10&cooldown.boomstick.ready)" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "raptor_strike" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains" );
@@ -498,7 +500,8 @@ void survival( player_t* p )
 
   sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "AOE - Sent" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  sentcleave->add_action( "wildfire_bomb,target_if=max:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
+  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=1&cooldown.takedown.remains&focus<100" );
+  sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentcleave->add_action( "takedown,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentcleave->add_action( "moonlight_chakram,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
