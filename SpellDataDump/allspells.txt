@@ -361749,7 +361749,8 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119510)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 2 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=1165092)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $?c2[Verdant Embrace heals for an additional $s1% over $409895d.][Upheaval deals $s2% additional damage over $431620d.]
@@ -476863,6 +476864,9 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Living Flame (361500)
                    Family Flags: 50
+#9 (id=1367980)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 6 | Misc Value 2: 7444 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Restoration Shaman (id=1256945) [Spell Family (11), Passive, Hidden] 
 Class            : Restoration Shaman
@@ -506742,6 +506746,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
+                 : 7444
 Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1310930)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
