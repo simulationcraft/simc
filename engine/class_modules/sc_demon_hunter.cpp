@@ -5493,15 +5493,15 @@ struct the_hunt_dot_t : public demon_hunter_spell_t
     aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
 
     // 10/21/2026 The Hunt Dot won't repply or refresh any current Hunt Dot on the primary target of the Hunt but will
-    // refresh/reapply the non-primary targets. This is replicated by checking the primary target of the_hunt_dot
-    // action and removing the target if the_hunt_dot is already ticking
-    target_filter_callback = secondary_targets_only_hunt();
+    // refresh/reapply the non-primary targets. This is replicated by only hitting secondary targets, and only the
+    // primary target if The Hunt Dot is not already up
+    target_filter_callback = secondary_targets_only_hunt_dot();
 
     // 09/20/2026 The Hunt does not benefit from chaotic disposition
     affected_by.chaotic_disposition = false;
   }
 
-  target_filter_callback_t secondary_targets_only_hunt()
+  target_filter_callback_t secondary_targets_only_hunt_dot()
   {
     return
         [ this ]( const action_t* a, player_t* t ) { return t != a->target || !td( t )->dots.the_hunt->is_ticking(); };
