@@ -12536,7 +12536,7 @@ void demon_hunter_t::fury_state_t::drain()
   if ( dh()->resources.current[ RESOURCE_FURY ] <= 0.0 )
   {
     bool cannot_end_meta = ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() ) ||
-                           ( dh()->executing && dh()->executing->id == dh()->talent.devourer.collapsing_star->id() );
+                           ( dh()->executing && dh()->executing->id == dh()->spec.collapsing_star_spell->id() );
 
     if ( !cannot_end_meta )
     {
