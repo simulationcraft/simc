@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70448 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -269,7 +269,7 @@ Labels           : 16: Class Spells
                  : 1658: Totemic Focus (382201 effect#2)
 Proc Chance      : 100%
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
-Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Stormstream Totem (1267093 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effect#17), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
@@ -1084,7 +1084,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effects: #1, #2), Stormstream Totem (1267093 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effects: #1, #2, #17), Stormstream Totem (1267093 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Triggered By     : Healing Stream (5672)
 Family Flags     : 13, 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -7101,7 +7101,7 @@ Spell Type       : Magic
 Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
-Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Stormstream Totem (1267093 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effect#17), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
@@ -11526,7 +11526,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1658: Totemic Focus (382201 effect#2)
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Stormstream Totem (1267093 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effect#17), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Allow Class Ability Procs (416)
 Effects          :
@@ -12319,7 +12319,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Stormstream Totem (1267093 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effect#17), Stormstream Totem (1267093 effect#1)
 Triggered By     : Poison Cleansing (383014)
 Family Flags     : 13
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Extra Initial Period (169), Allow Class Ability Procs (416)
@@ -16581,8 +16581,9 @@ Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwal
 Family Flags     : 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1184878)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
+#1 (id=1184878)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : Attribute (2048 -> 133120)
 #2 (id=1185192)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
                    Modified By: Fire Nova (1260666 effect#1)
@@ -17921,6 +17922,14 @@ Effects          :
                    Family Flags: 28
 #15 (id=1350158) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Misc Value 2: 7096 (Label) | Target: Self (1)
+#16 (id=1365323) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 7096 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#17 (id=1367430) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 7443 (Label) | Target: Self (1)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
+                   Family Flags: 13
+Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Molten Wrath (id=1258843) [Spell Family (11), Passive, Hidden] 
@@ -18603,7 +18612,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 5899: Stormstream Totem (1267016 effect#2)
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effects: #1, #2), Stormstream Totem (1267093 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effects: #1, #2, #17), Stormstream Totem (1267093 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Triggered By     : Stormstream Totem (1267765)
 Family Flags     : 13, 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -18624,7 +18633,7 @@ Labels           : 16: Class Spells
                  : 1658: Totemic Focus (382201 effect#2)
 Proc Chance      : 100%
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
-Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Stormstream Totem (1267093 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Quickstream (1253099 effect#1), Restoration Shaman (1256945 effect#17), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
@@ -18646,6 +18655,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+                 : 7443
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)

@@ -161,6 +161,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.font_of_venomous_rage|equipped.vexhuls_everflowing_gland|equipped.spiritrending_poison|equipped.ophidian_bone_whistle" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
+  precombat->add_action( "use_item,name=stormbound_emblem_of_dazar,if=!equipped.vile_vial_of_volatile_venom|active_enemies<3" );
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "call_action_list,name=cds" );
@@ -245,7 +246,7 @@ void fire( player_t* p )
   sf_filler->add_action( "pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2|buff.hyperthermia.up" );
   sf_filler->add_action( "flamestrike,if=buff.pyroclasm.up&active_enemies>=variable.sf_filler_flamestrike", "Spend Pyroclasm immediately." );
   sf_filler->add_action( "pyroblast,if=buff.pyroclasm.up" );
-  sf_filler->add_action( "scorch,if=talent.scald&scorch_execute.active|buff.heat_shimmer.react&(firestarter.active|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike)", "Cast Scorch in execute or with a Heat Shimmer proc." );
+  sf_filler->add_action( "scorch,if=talent.scald&scorch_execute.active|buff.heat_shimmer.react&(firestarter.active|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike|active_enemies<variable.sf_filler_flamestrike)", "Cast Scorch in execute or with a Heat Shimmer proc." );
   sf_filler->add_action( "fireball" );
   sf_filler->add_action( "call_action_list,name=fireblast" );
 }

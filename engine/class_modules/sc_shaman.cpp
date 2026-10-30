@@ -13461,11 +13461,11 @@ void shaman_t::init_action_list_enhancement()
   cooldowns->add_action( "use_item,slot=trinket2,if=!variable.trinket2_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))|!trinket.2.has_use_buff)" );
   cooldowns->add_action( "use_item,name=font_of_venomous_rage,if=!buff.ascendance.up&((!trinket.1.has_use_buff&!trinket.2.has_use_buff)|time>=20)" );
   cooldowns->add_action( "potion,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%300<=30)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  cooldowns->add_action( "blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.blood_fury.cooldown<=action.blood_fury.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  cooldowns->add_action( "berserking,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  cooldowns->add_action( "fireblood,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  cooldowns->add_action( "ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)|cooldown.ascendance.remains<gcd.max)" );
+  cooldowns->add_action( "blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|(fight_remains%%action.blood_fury.cooldown<=action.blood_fury.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
+  cooldowns->add_action( "berserking,if=(buff.ascendance.up|buff.doom_winds.up|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
+  cooldowns->add_action( "fireblood,if=(buff.ascendance.up|buff.doom_winds.up|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
+  cooldowns->add_action( "ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)|cooldown.ascendance.remains<gcd.max)" );
 
   // Stormbringer Single Target
   single_sb->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)" );
@@ -13499,24 +13499,23 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "flame_shock" );
 
   // Totemic Single Target
-  single_totemic->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0" );
-  single_totemic->add_action( "flame_shock,if=!ticking" );
   single_totemic->add_action( "surging_totem,if=raid_event.adds.in>=30|fight_remains<=30" );
+  single_totemic->add_action( "crash_lightning,if=action.voltaic_blaze.ready&!dot.flame_shock.ticking" );
+  single_totemic->add_action( "voltaic_blaze,if=!dot.flame_shock.ticking" );
+  single_totemic->add_action( "flame_shock,if=!ticking" );
   single_totemic->add_action( "call_action_list,name=cooldowns" );
   single_totemic->add_action( "sundering,if=(talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled)&(raid_event.adds.in>=30|fight_remains<=12)" );
   single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
+  single_totemic->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc&(!buff.doom_winds.up|buff.maelstrom_weapon.stack<8)" );
+  single_totemic->add_action( "primordial_storm,if=buff.bloodlust.up&buff.maelstrom_weapon.stack>=9" );
   single_totemic->add_action( "doom_winds,if=raid_event.adds.in>=30|fight_remains<=10" );
-  single_totemic->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc" );
-  single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
-  single_totemic->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)" );
+  single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled|(talent.thorims_invocation.enabled&(buff.doom_winds.up|buff.ascendance.up))" );
   single_totemic->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.ascendance.up" );
   single_totemic->add_action( "ascendance,if=ti_lightning_bolt" );
-  single_totemic->add_action( "crash_lightning,if=talent.thorims_invocation.enabled&buff.doom_winds.up|buff.ascendance.up" );
+  single_totemic->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)" );
   single_totemic->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up" );
-  single_totemic->add_action( "lightning_bolt,if=talent.elemental_tempo.enabled&(buff.maelstrom_weapon.stack>=5&(cooldown.lava_lash.remains>gcd.max)&(cooldown.lava_lash.remains<=buff.maelstrom_weapon.stack*0.3)|buff.maelstrom_weapon.stack>=10)" );
-  single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up" );
+  single_totemic->add_action( "lightning_bolt,if=talent.elemental_tempo.enabled&buff.hot_hand.up&buff.maelstrom_weapon.stack>=9&(cooldown.lava_lash.remains>gcd.max)&(cooldown.lava_lash.remains<=buff.maelstrom_weapon.stack*0.3)" );
   single_totemic->add_action( "lava_lash" );
-  single_totemic->add_action( "sundering,if=cooldown.surging_totem.remains>25" );
   single_totemic->add_action( "stormstrike" );
   single_totemic->add_action( "voltaic_blaze" );
   single_totemic->add_action( "crash_lightning" );

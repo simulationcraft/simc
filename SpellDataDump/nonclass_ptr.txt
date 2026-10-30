@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.7.70424 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.7.70493 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -10318,7 +10318,7 @@ Description      : Restores ${$s1*$d/5} health over $d.  Must remain seated whil
 Tooltip          : Restores $/5;s1 health per second.
 
 Name             : Roasted Moongraze Tenderloin (id=33277) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -18817,7 +18817,7 @@ Effects          :
 Description      : Permanently enchant bracers to increase spell power by $ec1. Cannot be applied to items higher than level $ecix.
 
 Name             : Mechano-Hog (id=60866) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -18830,7 +18830,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Mekgineer's Chopper (id=60867) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -19100,7 +19100,7 @@ Description      : Increases attack power by $s1 for $d.
 Tooltip          : Increases attack power by $s1.
 
 Name             : Pumpkin Pie (id=62044) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19115,7 +19115,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=62045) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19130,7 +19130,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=62049) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19145,7 +19145,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=62050) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -19160,7 +19160,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34737 | Target: Self (1)
 
 Name             : Candied Sweet Potato (id=62051) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20253,7 +20253,7 @@ Description      : Restores health and mana every sec for $d. Must remain seated
 Tooltip          : Restores ${$w1/5} health per second.
 
 Name             : Candied Sweet Potato (id=66034) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20268,7 +20268,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34739 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=66035) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20283,7 +20283,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Pumpkin Pie (id=66036) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20298,7 +20298,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=66037) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -20313,7 +20313,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=66038) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -24155,7 +24155,7 @@ Effects          :
 Description      : Permanently adds $ec1 Intellect and $ec2 haste to shoulder armor.|n|nCan only be applied to your own armor, and doing so will cause it to become soulbound. Cannot be applied to items above level $ecix.
 
 Name             : Forged Documents (id=86654) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -25005,7 +25005,7 @@ Effects          :
 Description      : Your healing spells have a chance to increase your Versatility by $89182s1 for $89182d.  This effect can stack up to $89182u times.
 
 Name             : Forged Documents (id=89244) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -27012,7 +27012,7 @@ Effects          :
 Description      : Instantly heals you for $s1.
 
 Name             : Enchanted Lantern (id=93841) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -27025,7 +27025,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
 Name             : Magic Lamp (id=93843) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -73361,7 +73361,7 @@ Effects          :
 Description      : Apply the musical track "Songs of the Alliance" to your Sonic Environment Enhancer.
 
 Name             : Songs of the Horde (id=223940) 
-Race             :  (0x4e0ab3b200000000)
+Race             : Orc, Undead, Tauren, Troll, Goblin, Blood Elf, Vulpera, Mag'har Orc, Dracthyr, Earthen, Haranir, Pandaren, Nightborne, Highmountain Tauren, Zandalari Troll (0xaa2aaaaa4e0ab3b2)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -73375,7 +73375,7 @@ Effects          :
 Description      : Craft a Songs of the Horde scroll.
 
 Name             : Songs of the Alliance (id=223941) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -89511,7 +89511,7 @@ Effects          :
 Description      : Set out a codex, allowing nearby players to adjust their talents and azerite essences. Cannot affect targets above level $maxcast.
 
 Name             : Sanguine Feather Quill of Lana'thel (id=256301) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -91315,7 +91315,7 @@ Effects          :
 Description      : $@spelldesc259483
 
 Name             : Summon Guardian - Avatar of Sacrifice (id=259663) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -91326,7 +91326,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 151957 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Blood Contract: Sacrifice (id=259665) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -108217,7 +108217,7 @@ Description      : Use the anchor as a weapon.
 Tooltip          : Anchors away!
 
 Name             : Glyph of Storm's Wake (id=289356) 
-Race             :  (0xb1354c4d00000000)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -109370,7 +109370,7 @@ Effects          :
 Description      : Tosses a wad of chum into the water.
 
 Name             : Blood Contract: Bloodshed (id=292012) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -109421,7 +109421,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 149862 | Target: Self (1)
 
 Name             : Blood Contract: Bloodguard (id=292320) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -109445,7 +109445,7 @@ Description      : Summon an Avatar of the Bloodguard to fight by your side whil
 Tooltip          : An Avatar of the Bloodguard is protecting you.
 
 Name             : Blood Contract: Oblivion (id=292322) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -110355,6 +110355,15 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 95595 | Misc Value 2: 436 | Target: Self (1)
 Description      : Create a soulbound item appropriate for your current level and Loot Specialization ($@lootspec).
 
+Name             : Ping (id=294447) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=763086)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Nearby Target (38)
+
 Name             : Brawler's Coastal Healing Potion (id=294622) 
 School           : Physical
 Spell Type       : None
@@ -110413,7 +110422,7 @@ Description      : Increases your Intellect by $s1 for $d. Only usable in a Braw
 Tooltip          : Intellect increased by $w1.
 
 Name             : Summon Guardian - Avatar of Bloodshed (id=294628) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -110424,7 +110433,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150805 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Summon Guardian - Avatar of the Bloodguard (id=294629) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -110435,7 +110444,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 151956 | Misc Value 2: 4183 | Radius: 10 yards | Target: Summoner in Area (32)
 
 Name             : Summon Guardian - Avatar of Oblivion (id=294630) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -113975,7 +113984,7 @@ Effects          :
 Description      : Vision of Perfection gains an enhanced appearance.
 
 Name             : Maintain Summon Guardian - Avatar of Sacrifice (DNT) (id=296357) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -113991,7 +114000,7 @@ Description      : Summon an Avatar of Sacrifice to heal by your side while outd
 Tooltip          : An Avatar of Sacrifice is supporting you.
 
 Name             : Maintain Summon Guardian - Avatar of Oblivion (DNT) (id=296376) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -114007,7 +114016,7 @@ Description      : Summon an Avatar of Oblivion to fight by your side while outd
 Tooltip          : An Avatar of Oblivion is fighting by your side.
 
 Name             : Maintain Summon Guardian - Avatar of Bloodshed (DNT) (id=296377) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -114023,7 +114032,7 @@ Description      : Summon an Avatar of Bloodshed to fight by your side while out
 Tooltip          : An Avatar of Bloodshed is fighting by your side.
 
 Name             : Maintain Summon Guardian - Avatar of Bloodguard (DNT) (id=296379) [Hidden] 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -126694,7 +126703,7 @@ Effects          :
 Description      : $@spelldesc268595
 
 Name             : Glyph of Lavish Servings (id=309443) 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -147066,7 +147075,7 @@ Tooltip          : Immune to crowd control effects.
 
 Name             : Spectate (id=362709) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -167803,7 +167812,7 @@ Description      : $@spelldesc385804
 
 Name             : [DNT] Activate GCD (id=391221) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 0.75 seconds
@@ -179877,7 +179886,7 @@ Description      : $@spelldesc405076
 
 Name             : Leave Match (id=405882) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore Default Rated Battleground Restrictions (302), Allow Cast While Channeling (308), Ignore instance lock and farm limit on teleport (327), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
@@ -188107,6 +188116,27 @@ Effects          :
 Description      : Toss the Moonfish back into the waters of Amirdrassil, applying a stack of Moonfish Essence.
 Tooltip          : The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.
 
+Name             : Sunfish Essence (id=427134) 
+School           : Physical
+Spell Type       : None
+Range            : 12 - 15 yards
+GCD              : 1.5 seconds
+Velocity         : 20 yards/sec
+Duration         : 300 seconds
+Labels           : 1396
+                 : 1632
+                 : 2954
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : Do Not Log (8), Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
+Effects          :
+#1 (id=1106301)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1106328)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Fishing Target (39)
+Description      : Toss the Sunfish back into the waters of Amirdrassil, applying a stack of Sunfish Essence.
+Tooltip          : The essence of the Dream fades fast. Applying more Sunfish Essence might strengthen its resolve.
+
 Name             : Essence Splice (id=427161) 
 School           : Nature
 Spell Type       : Magic
@@ -189088,7 +189118,7 @@ Description      : Heals $o1 damage over $d.
 Tooltip          : Healing $w1 damage every second.
 
 Name             : Expedited Takeoff (desc=Racial Passive) (id=430935) [Passive, Hidden] 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -226219,6 +226249,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (4 seconds cooldown)
 Category         : 2542 (Type 0x0)
 Labels           : 6595
+                 : 7400
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Displayed Outside Of Spellbook (432), Do Not Display Cast Time (441), Unknown (454)
 Effects          :
 #1 (id=1201078)  : Dummy (3)
@@ -246487,7 +246518,7 @@ $@spelldesc1251666
 
 Name             : Chosen Identity (desc=Racial) (id=1253989) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -246501,7 +246532,7 @@ Description      : Activate to automatically assume your Visage when you leave c
 
 Name             : Chosen Identity (desc=Racial) (id=1253991) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -246517,7 +246548,7 @@ Activate to disable this effect.
 
 Name             : Chosen Identity (desc=Racial) (id=1253992) [Hidden] 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -246529,7 +246560,7 @@ Effects          :
 
 Name             : Visage (desc=Racial) (id=1253994) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -246543,7 +246574,7 @@ Tooltip          : You are in your Visage form.
 
 Name             : Visage (desc=Racial) (id=1253995) 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Cooldown         : 1.5 seconds
@@ -246556,7 +246587,7 @@ Description      : Switch between your Dracthyr and Visage forms.
 
 Name             : Visage (desc=Racial Passive) (id=1254008) [Passive, Hidden] 
 Class            : 
-Race             :  (0x1800000000000)
+Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
@@ -256536,7 +256567,7 @@ Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
 Mechanic         : Bleed
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Scales with Casting Item's Level (354), Ignore Damage Cancels Aura Interrupt (394)
 Effects          :
 #1 (id=1312250)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -259871,7 +259902,7 @@ Description      : $@spelldesc1279616
 
 Name             : Activating Class (id=1303137) [Hidden] 
 Class            : 
-Race             :  (0xffffffff00000000)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -262193,7 +262224,8 @@ Description      : Your spells have a high chance to resonate with the blade, be
 Name             : Luminescent Phoenixblade (id=1310255) 
 School           : Holyfire
 Spell Type       : Magic
-Range            : 60 yards
+Range            : 50 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339626)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -262205,6 +262237,7 @@ Name             : Luminescent Phoenixblade (id=1310258)
 School           : Holyfire
 Spell Type       : Magic
 Range            : 60 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339634)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -262829,8 +262862,8 @@ Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Ta
 Triggered By     : Ursine's Ironhide (1315096)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1347195)  : Apply Aura (6) | Proc Trigger Spell (42): Ursine's Ironhide | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 106042.6 (coefficient=829.732) | Trigger Spell: 1315096 | Target: Self (1)
+#1 (id=1347195)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 106042.6 (coefficient=829.732) | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to shield yourself, absorbing $s1 damage for $1315096d.
 Tooltip          : While inside a delve, you have a chance during combat to shield yourself, absorbing $w1 damage for $1315096d.
 
@@ -262838,7 +262871,6 @@ Name             : Ursine's Ironhide (id=1315096)
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Triggered By     : Ursine's Ironhide (1315094)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1347197)  : Apply Aura (6) | Absorb Damage (69)
@@ -262898,8 +262930,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Triggered By     : Heat Wave (1315116)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1347204)  : Apply Aura (6) | Proc Trigger Spell (42): Heat Wave | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 10375.71 (coefficient=81.18485) | Trigger Spell: 1315117 | Target: Self (1)
+#1 (id=1347204)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 10375.71 (coefficient=81.18485) | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $s1 Fire damage split between nearby enemies.
 Tooltip          : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $w1 Fire damage split between nearby enemies.
 
@@ -262948,7 +262980,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 150 yards
 Duration         : 20 seconds
-Triggered By     : Heat Wave (1315101)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1347229)  : Apply Aura (6) | Periodic Trigger Spell (23): Heat Wave every 4 seconds
@@ -263530,7 +263561,7 @@ Attributes       : Do Not Log (8), Do Not Sheath (18), No Active Defense (21), A
 Effects          :
 #1 (id=1355064)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Nib exchanges Bound Silver for cosmetic rewards.
+Description      : Nib exchanges Ducats for Bound Silver and other riches. Bound Silver can be traded for cosmetic rewards.
 
 Name             : Quillgrave Artisans (id=1320450) [Passive] 
 Class            : 
@@ -263693,13 +263724,13 @@ Talent Entry     : Generic [tree=expansion, row=6, col=2, max_rank=1, req_points
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Proc From Class Abilities (415), Do Not Display Cast Time (441), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1361900)  : Apply Aura (6) | Proc Trigger Spell (42): Rune of Critical Mass
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1325478 | Target: Self (1)
-Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split between enemies or restore $<fireAOEHealing> health split between allies within $1325140a1yds][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split between enemies or restore $<voidAOEHealing> health split between allies within $1325431a1yds ].  
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split among enemies or restore $<fireAOEHealing> health split among allies within $1325140a1 yards][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split among enemies or restore $<voidAOEHealing> health split among allies within $1325431a1 yards].  
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $voidDmg=${$<basePoints>*$1286716s2}
 $voidHealing=${$<basePoints>*$1286721s2}
@@ -263717,12 +263748,13 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7374
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362221)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Current Target (25) -> at Enemy in Area (16)
 #2 (id=1362945)  : Dummy (3)
-                   Base Value: 19784 | Scaled Value: 19784 | Target: Current Target (25)
-Description      : Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<voidAOEDmg> Fire damage split between enemies with $a1yds. 
+                   Base Value: 4396.5 | Scaled Value: 4396.5 | Target: Current Target (25)
+Description      : Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<fireAOEDmg> Fire damage split among enemies within $a1 yards. 
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $voidDmg=${$<basePoints>*$1286716s2}
 $voidHealing=${$<basePoints>*$1286721s2}
@@ -263739,7 +263771,7 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 3
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362633)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 1500 | Radius: 0 - 40 yards | Target: at Target (63) -> at Enemy in Area (16)
@@ -263750,7 +263782,7 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 3
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362738)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 1500 | Radius: 0 - 40 yards | Target: at Target (63) -> At Ally in Area (31)
@@ -263762,23 +263794,45 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7364
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362745)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Radius: 0 - 5 yards | Target: at Target (63) -> at Enemy in Area (16)
 #2 (id=1362799)  : Dummy (3)
-                   Base Value: 19784 | Scaled Value: 19784 | Target: Current Target (25)
-Description      : Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split between enemies with $a1yds. 
+                   Base Value: 4396.5 | Scaled Value: 4396.5 | Target: Current Target (25)
+Description      : Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split among enemies within $a1 yards. 
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325432) 
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362746)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Radius: 0 - 5 yards | Target: at Target (63) -> At Ally in Area (31)
 #2 (id=1362809)  : Dummy (3)
-                   Base Value: 41533 | Scaled Value: 41533 | Target: Current Target (25)
-Description      : Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split between allies with $a1yds. 
+                   Base Value: 9229.5 | Scaled Value: 9229.5 | Target: Current Target (25)
+Description      : Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split among allies within $a1 yards.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325478) [Hidden] 
 School           : Physical
@@ -263798,18 +263852,29 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7374
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
-#1 (id=1362924)  : School Damage (2): fire
+#1 (id=1362924)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: at Target (63) -> At Ally in Area (31)
 #2 (id=1362947)  : Dummy (3)
-                   Base Value: 41533 | Scaled Value: 41533 | Target: Current Target (25)
-Description      : Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split between allies with $a1yds. 
+                   Base Value: 9229.5 | Scaled Value: 9229.5 | Target: Current Target (25)
+Description      : Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split among allies within $a1 yards. 
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325553) [Hidden] 
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 3 seconds
+Duration         : 2.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
 Effects          :
 #1 (id=1362948)  : Apply Aura (6) | Dummy (4)

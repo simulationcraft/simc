@@ -5980,6 +5980,21 @@ namespace omnium
 // Item level used for omnium coeff scaling spell 1288183
 static constexpr unsigned OMNIUM_ITEM_LEVEL = 289;
 
+// Rune of Critical Mass: 1324904 driver
+struct critical_mass_spell_t
+{
+  unsigned core_id;
+  unsigned spell_id;
+  bool orbs;
+};
+
+static constexpr std::array<critical_mass_spell_t, 4> critical_mass_spells = { {
+    { 1286970, 1325140, false },  // Rune of Unleashed Fire damage
+    { 1263002, 1325540, false },  // Rune of Unleashed Fire heal
+    { 1286716, 1325431, true },   // Rune of Void-Touched Orbs damage
+    { 1286721, 1325432, true },   // Rune of Void-Touched Orbs heal
+} };
+
 struct rune_of_echoes_debuff_t : public buff_t
 {
   double accumulator;
@@ -6061,6 +6076,9 @@ struct omnium_core_rune_t : public BASE
   bool has_echoes;
   double echo_coeff;
   action_t* echo;
+  action_t* critical_mass;
+  real_ppm_t* critical_mass_rppm;
+  unsigned critical_mass_orbs;
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
     : BASE( e, n, id ),
@@ -6069,7 +6087,10 @@ struct omnium_core_rune_t : public BASE
       stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
       has_echoes( false ),
       echo_coeff( 0 ),
-      echo( nullptr )
+      echo( nullptr ),
+      critical_mass( nullptr ),
+      critical_mass_rppm( nullptr ),
+      critical_mass_orbs( 1 )
   {
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
@@ -6114,6 +6135,40 @@ struct omnium_core_rune_t : public BASE
     // Rune of Overload: 1279614 driver
     if ( auto overload = find_special_effect( e.player, 1279614 ) )
       BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
+
+    // Rune of Critical Mass: 1324904 driver
+    if ( auto critical = find_special_effect( e.player, 1324904 ) )
+    {
+      if ( !heal )
+      {
+        e.player->sim->error(
+            UNVERIFIED_IMPLEMENTATION,
+            "Rune of Critical Mass: RPPM is assumed to be rolled on every core rune hit or heal, "
+            "rather than on every player ability." );
+      }
+
+      for ( const auto& cm : critical_mass_spells )
+      {
+        if ( cm.core_id != id )
+          continue;
+
+        if ( cm.orbs )
+          critical_mass_orbs =
+              as<unsigned>( std::max( 1, e.player->find_spell( 1325431 )->effectN( 1 ).misc_value1() ) );
+
+        critical_mass              = create_proc_action<BASE>( fmt::format( "{}_critical_mass", n ), e, cm.spell_id );
+        critical_mass->base_dd_min = critical_mass->base_dd_max =
+            dmg_coeff * critical_mass->data().effectN( 2 ).base_value() / critical_mass_orbs;
+        critical_mass->split_aoe_damage   = true;
+        critical_mass->name_str_reporting = "rune_of_critical_mass";
+
+        if ( !critical_mass->stats->parent )
+          BASE::add_child( critical_mass );
+
+        critical_mass_rppm = e.player->get_rppm( "rune_of_critical_mass", critical->driver() );
+        break;
+      }
+    }
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -6132,6 +6187,13 @@ struct omnium_core_rune_t : public BASE
   void impact( action_state_t* s ) override
   {
     BASE::impact( s );
+
+    if ( critical_mass && critical_mass_rppm->trigger() )
+    {
+      for ( unsigned i = 0; i < critical_mass_orbs; i++ )
+        critical_mass->execute_on_target( s->target );
+    }
+
     if ( !has_echoes )
       return;
 
@@ -6156,13 +6218,18 @@ stat_buff_t* create_omnium_stat_buff( const special_effect_t& effect )
       { 1279609, 1287772 },  // Rune of Critical Power
   } };
 
+  double empower_mult = 1.0;
+  if ( auto empower = find_special_effect( effect.player, 1324888 ) )
+    empower_mult += empower->driver()->effectN( 1 ).percent();
+
   for ( const auto& [ driver_id, buff_id ] : runes )
   {
     if ( !find_special_effect( effect.player, driver_id ) )
       continue;
 
     auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( buff_id ) );
-    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coefficient * buff->data().effectN( 2 ).base_value() );
+    buff->set_stat_from_effect_type( A_MOD_RATING,
+                                     stat_coefficient * buff->data().effectN( 2 ).base_value() * empower_mult );
     return buff;
   }
 
@@ -6627,6 +6694,9 @@ void register_special_effects()
   register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
   register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
   register_special_effect( 1279616, DISABLED_EFFECT );  // rune of echoes
+  set_min_version( wowv_t( 12, 1, 7 ) );
+  register_special_effect( 1324888, DISABLED_EFFECT );  // Rune of Empowerment
+  register_special_effect( 1324904, DISABLED_EFFECT );  // Rune of Critical Mass
   reset_version_check();
 }
 

@@ -5,7 +5,7 @@ actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/aimed_shot
 
 # Executed every time the actor is available.
-actions=variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10
+actions=variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|target.time_to_pct_20>60)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10
 # For DungeonRoute, hold Trueshot at the end of pulls.
 actions+=/variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>20|raid_event.pull.in>45|talent.calling_the_shots
 
