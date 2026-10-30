@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.7.70493 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.7.70668 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13497,7 +13497,7 @@ Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.741 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.89 | Radius: 8 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
