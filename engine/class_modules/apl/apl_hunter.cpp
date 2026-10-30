@@ -259,8 +259,9 @@ void marksmanship( player_t* p )
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
+  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<7&(fight_style.dungeonroute|cooldown.explosive_shot.remains>=25|cooldown.explosive_shot.remains<10)", "With Recklessness selected, prefer Luster in the Bullseye pre-Trueshot window. Luster 7s before Trueshot lets Font be used in the last 3s of Luster after the shared trinket cooldown." );
+  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.stack=buff.bullseye.max_stack&buff.trueshot.up&fight_remains>20", "Prefer Luster over Recklessness during Trueshot at full Bullseye stacks." );
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
-  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<7&(fight_style.dungeonroute|cooldown.explosive_shot.remains>=25|cooldown.explosive_shot.remains<10)|fight_remains<31", "Potion of Recklessness (Crit) has little to no value for execute Trueshots as we are crit hard-capped, so use Luster instead. Luster 7s before Trueshot allows for Font to be used in the last 3s of Luster (since the on-use trinket popped with Trueshot puts Font on a 20s CD)." );
 
   drst->add_action( "black_arrow,if=buff.precise_shots.up" );
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&!fight_style.dungeonroute&(!talent.tactical_reload|!buff.lock_and_load.up)" );
@@ -360,8 +361,9 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
+  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<7&(fight_style.dungeonroute|cooldown.explosive_shot.remains>=25|cooldown.explosive_shot.remains<10)", "With Recklessness selected, prefer Luster in the Bullseye pre-Trueshot window. Luster 7s before Trueshot lets Font be used in the last 3s of Luster after the shared trinket cooldown." );
+  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.stack=buff.bullseye.max_stack&buff.trueshot.up&fight_remains>20", "Prefer Luster over Recklessness during Trueshot at full Bullseye stacks." );
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
-  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<7&(fight_style.dungeonroute|cooldown.explosive_shot.remains>=25|cooldown.explosive_shot.remains<10)|fight_remains<31", "Potion of Recklessness (Crit) has little to no value for execute Trueshots as we are crit hard-capped, so use Luster instead. Luster 7s before Trueshot allows for Font to be used in the last 3s of Luster (since the on-use trinket popped with Trueshot puts Font on a 20s CD)." );
 
   drst->add_action( "black_arrow,if=buff.precise_shots.up" );
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&!fight_style.dungeonroute&(!talent.tactical_reload|!buff.lock_and_load.up)" );
