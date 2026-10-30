@@ -5489,12 +5489,22 @@ struct the_hunt_dot_t : public demon_hunter_spell_t
 {
   the_hunt_dot_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.the_hunt_dot )
   {
-    dual         = true;
-    aoe          = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
-    dot_behavior = DOT_NONE;
+    dual = true;
+    aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+
+    // 10/21/2026 The Hunt Dot won't repply or refresh any current Hunt Dot on the primary target of the Hunt but will
+    // refresh/reapply the non-primary targets. This is replicated by only hitting secondary targets, and only the
+    // primary target if The Hunt Dot is not already up
+    target_filter_callback = secondary_targets_only_hunt_dot();
 
     // 09/20/2026 The Hunt does not benefit from chaotic disposition
     affected_by.chaotic_disposition = false;
+  }
+
+  target_filter_callback_t secondary_targets_only_hunt_dot()
+  {
+    return
+        [ this ]( const action_t* a, player_t* t ) { return t != a->target || !td( t )->dots.the_hunt->is_ticking(); };
   }
 };
 
@@ -5516,6 +5526,8 @@ struct the_hunt_base_t
 
     void impact( action_state_t* s ) override
     {
+      impact_action->target_cache.is_valid = false;
+
       base_t::impact( s );
 
       if ( s->chain_target == 0 && dh()->talent.devourer.devourers_bite->ok() )
@@ -9549,14 +9561,14 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       debuffs.burning_wound = make_buff( *this, "burning_wound", p.spec.burning_wound_debuff )
                                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-      dots.burning_wound = target->get_dot( "burning_wound", &p );
+      dots.burning_wound    = target->get_dot( "burning_wound", &p );
       break;
     case DEMON_HUNTER_VENGEANCE:
       dots.fiery_brand = target->get_dot( "fiery_brand", &p );
       debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                            ->disable_ticking( true );
+                             ->set_default_value_from_effect( 1 )
+                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                             ->disable_ticking( true );
       break;
     default:
       break;
@@ -9898,7 +9910,7 @@ void demon_hunter_t::create_buffs()
   buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
   buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff )
-                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   // Devourer ===============================================================
 

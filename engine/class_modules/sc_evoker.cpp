@@ -370,7 +370,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level      = 328;
+    int item_level      = 334;
     std::string variant = "default";
     double skill         = 1.0;
   } option;
@@ -1014,6 +1014,9 @@ struct simplified_player_t : public player_t
     {
       const int crafted_item_ilvl = item_level - 3;
       const int elevated_item_ilvl = item_level == 334 ? 344 : item_level;
+      bool during_event = ( sim->dbc->wowv() >= wowv_t( 12, 1, 5 ));
+      const int event_item_ilvl = 340;
+
       default_items               = {
           { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={},enchant=175crit", elevated_item_ilvl ) },
           { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={},enchant=103mastery", elevated_item_ilvl ) },
@@ -1027,8 +1030,8 @@ struct simplified_player_t : public player_t
           { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", elevated_item_ilvl ) },
           { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
           { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
-          { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
-          { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
+          { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", during_event ? event_item_ilvl : item_level ) },
+          { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", during_event ? event_item_ilvl : item_level ) },
           { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", elevated_item_ilvl ) },
       };
     }

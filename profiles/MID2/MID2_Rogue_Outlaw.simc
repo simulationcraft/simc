@@ -51,8 +51,8 @@ actions+=/bag_of_tricks
 
 # Builders  High priority Ambush with Hidden Opportunity.
 actions.build=ambush,if=talent.hidden_opportunity&buff.audacity.up
-# With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets.
-actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=3
+# With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets. At 2 targets, use to fill a remaining 2 CPs.
+actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=3-(combo_points.deficit=2)
 # With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available.
 actions.build+=/pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
 # With Fan the Hammer, consume Opportunity if at max stacks or if it will expire.
@@ -74,10 +74,10 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 actions.cds+=/preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&!cooldown.killing_spree.ready|fight_remains<30
 # Use Keep it Rolling with at least stage 3 of RtB.
 actions.cds+=/keep_it_rolling,if=rtb_buffs>=3
-# Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and BtE is ready.
-actions.cds+=/roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+(buff.loaded_dice.up&cooldown.between_the_eyes.ready)
-# Use Blade Rush if using MID1 tier, or in AoE, or if you will not overcap energy within the gcd on ST.
-actions.cds+=/blade_rush,if=set_bonus.mid1_2pc|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2
+# Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and using KIR.
+actions.cds+=/roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+buff.loaded_dice.up&talent.keep_it_rolling
+# Use Blade Rush if using MID1 tier, or at 3+ targets. At 1-2 targets, avoid pressing during Adrenaline Rush if using Menacing Rush.
+actions.cds+=/blade_rush,if=set_bonus.mid1_2pc|spell_targets>=3|!buff.adrenaline_rush.up&talent.menacing_rush
 # Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs.
 actions.cds+=/vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up
 actions.cds+=/shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up

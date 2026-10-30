@@ -23,17 +23,22 @@ actions.annihilator_meta+=/the_hunt,if=talent.devourers_bite
 actions.annihilator_meta+=/voidblade,if=talent.devourers_bite&active_enemies<=3
 actions.annihilator_meta+=/collapsing_star,if=fight_remains<10
 actions.annihilator_meta+=/void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up
+actions.annihilator_meta+=/collapsing_star,if=prev_gcd.1.void_ray
+actions.annihilator_meta+=/eradicate,if=buff.voidfall_spending.up
 actions.annihilator_meta+=/collapsing_star,if=active_enemies>1|cooldown.void_ray.remains
-actions.annihilator_meta+=/call_action_list,name=reaps,if=(active_enemies=1|buff.eradicate.up)&action.reap.souls_consumed>=4
+actions.annihilator_meta+=/devour,if=buff.eradicate.up&!buff.voidfall_spending.up&buff.moment_of_craving.remains>=4&fury.deficit<=70
+actions.annihilator_meta+=/call_action_list,name=reaps,if=(active_enemies=1|buff.eradicate.up)&action.reap.souls_consumed>=4&!(talent.devourers_bite&active_enemies=1&fury<void_metamorphosis_base_drain_ps*2)
 actions.annihilator_meta+=/call_action_list,name=reaps,if=!talent.eradicate&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&action.reap.souls_consumed>=4
 actions.annihilator_meta+=/void_ray,if=active_enemies>1|talent.eradicate|fury>=100|fury<55
 actions.annihilator_meta+=/call_action_list,name=reaps,if=variable.voidfall_dump
 actions.annihilator_meta+=/call_action_list,name=reaps,if=buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&action.reap.souls_consumed>=4&fight_remains<45
-actions.annihilator_meta+=/soul_immolation,if=active_dot.soul_immolation=0&fury<void_metamorphosis_base_drain_ps&(cooldown.reap.remains|active_enemies=1)
+actions.annihilator_meta+=/cull,if=talent.eradicate&buff.voidfall_spending.up
+actions.annihilator_meta+=/soul_immolation,if=active_dot.soul_immolation=0&fury<void_metamorphosis_base_drain_ps&fury<40&(cooldown.reap.remains|active_enemies=1)
 actions.annihilator_meta+=/devour
 
 actions.annihilator_out=pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.6,if=!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-2
 actions.annihilator_out+=/voidblade,if=talent.devourers_bite&active_enemies<=3&buff.void_metamorphosis_stack.at_max_stacks
+actions.annihilator_out+=/void_ray,if=talent.eradicate&active_enemies>1&buff.void_metamorphosis_stack.at_max_stacks&fury>=100
 actions.annihilator_out+=/metamorphosis
 actions.annihilator_out+=/consume,if=buff.soulburst.up
 actions.annihilator_out+=/call_action_list,name=reaps,if=(active_enemies=1|buff.eradicate.up)&action.reap.souls_consumed>=4
@@ -46,11 +51,10 @@ actions.annihilator_out+=/consume
 actions.voidscarred=run_action_list,name=voidscarred_meta,if=buff.metamorphosis.up
 actions.voidscarred+=/run_action_list,name=voidscarred_out
 
-actions.voidscarred_meta=pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.35,if=cooldown.void_ray.remains<gcd.max*2&fury<void_metamorphosis_base_drain_ps*cooldown.void_ray.remains
-actions.voidscarred_meta+=/vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
+actions.voidscarred_meta=vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
 actions.voidscarred_meta+=/void_ray,if=variable.no_ray_this_window&(!talent.eradicate|active_enemies=1)
 actions.voidscarred_meta+=/eradicate,if=cooldown.void_ray.remains<gcd.max&!buff.soulburst.up
-actions.voidscarred_meta+=/void_ray,if=talent.eradicate&!buff.eradicate.up&(active_enemies>1|fury<30)
+actions.voidscarred_meta+=/void_ray,if=talent.eradicate&!buff.eradicate.up&active_enemies>1
 actions.voidscarred_meta+=/reapers_toll,if=active_enemies>1&buff.hungering_slash.remains<gcd.max*2
 actions.voidscarred_meta+=/predators_wake,if=buff.collapsing_star.up
 actions.voidscarred_meta+=/reapers_toll,if=talent.voidrush&buff.collapsing_star.up&cooldown.voidblade.remains<gcd.max
@@ -58,11 +62,15 @@ actions.voidscarred_meta+=/pierce_the_veil,if=talent.voidrush&buff.collapsing_st
 actions.voidscarred_meta+=/collapsing_star
 actions.voidscarred_meta+=/devour,if=buff.soulburst.up
 actions.voidscarred_meta+=/reapers_toll,if=active_enemies>3&fury<void_metamorphosis_base_drain_ps*cooldown.void_ray.remains
-actions.voidscarred_meta+=/reapers_toll,if=soul_fragments<=8
+actions.voidscarred_meta+=/pierce_the_veil,if=active_enemies>3&time-buff.metamorphosis.last_trigger<15&buff.eradicate.up
+actions.voidscarred_meta+=/soul_immolation,if=active_enemies>3&!active_dot.soul_immolation&buff.collapsing_star_stacking.stack<15
+actions.voidscarred_meta+=/soul_immolation,if=active_enemies=1&!active_dot.soul_immolation&fury>=void_metamorphosis_base_drain_ps*2&buff.impending_apocalypse.stack>=2
+actions.voidscarred_meta+=/reapers_toll,if=soul_fragments<=8|active_enemies=1&buff.impending_apocalypse.stack>=3
 actions.voidscarred_meta+=/pierce_the_veil,if=active_enemies<4
 actions.voidscarred_meta+=/predators_wake,if=!buff.hungering_slash.up
+actions.voidscarred_meta+=/eradicate,if=active_enemies>3&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30
 actions.voidscarred_meta+=/pierce_the_veil
-actions.voidscarred_meta+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4+4*(active_enemies>1&buff.eradicate.up)&!buff.soulburst.up
+actions.voidscarred_meta+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4+4*(active_enemies>1&buff.eradicate.up)&!buff.soulburst.up&(active_enemies>1|buff.impending_apocalypse.stack<3|buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30|cooldown.void_ray.remains<action.void_ray.execute_time)
 actions.voidscarred_meta+=/void_ray
 actions.voidscarred_meta+=/soul_immolation,if=active_dot.soul_immolation=0&fury<void_metamorphosis_base_drain_ps
 actions.voidscarred_meta+=/devour
@@ -72,7 +80,7 @@ actions.voidscarred_out+=/wait,sec=0.05,if=!buff.void_metamorphosis_stack.at_max
 actions.voidscarred_out+=/vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
 actions.voidscarred_out+=/consume,if=buff.soulburst.up&(active_enemies=1|talent.eradicate|buff.soulburst.remains<gcd.max)
 actions.voidscarred_out+=/call_action_list,name=voidscarred_hunt_entry,if=talent.the_hunt&active_enemies=1&buff.void_metamorphosis_stack.at_max_stacks
-actions.voidscarred_out+=/voidblade,if=prev_gcd.1.void_ray&(active_enemies>1|!talent.the_hunt|!cooldown.the_hunt.ready)
+actions.voidscarred_out+=/voidblade,if=active_enemies>1|!talent.the_hunt|!cooldown.the_hunt.ready
 actions.voidscarred_out+=/metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1|fight_remains<15
 actions.voidscarred_out+=/void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up
 actions.voidscarred_out+=/call_action_list,name=reaps,if=fury<100&fury+4*action.reap.souls_consumed+10*talent.scythes_embrace>=100&action.reap.souls_consumed>=1&!buff.soulburst.up
@@ -81,6 +89,7 @@ actions.voidscarred_out+=/soul_immolation,if=active_enemies>1&active_dot.soul_im
 actions.voidscarred_out+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4+4*(active_enemies>1&buff.eradicate.up)&!buff.soulburst.up
 actions.voidscarred_out+=/void_ray
 actions.voidscarred_out+=/soul_immolation,if=active_enemies=1&active_dot.soul_immolation=0
+actions.voidscarred_out+=/the_hunt,if=talent.eradicate&active_enemies>3&cooldown.voidblade.remains
 actions.voidscarred_out+=/consume
 
 actions.voidscarred_hunt_entry=voidblade,if=cooldown.the_hunt.ready

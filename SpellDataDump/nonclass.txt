@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70448 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -256049,9 +256049,10 @@ School           : Physical
 Spell Type       : Melee
 Duration         : 12 seconds
 Labels           : 292
+                 : 1387: Avoid CC Targets
                  : 3959: Item Effects
 Mechanic         : Bleed
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Scales with Casting Item's Level (354), Ignore Damage Cancels Aura Interrupt (394)
 Effects          :
 #1 (id=1312250)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -261122,8 +261123,9 @@ Tooltip          : Inflicting Nature damage to all nearby enemies every $t1 sec 
 Name             : Seriously Sharp Seashell (id=1308341) [Hidden] 
 School           : Physical
 Spell Type       : None
+Labels           : 1387: Avoid CC Targets
 Triggered By     : Seriously Sharp Seashell (1292299)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Stealthed (37)
 Effects          :
 #1 (id=1336792)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
