@@ -266,8 +266,8 @@ void marksmanship( player_t* p )
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&!fight_style.dungeonroute&(!talent.tactical_reload|!buff.lock_and_load.up)" );
   drst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo." );
   drst->add_action( "volley" );
-  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "black_arrow" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "wailing_arrow,if=(buff.precise_shots.up|!cooldown.aimed_shot.ready|buff.wailing_arrow.remains<gcd)" );
@@ -367,8 +367,8 @@ void marksmanship_ptr( player_t* p )
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&!fight_style.dungeonroute&(!talent.tactical_reload|!buff.lock_and_load.up)" );
   drst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo." );
   drst->add_action( "volley" );
-  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "black_arrow" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "wailing_arrow,if=(buff.precise_shots.up|!cooldown.aimed_shot.ready|buff.wailing_arrow.remains<gcd)" );

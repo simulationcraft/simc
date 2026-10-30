@@ -33,8 +33,8 @@ actions.drst+=/explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bo
 # In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo.
 actions.drst+=/explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|!fight_style.dungeonroute)
 actions.drst+=/volley
-actions.drst+=/trueshot,if=variable.trueshot_ready
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
+actions.drst+=/trueshot,if=variable.trueshot_ready
 actions.drst+=/black_arrow
 actions.drst+=/rapid_fire
 actions.drst+=/wailing_arrow,if=(buff.precise_shots.up|!cooldown.aimed_shot.ready|buff.wailing_arrow.remains<gcd)
