@@ -7048,7 +7048,7 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       {
         double am = hunter_spell_t::composite_ta_multiplier( s );
 
-        if ( as<double>( s->n_targets ) > reduced_aoe_targets )
+        if ( s->chain_target > 0 && as<double>( s->n_targets ) > reduced_aoe_targets )
           am *= std::sqrt( reduced_aoe_targets / s->n_targets );
 
         if ( s->chain_target == 0 )
@@ -7073,6 +7073,7 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
+      full_amount_targets = 1;
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
 
       bomb_dot->reduced_aoe_targets = reduced_aoe_targets;
