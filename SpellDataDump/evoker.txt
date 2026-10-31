@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70688 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -9743,7 +9743,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range 
 Effects          :
 #1 (id=1119510)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 2 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=1165092)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $?c2[Verdant Embrace heals for an additional $s1% over $409895d.][Upheaval deals $s2% additional damage over $431620d.]
@@ -12735,7 +12734,6 @@ Effects          :
                    Family Flags: 50
 #9 (id=1367980)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 6 | Misc Value 2: 7444 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Duplicate (id=1259171) [Spell Family (224)] 
 Class            : Evoker

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70688 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1456,7 +1456,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.716293 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.596911 -> 0.716293)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -16719,7 +16718,6 @@ Effects          :
                    Base Value: 6204 | Scaled Value: 6204 | Target: Targeted Enemy (6)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.04314 | PvP Coefficient: 0.916668 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.869285 -> 1.04314), PvP Coefficient (1.1 -> 0.916668)
 #3 (id=1305431)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
 #4 (id=1305448)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
