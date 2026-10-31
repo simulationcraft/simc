@@ -7048,8 +7048,9 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       {
         double am = hunter_spell_t::composite_ta_multiplier( s );
 
-        if ( s->chain_target > 0 && as<double>( s->n_targets ) > reduced_aoe_targets )
-          am *= std::sqrt( reduced_aoe_targets / s->n_targets );
+        int targets = s->n_targets; 
+        if ( s->chain_target > 0 && as<double>( targets ) > reduced_aoe_targets )
+          am *= std::sqrt( reduced_aoe_targets / std::min( sim->max_aoe_enemies, targets ) );
 
         if ( s->chain_target == 0 )
           am *= 1.0 + p()->talents.wildfire_bomb->effectN( 3 ).percent();
