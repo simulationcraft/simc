@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.7.70493
+Class Spell ID List, wow build 12.1.7.70668
 
 Death Knight
 3714     Path of Frost
@@ -8877,6 +8877,7 @@ Hunter
 1319011  Blood Fletching
 1319015  Blood Fletching
 1319016  Blood Fletching
+1328528 *[DNT]
 
 Mage
 66       Invisibility
