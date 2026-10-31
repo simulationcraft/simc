@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70688 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4904,7 +4904,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=314949)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.377 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (3.07 -> 3.377)
 #2 (id=1325471)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #3 (id=1342487)  : Apply Aura (6) | Dummy (4)
@@ -6051,11 +6050,9 @@ Effects          :
                    Modified By: Light Ammo (378913 effect#2)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 85 | Scaled Value: 85 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (75 -> 85)
                    Modified By: Blighted Quiver (1264291 effect#2)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 85 | Scaled Value: 85 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (75 -> 85)
                    Modified By: Blighted Quiver (1264291 effect#3)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
@@ -6521,7 +6518,6 @@ Attributes       : Is Ability (4), Allow Cast While Dead (23), Initiates Combat 
 Effects          :
 #1 (id=485317)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.035 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.85 -> 2.035)
 Description      : $@spelldesc260243
 
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive] 
@@ -10610,7 +10606,6 @@ Effects          :
 Description      : The cooldown of Tar Trap and Freezing Trap is reduced by ${$m1/-1000}.1 sec.
 
 Name             : Deathblow (id=343248) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Marksmanship [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
@@ -18388,19 +18383,16 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 11, 91
-Hotfixed         : Base Value (0 -> 40)
 #4 (id=1315651)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 11, 91
-Hotfixed         : Base Value (0 -> 40)
 #5 (id=1355324)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Misc Value 2: 5871 (Label) | Target: Self (1)
 #6 (id=1355325)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 7211 (Label) | Target: Self (1)
 #7 (id=1367382)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 4055 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Survival Hunter (id=1256941) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
