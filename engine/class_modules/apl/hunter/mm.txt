@@ -5,7 +5,7 @@ actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/aimed_shot
 
 # Executed every time the actor is available.
-actions=variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10
+actions=variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|target.time_to_pct_20>60)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10
 # For DungeonRoute, hold Trueshot at the end of pulls.
 actions+=/variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>20|raid_event.pull.in>45|talent.calling_the_shots
 
@@ -35,6 +35,7 @@ actions.drst+=/explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up
 actions.drst+=/volley
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
 actions.drst+=/trueshot,if=variable.trueshot_ready
+actions.drst+=/aimed_shot,if=buff.volley.up&talent.aspect_of_the_hydra&buff.trick_shots.remains>cast_time
 actions.drst+=/rapid_fire
 actions.drst+=/wailing_arrow
 # Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
@@ -82,6 +83,7 @@ actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<5
 actions.sentst+=/aimed_shot,if=debuff.sentinels_mark.react&buff.bulletstorm.up&active_enemies>1&fight_style.dungeonroute
 actions.sentst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&active_enemies=1
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up,if=buff.volley.up&talent.aspect_of_the_hydra&buff.trick_shots.remains>cast_time&active_enemies>2
 actions.sentst+=/rapid_fire,if=buff.precise_shots.down|buff.trueshot.up|active_enemies>1&talent.aspect_of_the_hydra|!talent.no_scope
 actions.sentst+=/kill_shot,if=buff.precise_shots.up
 # Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.

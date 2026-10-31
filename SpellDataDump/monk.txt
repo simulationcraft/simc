@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70529 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13148,9 +13148,13 @@ Effects          :
 #9 (id=1266555)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Target: Self (1)
 #10 (id=1315666) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value 2: 3448 (Label) | Target: Self (1)
+                   Base Value: -32 | Scaled Value: -32 | Misc Value 2: 3448 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-50 -> -32)
 #11 (id=1315671) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 6 | Misc Value 2: 4586 (Label) | Target: Self (1)
+#12 (id=1364784) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
+                   Base Value: -32 | Scaled Value: -32 | Misc Value: 6 | Misc Value 2: 3448 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 
@@ -13653,11 +13657,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
                  : 3385
+                 : 7439
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138787)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | PvP Coefficient: 1.25 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 #2 (id=1138788)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1138789)  : Dummy (3)

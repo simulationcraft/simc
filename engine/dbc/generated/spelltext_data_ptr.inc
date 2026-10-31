@@ -1,4 +1,4 @@
-// Spell text, wow build 12.1.7.70424
+// Spell text, wow build 12.1.7.70493
 static constexpr std::array<spelltext_data_t, 29450> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -29429,7 +29429,7 @@ static constexpr std::array<spelltext_data_t, 29450> __ptr_spelltext_data { {
   { 1319016, "$@spelldesc1319011", "Critical hits from $@auracaster will cause extra bleed damage.", 0 },
   { 1319061, "$@spelldesc1221150", 0, 0 },
   { 1319066, "$@spelldesc1221150", 0, 0 },
-  { 1320449, "Nib exchanges Bound Silver for cosmetic rewards.", 0, 0 },
+  { 1320449, "Nib exchanges Ducats for Bound Silver and other riches. Bound Silver can be traded for cosmetic rewards.", 0, 0 },
   { 1320450, "The town of Quillgrave holds several artisans who will grant your character improvements over the course of your journey.\r\n\r\n|CFFFFFFFFThe Outfitter|r\r\n$@spelldesc1318455\r\n\r\n|CFFFFFFFFThe Arcanist|r\r\n$@spelldesc1318454\r\n\r\n|CFFFFFFFFThe Scribe|r\r\n$@spelldesc1318577\r\n\r\n|CFFFFFFFFThe Antiquarian|r\r\n$@spelldesc1318564\r\n\r\n|CFFFFFFFFThe Merchant|r\r\n$@spelldesc1320449", 0, 0 },
   { 1320481, "In Talebound, you do not select enemy targets.\r\n\r\nYour attacks will generally target enemies in front of you or around you.\r\n\r\nYou can mouse hover over your attacks to see the areas where they will strike.\r\n\r\nWhen an enemy is in range, the attacks on your action bar will light up. If there are no targets in range, the attack will dim, but several attacks can be used with no enemies in range.\r\n\r\nInformation about how each of your attacks chooses targets can be found in their tooltip.", 0, 0 },
   { 1320500, "|CFFFFFFFFDeath|r\r\nDeath is not the end. When you die, you will have many opportunities to become more powerful.\r\n\r\n|CFFFFFFFFSoul Wards|r\r\nThese are your extra lives. When you are defeated in combat, if you have a Soul Ward, it will be consumed to render you immune, leave combat, and allow you to continue the fight.\r\n\r\n|CFFFFFFFFMultiplayer Resurrection|r\r\nOnce your party has exhausted your shared Soul Wards, you will be able to resurrect your fallen allies. You have a limited time to resurrect an ally before the run is ended and you all are returned to Quillgrave.\r\n\r\nStanding near a fallen ally will begin the resurrection process. You can still move and attack while staying within the area.", 0, 0 },
@@ -29440,24 +29440,24 @@ static constexpr std::array<spelltext_data_t, 29450> __ptr_spelltext_data { {
   { 1324280, "$@spelldesc1224039", 0, 0 },
   { 1324281, "$@spelldesc1253255", 0, 0 },
   { 1324888, "Your Rune of $?a1279610[Burning Haste]?a1279609[Critical Power]?a1279612[Masterful Cunning][the Versatile Warrior] grants $s1% more $?a1279610[Haste]?a1279609[Critical Strike]?a1279612[Mastery][Versatility].", 0, 0 },
-  { 1324904, "When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split between enemies or restore $<fireAOEHealing> health split between allies within $1325140a1yds][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split between enemies or restore $<voidAOEHealing> health split between allies within $1325431a1yds ].  ", 0, 0 },
-  { 1325140, "Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<voidAOEDmg> Fire damage split between enemies with $a1yds. ", 0, 0 },
+  { 1324904, "When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split among enemies or restore $<fireAOEHealing> health split among allies within $1325140a1 yards][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split among enemies or restore $<voidAOEHealing> health split among allies within $1325431a1 yards].  ", 0, 0 },
+  { 1325140, "Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<fireAOEDmg> Fire damage split among enemies within $a1 yards. ", 0, 0 },
   { 1325357, "$@spelldesc1325431", 0, 0 },
   { 1325427, "$@spelldesc1325432", 0, 0 },
-  { 1325431, "Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split between enemies with $a1yds. ", 0, 0 },
-  { 1325432, "Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split between allies with $a1yds. ", 0, 0 },
+  { 1325431, "Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split among enemies within $a1 yards. ", 0, 0 },
+  { 1325432, "Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split among allies within $a1 yards.", 0, 0 },
   { 1325478, "$@spelldesc1324904", 0, 0 },
-  { 1325540, "Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split between allies with $a1yds. ", 0, 0 },
+  { 1325540, "Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split among allies within $a1 yards. ", 0, 0 },
   { 1325553, "$@spelldesc1325140", 0, 0 },
   { 1325566, "$@spelldesc1325540", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.7.70424
+// spelltext hotfix entries, wow build 12.1.7.70493
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.7.70424
-static constexpr std::array<spelldesc_vars_data_t, 745> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 12.1.7.70493
+static constexpr std::array<spelldesc_vars_data_t, 748> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30203,9 +30203,12 @@ static constexpr std::array<spelldesc_vars_data_t, 745> __ptr_spelldesc_vars_dat
   { 1310208, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1324904, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}" },
   { 1325140, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}" },
+  { 1325431, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}" },
+  { 1325432, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}" },
+  { 1325540, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.7.70424
+// spelldesc_vars hotfix entries, wow build 12.1.7.70493
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

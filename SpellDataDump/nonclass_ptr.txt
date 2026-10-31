@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.7.70424 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.7.70493 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -110354,6 +110354,15 @@ Effects          :
 #1 (id=763049)   : Loot (189)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 95595 | Misc Value 2: 436 | Target: Self (1)
 Description      : Create a soulbound item appropriate for your current level and Loot Specialization ($@lootspec).
+
+Name             : Ping (id=294447) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=763086)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Nearby Target (38)
 
 Name             : Brawler's Coastal Healing Potion (id=294622) 
 School           : Physical
@@ -226240,6 +226249,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (4 seconds cooldown)
 Category         : 2542 (Type 0x0)
 Labels           : 6595
+                 : 7400
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Displayed Outside Of Spellbook (432), Do Not Display Cast Time (441), Unknown (454)
 Effects          :
 #1 (id=1201078)  : Dummy (3)
@@ -256557,7 +256567,7 @@ Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
 Mechanic         : Bleed
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Scales with Casting Item's Level (354), Ignore Damage Cancels Aura Interrupt (394)
 Effects          :
 #1 (id=1312250)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -262214,7 +262224,8 @@ Description      : Your spells have a high chance to resonate with the blade, be
 Name             : Luminescent Phoenixblade (id=1310255) 
 School           : Holyfire
 Spell Type       : Magic
-Range            : 60 yards
+Range            : 50 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339626)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -262226,6 +262237,7 @@ Name             : Luminescent Phoenixblade (id=1310258)
 School           : Holyfire
 Spell Type       : Magic
 Range            : 60 yards
+Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1339634)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -262850,8 +262862,8 @@ Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Ta
 Triggered By     : Ursine's Ironhide (1315096)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1347195)  : Apply Aura (6) | Proc Trigger Spell (42): Ursine's Ironhide | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 106042.6 (coefficient=829.732) | Trigger Spell: 1315096 | Target: Self (1)
+#1 (id=1347195)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 106042.6 (coefficient=829.732) | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to shield yourself, absorbing $s1 damage for $1315096d.
 Tooltip          : While inside a delve, you have a chance during combat to shield yourself, absorbing $w1 damage for $1315096d.
 
@@ -262859,7 +262871,6 @@ Name             : Ursine's Ironhide (id=1315096)
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Triggered By     : Ursine's Ironhide (1315094)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1347197)  : Apply Aura (6) | Absorb Damage (69)
@@ -262919,8 +262930,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Triggered By     : Heat Wave (1315116)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1347204)  : Apply Aura (6) | Proc Trigger Spell (42): Heat Wave | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 10375.71 (coefficient=81.18485) | Trigger Spell: 1315117 | Target: Self (1)
+#1 (id=1347204)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 10375.71 (coefficient=81.18485) | Target: Self (1)
 Description      : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $s1 Fire damage split between nearby enemies.
 Tooltip          : While inside a delve, you have a chance during combat to surround yourself in flames for $1315117d, periodically dealing $w1 Fire damage split between nearby enemies.
 
@@ -262969,7 +262980,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 150 yards
 Duration         : 20 seconds
-Triggered By     : Heat Wave (1315101)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1347229)  : Apply Aura (6) | Periodic Trigger Spell (23): Heat Wave every 4 seconds
@@ -263551,7 +263561,7 @@ Attributes       : Do Not Log (8), Do Not Sheath (18), No Active Defense (21), A
 Effects          :
 #1 (id=1355064)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Nib exchanges Bound Silver for cosmetic rewards.
+Description      : Nib exchanges Ducats for Bound Silver and other riches. Bound Silver can be traded for cosmetic rewards.
 
 Name             : Quillgrave Artisans (id=1320450) [Passive] 
 Class            : 
@@ -263714,13 +263724,13 @@ Talent Entry     : Generic [tree=expansion, row=6, col=2, max_rank=1, req_points
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Proc From Class Abilities (415), Do Not Display Cast Time (441), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1361900)  : Apply Aura (6) | Proc Trigger Spell (42): Rune of Critical Mass
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1325478 | Target: Self (1)
-Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split between enemies or restore $<fireAOEHealing> health split between allies within $1325140a1yds][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split between enemies or restore $<voidAOEHealing> health split between allies within $1325431a1yds ].  
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing it has a chance to $?a1279599[blast the area dealing $<fireAOEDmg> Fire damage split among enemies or restore $<fireAOEHealing> health split among allies within $1325140a1 yards][call down $1325431q1 orbs that deal $<voidAOEDmg> Void damage split among enemies or restore $<voidAOEHealing> health split among allies within $1325431a1 yards].  
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $voidDmg=${$<basePoints>*$1286716s2}
 $voidHealing=${$<basePoints>*$1286721s2}
@@ -263738,12 +263748,13 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7374
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362221)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Current Target (25) -> at Enemy in Area (16)
 #2 (id=1362945)  : Dummy (3)
-                   Base Value: 19784 | Scaled Value: 19784 | Target: Current Target (25)
-Description      : Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<voidAOEDmg> Fire damage split between enemies with $a1yds. 
+                   Base Value: 4396.5 | Scaled Value: 4396.5 | Target: Current Target (25)
+Description      : Your Rune of Unleashed Fire has a chance to trigger an inferno dealing $<fireAOEDmg> Fire damage split among enemies within $a1 yards. 
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $voidDmg=${$<basePoints>*$1286716s2}
 $voidHealing=${$<basePoints>*$1286721s2}
@@ -263760,7 +263771,7 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 3
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362633)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 1500 | Radius: 0 - 40 yards | Target: at Target (63) -> at Enemy in Area (16)
@@ -263771,7 +263782,7 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 3
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362738)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 1500 | Radius: 0 - 40 yards | Target: at Target (63) -> At Ally in Area (31)
@@ -263783,23 +263794,45 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7364
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362745)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Radius: 0 - 5 yards | Target: at Target (63) -> at Enemy in Area (16)
 #2 (id=1362799)  : Dummy (3)
-                   Base Value: 19784 | Scaled Value: 19784 | Target: Current Target (25)
-Description      : Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split between enemies with $a1yds. 
+                   Base Value: 4396.5 | Scaled Value: 4396.5 | Target: Current Target (25)
+Description      : Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that deal $<voidAOEDmg> Void damage split among enemies within $a1 yards. 
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325432) 
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1362746)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Radius: 0 - 5 yards | Target: at Target (63) -> At Ally in Area (31)
 #2 (id=1362809)  : Dummy (3)
-                   Base Value: 41533 | Scaled Value: 41533 | Target: Current Target (25)
-Description      : Your Rune of Void-Touched Orbs calls down down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split between allies with $a1yds. 
+                   Base Value: 9229.5 | Scaled Value: 9229.5 | Target: Current Target (25)
+Description      : Your Rune of Void-Touched Orbs calls down a series of $q1 unstable void orbs that restores $<voidAOEHealing> health split among allies within $a1 yards.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325478) [Hidden] 
 School           : Physical
@@ -263819,18 +263852,29 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 7363
                  : 7374
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
-#1 (id=1362924)  : School Damage (2): fire
+#1 (id=1362924)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: at Target (63) -> At Ally in Area (31)
 #2 (id=1362947)  : Dummy (3)
-                   Base Value: 41533 | Scaled Value: 41533 | Target: Current Target (25)
-Description      : Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split between allies with $a1yds. 
+                   Base Value: 9229.5 | Scaled Value: 9229.5 | Target: Current Target (25)
+Description      : Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<voidAOEHealing> health split among allies within $a1 yards. 
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
+$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
+$fireAOEDmg=${$<basePoints>*$1325140s2}
+$fireAOEHealing=${$<basePoints>*$1325540s2}
+$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1}
+$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1}
 
 Name             : Rune of Critical Mass (id=1325553) [Hidden] 
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 3 seconds
+Duration         : 2.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
 Effects          :
 #1 (id=1362948)  : Apply Aura (6) | Dummy (4)
