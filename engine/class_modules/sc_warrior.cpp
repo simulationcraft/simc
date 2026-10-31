@@ -3043,7 +3043,7 @@ struct mortal_strike_t : public warrior_attack_t
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
-      unhinged( true )
+      unhinged( false )
   {
     background = true;
     rend_dot = new rend_dot_t( p );
@@ -3162,7 +3162,7 @@ struct mortal_strike_t : public warrior_attack_t
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
     }
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( ( !background || unhinged ) && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
