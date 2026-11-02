@@ -57,7 +57,7 @@ endif
 
 MKDIR      = mkdir
 CXX        = c++
-CPP_FLAGS  = -Wall -Wextra -W -I. -I./include -I./lib -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++17 -O3 -MMD -MP \
+CPP_FLAGS  = -Wall -Wextra -W -I. -I./include -I./lib -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++20 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
 -Wconversion-null
@@ -109,8 +109,8 @@ endif
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
-ifneq (${C++20},)
-  CPP_FLAGS += --std=c++20
+ifneq (${C++23},)
+  CPP_FLAGS += --std=c++23
 endif
 ifneq (${LTO},)
   OPTS_INTERNAL += -flto
@@ -290,7 +290,7 @@ clean: mostlyclean
 # Unit Tests
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
 rng$(MODULE_EXT): util$(PATHSEP)rng.cpp lib$(PATHSEP)fmt$(PATHSEP)format.cpp util$(PATHSEP)chrono.cpp
 	-@echo [$@] Linking
@@ -298,11 +298,11 @@ rng$(MODULE_EXT): util$(PATHSEP)rng.cpp lib$(PATHSEP)fmt$(PATHSEP)format.cpp uti
 
 timeline$(MODULE_EXT): util$(PATHSEP)timeline.hpp util$(PATHSEP)timeline.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
 sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.hpp util$(PATHSEP)sample_data.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
 sc_expressions$(MODULE_EXT): sim$(PATHSEP)sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking
