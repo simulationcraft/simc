@@ -5,6 +5,7 @@
 #ifndef WOW_VERSION_HPP
 #define WOW_VERSION_HPP
 
+#include <cstddef>
 #include <cstdint>
 
 struct wowv_t
@@ -24,7 +25,7 @@ struct wowv_t
   bool operator>=( const wowv_t& other ) const;
 };
 
-consteval uint32_t wowv_stoi( const char* str, int current_value = 0 )
+consteval uint32_t wowv_stoi( const char* str, uint32_t current_value = 0 )
 {
   if ( !str[ 0 ] || str[ 0 ] == '.' )
     return current_value;
@@ -36,9 +37,9 @@ consteval uint32_t wowv_stoi( const char* str, int current_value = 0 )
 consteval wowv_t::wowv_t( const char* version_name ) :
   expansion(), major(), minor(), build()
 {
-  size_t start = 0;
-  size_t end = 0;
-  size_t count = 0;
+  std::size_t start = 0;
+  std::size_t end = 0;
+  std::size_t count = 0;
   while ( version_name[ end ] )
   {
     end++;
