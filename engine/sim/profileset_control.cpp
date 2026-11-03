@@ -157,6 +157,8 @@ profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
   assert( sim && sim->parent );
 }
 
+profileset_controller_t::~profileset_controller_t() = default;
+
 const std::string profileset_controller_t::message( call_point_e call_point )
 {
   std::string msg = fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}",

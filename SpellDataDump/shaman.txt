@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70688 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16583,7 +16583,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
 Effects          :
 #1 (id=1184878)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : Attribute (2048 -> 133120)
 #2 (id=1185192)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
                    Modified By: Fire Nova (1260666 effect#1)
@@ -17924,12 +17923,10 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value 2: 7096 (Label) | Target: Self (1)
 #16 (id=1365323) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 7096 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #17 (id=1367430) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 7443 (Label) | Target: Self (1)
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
-Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Molten Wrath (id=1258843) [Spell Family (11), Passive, Hidden] 

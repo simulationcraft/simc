@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.70575 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.70688 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13498,7 +13498,6 @@ Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Al
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.755 | PvP Coefficient: 0.89 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.741 -> 0.89)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 

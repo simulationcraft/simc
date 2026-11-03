@@ -13,6 +13,7 @@
 #include <functional>
 #include <string>
 #include <utility>
+#include <vector>
 
 struct action_state_t;
 struct item_t;
