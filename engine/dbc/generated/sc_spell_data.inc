@@ -1,4 +1,4 @@
-// 31709 spells, wow build level 12.1.5.70688
+// 31709 spells, wow build level 12.1.5.70783
 static spell_data_t __spell_data[31709] = {
   { "Power Word: Shield"                ,      17, 2, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000010, 0, 0, 0, 4, 0, 0, 0.000000, 40.000000,    7500, 1500, 7500, 0, 0, 0, 0, 2493, 1, 0, 0.000000, 0.000000, 15000, 0, 0, 0, 0x0000000000000000, 0, 0.000000,  0, 0x00000000, 0x00000000, 0, { 327680, 0, 2621696, 0, 0, 0, 0, 0, 4096, 0, 0, 0, 0, 1, 0, 0, 0 }, { 1, 0, 0, 0 }, 6, { 0, 0 }, { 0, 0 }, 0x88000000, 19,   0,  0, 0, 0, 0, 0, 1, 4, 0, 4 }, /* 13 */
   { "Backstab"                          ,      53, 1, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000008, 0, 0, 0, 12, 0, 0, 0.000000, 5.000000,       0, 1000, 0, 0, 0, 0, 0,    0, 2, 0, 0.000000, 0.000000, 0, 0, 0, 0, 0x0000000000000000, 0, 0.000000,  2, 0x00000000, 0x00008000, 0, { 327696, 201327104, 1048576, 1024, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, { 4, 4194304, 0, 0 }, 8, { 0, 0 }, { 0, 0 }, 0x00000000, 0,   0,  0, 0, 0, 0, 0, 4, 1, 0, 3 }, /* 30, 31, 32, 297239 */
@@ -31711,7 +31711,7 @@ static spell_data_t __spell_data[31709] = {
   { "Collapsing Star"                   , 1319066, 106, 0.000000, 0.000000, 0.000000, 0x0000000000000000, 0x00000800, 0, 0, 0, 0, 0, 0, 0.000000, 0.000000,       0, 0, 0, 0, 0, 0, 0,    0, 0, 0, 0.000000, 0.000000, -1, 0, 0, 0, 0x0000000000000000, 0, 0.000000,  0, 0x00000000, 0x00000000, 0, { 2147483776, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0 }, 107, { 0, 0 }, { 0, 0 }, 0x00000000, 0,   0,  0, 0, 0, 0, 0, 1, 0, 0, 3 }, /* 1352838 */
 };
 
-// 53449 effects, wow build level 12.1.5.70688
+// 53449 effects, wow build level 12.1.5.70783
 static spelleffect_data_t __spelleffect_data[53449] = {
   {      13,      17,  0,   6,  69, 0, 0x00000000, 0.000000, 0.050000, 0.000000, 4.638000, 0.000000, 0, 0.000000, 0.000000,      0.0000, 127, 0, { 0, 0, 0, 0 }, 0, 1.000000, 0.000000, 0.000000, 0,   0, 21, 0, 0.000000, 1.150000, 0, 0 },
   {      30,      53,  0,   3,   0, 0, 0x00000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0, 0.000000, 0.000000,      1.0000, 0, 0, { 0, 0, 0, 0 }, 0, 1.000000, 0.000000, 0.000000, 0,   0, 6, 0, 0.000000, 1.000000, 0, 0 },
@@ -91772,7 +91772,7 @@ static const std::array<uint16_t, 52837> __spelleffect_id_index { {
   48927, 48940, 48941, 48942, 48910,
 } };
 
-// Spell powers, wow build 12.1.5.70688
+// Spell powers, wow build 12.1.5.70783
 static constexpr std::array<spellpower_data_t, 882> __spellpower_data { {
   {      7,      17,  137032,   0,     0,    0, 0,   2.600,   0.000,   0.000 },
   { 265783,      17,  137031,   0,     0,    0, 0,   3.100,   0.000,   0.000 },
@@ -92772,7 +92772,7 @@ static const std::array<uint16_t, 882> __spellpower_id_index { {
     816,   817,
 } };
 
-// Spell labels, wow build 12.1.5.70688
+// Spell labels, wow build 12.1.5.70783
 static constexpr std::array<spelllabel_data_t, 58936> __spelllabel_data { {
   {      17,   16 },
   {      17,   18 },
@@ -151712,16 +151712,15 @@ static constexpr std::array<spelllabel_data_t, 58936> __spelllabel_data { {
   { 1319066,  292 },
 } };
 
-// spell hotfix entries, wow build 12.1.5.70688
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spell_hotfix_data { {
-  { 1289168, 35, hotfix::client_hotfix_entry_t::flags_value_t{}, hotfix::client_hotfix_entry_t::flags_value_t{} },
+// spell hotfix entries, wow build 12.1.5.70783
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spell_hotfix_data { {
 } };
 
-// effect hotfix entries, wow build 12.1.5.70688
+// effect hotfix entries, wow build 12.1.5.70783
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __effect_hotfix_data { {
 } };
 
-// power hotfix entries, wow build 12.1.5.70688
+// power hotfix entries, wow build 12.1.5.70783
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __power_hotfix_data { {
 } };
 
