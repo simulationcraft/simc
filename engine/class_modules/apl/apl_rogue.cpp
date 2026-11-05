@@ -229,7 +229,8 @@ void subtlety( player_t* p )
   default_->add_action( "call_action_list,name=build,if=variable.stealth|energy>60" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
-  cds->add_action( "goremaws_bite,if=buff.shadow_dance.up&!buff.ancient_arts.up|fight_remains<=14", "Cooldowns" );
+  cds->add_action( "goremaws_bite,if=talent.unseen_blade&!variable.stealth&variable.dance_condition&cooldown.shadow_dance.charges>=1&!buff.ancient_arts.up&buff.shadow_techniques.stack>=5&(cooldown.shadow_blades.ready|cooldown.secret_technique.ready&cooldown.shadow_blades.remains>=25-cooldown.secret_technique.duration)", "Cooldowns. Trickster: Use Goremaw's Bite in place of a builder right before Shadow Dance when Ancient Arts is not up, since it applies Ancient Arts and lets the opening Secret Technique benefit from Goremaw's Bite." );
+  cds->add_action( "goremaws_bite,if=buff.shadow_dance.up&!buff.ancient_arts.up|fight_remains<=14" );
   cds->add_action( "shadow_blades,if=variable.dance_condition&cooldown.shadow_dance.charges_fractional>=1+0.8*talent.deathstalkers_mark&(buff.ancient_arts.up|!talent.unseen_blade)|(fight_remains<=20|target.time_to_die.remains<=20)" );
   cds->add_action( "shadow_dance,if=variable.dance_condition&talent.deathstalkers_mark&(variable.targets<=3&(buff.darkest_night.up|cooldown.secret_technique.ready&debuff.deathstalkers_mark.stack<=1)|variable.targets>3&debuff.deathstalkers_mark.stack>=2)&(cooldown.shadow_blades.remains>=35-cooldown.secret_technique.duration)|(fight_remains<=10|target.time_to_die-remains<=9)", "Deathstalker: Send Shadow Dance when Darkest Night is up on ST and when its not up on AoE." );
   cds->add_action( "shadow_dance,if=variable.dance_condition&talent.unseen_blade&(cooldown.secret_technique.ready&(cooldown.shadow_blades.remains>=25-cooldown.secret_technique.duration))|(fight_remains<=10|target.time_to_die-remains<=9)", "Trickster: Send Shadow Dance whenever Secret Technique is ready" );
