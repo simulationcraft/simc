@@ -3426,17 +3426,13 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "gnaw" );
     if ( dk()->talent.unholy.dark_transformation.ok() )
     {
-      def->add_action( "gnaw" );
       def->add_action( "monstrous_blow" );
       def->add_action( "sweeping_claws" );
     }
-    else
-    {
-      def->add_action( "gnaw" );
-      def->add_action( "claw,if=energy>70" );
-    }
+    def->add_action( "claw,if=energy>70" );
   }
 
   action_t* create_action( std::string_view name, std::string_view options_str ) override
