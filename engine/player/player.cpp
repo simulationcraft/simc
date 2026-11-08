@@ -4771,9 +4771,11 @@ void player_t::min_threshold_trigger()
     }
   }
 
-  // If time to threshold is zero, there's no need to reset anything
+  // If time to threshold is zero, trigger ready at player_t::available()
   if ( time_to_threshold <= timespan_t::zero() )
   {
+    if( !readying )
+      readying = make_event<player_ready_event_t>( *sim, *this, available() );
     return;
   }
 

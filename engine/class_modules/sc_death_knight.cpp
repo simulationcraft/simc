@@ -2763,11 +2763,14 @@ struct death_knight_pet_t : public pet_t
     if ( buffs.stunned->check() )
       return buffs.stunned->remains();
 
+    if ( ready_type != ready_e::READY_TRIGGER )
+      return pet_t::available();
+
     if ( primary_resource() == RESOURCE_ENERGY )
     {
       double energy = resources.current[ RESOURCE_ENERGY ];
 
-      if ( energy >= resource_thresholds.front() )
+      if ( resource_thresholds.empty() || energy >= resource_thresholds.front() )
         return pet_t::available();
 
       timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
@@ -3022,6 +3025,14 @@ struct pet_action_t : public parse_action_effects_t<Base>
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
+  }
+
+  void init_finished() override
+  {
+    if ( pet()->primary_resource() == RESOURCE_ENERGY && this->base_costs[ RESOURCE_ENERGY ] > 0 )
+      pet()->resource_thresholds.push_back( this->base_costs[ RESOURCE_ENERGY ] );
+
+    action_base_t::init_finished();
   }
 
   bool ready() override
@@ -3342,8 +3353,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
-    gnaw_cd                   = get_cooldown( "gnaw" );
-    gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
     affected_by.grave_mastery = true;
     owner_coeff.ap_from_ap    = 0.474;
     if ( owner->spec.raise_dead->ok() )
@@ -3468,9 +3477,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
                           ->set_disable_async_expire_events_removal( true );
   }
-
-private:
-  cooldown_t* gnaw_cd;  // shared cd between gnaw/monstrous_blow
 
 public:
   propagate_const<gain_t*> dark_transformation_gain;
