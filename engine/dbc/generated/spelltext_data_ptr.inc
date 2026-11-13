@@ -1,5 +1,5 @@
-// Spell text, wow build 12.1.7.70740
-static constexpr std::array<spelltext_data_t, 29427> __ptr_spelltext_data { {
+// Spell text, wow build 12.1.7.70892
+static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25126,7 +25126,7 @@ static constexpr std::array<spelltext_data_t, 29427> __ptr_spelltext_data { {
   { 1217103, "Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.", "Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.", 0 },
   { 1217116, "$@spelldesc427453", 0, 0 },
   { 1217184, "$@spelldesc466810", 0, 0 },
-  { 1217201, "\r\nYou move quickly, gaining a moment of temporary |CFF00cc24immunity.|r\r\n\r\n|CFFFFb2b2Halts your energy regeneration for $s1 sec.|R\r\n\r\n|CFFe6cc80\"They are stronger. Be smarter.\"|r", 0, 0 },
+  { 1217201, "\r\nYou move quickly, gaining a moment of temporary |CFF00cc24immunity.|r$?a1249394[][\r\n\r\n|CFFFFb2b2Halts your energy regeneration for $s1 sec.|R]\r\n\r\n|CFFe6cc80\"They are stronger. Be smarter.\"|r", 0, 0 },
   { 1217204, "$@spelldesc1217201", 0, 0 },
   { 1217205, "$@spelldesc1217201", 0, 0 },
   { 1217214, "Open your C.H.E.T.T. List.", 0, 0 },
@@ -25334,7 +25334,7 @@ static constexpr std::array<spelltext_data_t, 29427> __ptr_spelltext_data { {
   { 1223918, "Damage from Void Ray has a $s1% increased chance to generate a Soul Fragment.", 0, 0 },
   { 1223935, "$@spelldesc361469", "Healing for $w2 every $t2 sec.", 0 },
   { 1223952, 0, "You are one of the devout.", 0 },
-  { 1224039, "\r\nIncreases your movement speed for $d.\r\n\r\n|CFFe6cc80\"The beast could lay neither fang nor claw on the swift-footed hunter.\"|r", 0, 0 },
+  { 1224039, "\r\nIncreases your movement speed for $d.\r\n\r\n|CFFe6cc80\"The beast could lay neither fang nor claw on the swift-footed hunter.\"|r", "Movement speed increased.", 0 },
   { 1224093, "Repair a weapon or piece of plate armor you have specialized in repairing.", 0, 0 },
   { 1224098, "$?s221622[Increases the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.", "Threat redirected from Rogue.", 0 },
   { 1224328, "Sharpens your bladed weapon, increasing Attack Power by $ec1 for 2 hours.", 0, 0 },
@@ -26805,6 +26805,8 @@ static constexpr std::array<spelltext_data_t, 29427> __ptr_spelltext_data { {
   { 1249215, "$?c1[Caustic Spatter][Blade Flurry] causes an additional $?c1[$s1% of Nature][$s2% of attack] damage dealt to be dealt to affected enemies.", 0, 0 },
   { 1249230, "Increases the damage of your spells by $s1%.", 0, 0 },
   { 1249233, "Surge of Light occurs up to $s1% more often based on your missing mana.", 0, 0 },
+  { 1249393, "$@spellname1224039 further increases your movement speed, and lasts ${$s2/1000} sec longer.", 0, 0 },
+  { 1249394, "$@spellname1217201 no longer halts your energy regeneration.", 0, 0 },
   { 1249464, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
   { 1249564, "Your class's guard ability reduces incoming damage by this amount.", 0, 0 },
   { 1249571, "You have Evade charges equal to this amount.", 0, 0 },
@@ -29429,11 +29431,11 @@ static constexpr std::array<spelltext_data_t, 29427> __ptr_spelltext_data { {
   { 1325566, "$@spelldesc1325540", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.7.70740
+// spelltext hotfix entries, wow build 12.1.7.70892
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.7.70740
+// Spell description variables, wow build 12.1.7.70892
 static constexpr std::array<spelldesc_vars_data_t, 748> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30185,7 +30187,7 @@ static constexpr std::array<spelldesc_vars_data_t, 748> __ptr_spelldesc_vars_dat
   { 1325540, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2*3}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2*3}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1*3}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1*3}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.7.70740
+// spelldesc_vars hotfix entries, wow build 12.1.7.70892
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
