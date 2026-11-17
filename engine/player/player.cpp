@@ -4775,7 +4775,14 @@ void player_t::min_threshold_trigger()
   if ( time_to_threshold <= timespan_t::zero() )
   {
     if( !readying )
+    {
+      if ( started_waiting > 0_ms )
+      {
+        iteration_waiting_time += sim->current_time() - started_waiting;
+        started_waiting = timespan_t::min();
+      }
       readying = make_event<player_ready_event_t>( *sim, *this, available() );
+    }
     return;
   }
 
