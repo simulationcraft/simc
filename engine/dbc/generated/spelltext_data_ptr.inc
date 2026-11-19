@@ -1,5 +1,5 @@
-// Spell text, wow build 12.1.7.70892
-static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
+// Spell text, wow build 12.1.7.70986
+static constexpr std::array<spelltext_data_t, 29438> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25742,6 +25742,8 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1233179, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233181[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nUnleash a wrathful storm, inflicting |CFFffffff${$<damageValue>*$1233181d/$1233181t}|R Nature damage over $1233181d to enemies within $1233196A1 yards. \r\n\r\nEach enemy struck grants you $@spellname1242203, increasing the damage of $@spellname1233179 by $1233181s2%.", "Every $1233181t1 sec, inflict $<damageValue> Nature damage to enemies within $1233196A1 yards and increasing the damage of $@spellname1233181 by $1233181w2%.", 0 },
   { 1233181, "$@spelldesc1233179", "$@spellaura1233179", 0 },
   { 1233196, "$@spelldesc1233179", "$@spellaura1233181", 0 },
+  { 1233212, "Grants an Extra Life in the Tales of the Storyteller and modifies your appearance.", 0, 0 },
+  { 1233213, "Grants $s2 Extra Lives in the Tales of the Storyteller and modifies your appearance.", 0, 0 },
   { 1233223, "Apply Greater Rune of Twilight Devastation to a helm. \r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
   { 1233224, "$@spelldesc1233109", 0, 0 },
   { 1233270, "$@spelldesc1233109", 0, 0 },
@@ -25786,6 +25788,7 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1233659, "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $s2 debuff(s) to $s1 targets.\r\n\r\nPossible debuffs include a $s4% damage taken increase, $s5% damage dealt decrease, and $s6% attack and cast speed decrease.", "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $w2 debuff(s) to $w1 targets.\r\n\r\nPossible debuffs include a $w4% damage taken increase, $w5% damage dealt decrease, and $w6% attack and cast speed decrease.", "Rank 2/4" },
   { 1233660, "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $s2 debuff(s) to $s1 targets.\r\n\r\nPossible debuffs include a $s4% damage taken increase, $s5% damage dealt decrease, and $s6% attack and cast speed decrease.", "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $w2 debuff(s) to $w1 targets.\r\n\r\nPossible debuffs include a $w4% damage taken increase, $w5% damage dealt decrease, and $w6% attack and cast speed decrease.", "Rank 3/4" },
   { 1233661, "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $s2 debuff(s) to $s1 targets.\r\n\r\nPossible debuffs include a $s4% damage taken increase, $s5% damage dealt decrease, and $s6% attack and cast speed decrease.", "Brann has a chance to pull out random hats and throw them at his enemies, dealing moderate damage and applying $w2 debuff(s) to $w1 targets.\r\n\r\nPossible debuffs include a $w4% damage taken increase, $w5% damage dealt decrease, and $w6% attack and cast speed decrease.", "Rank 4/4" },
+  { 1233687, "Grants $s1 Extra Lives in the Tales of the Storyteller and modifies your appearance.", 0, 0 },
   { 1233693, "When Brann uses $@spellname453812, sands begin swirling around party members, granting $s2% Critical Strike up to $1230706u times and slowing nearby enemies by $s1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "When Brann uses $@spellname453812, sands begin swirling around party members, granting $w2% Critical Strike up to $1230706u times and slowing nearby enemies by $w1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "Rank 2/4" },
   { 1233694, "When Brann uses $@spellname453812, sands begin swirling around party members, granting $s2% Critical Strike up to $1230706u times and slowing nearby enemies by $s1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "When Brann uses $@spellname453812, sands begin swirling around party members, granting $w2% Critical Strike up to $1230706u times and slowing nearby enemies by $w1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "Rank 3/4" },
   { 1233695, "When Brann uses $@spellname453812, sands begin swirling around party members, granting $s2% Critical Strike up to $1230706u times and slowing nearby enemies by $s1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "When Brann uses $@spellname453812, sands begin swirling around party members, granting $w2% Critical Strike up to $1230706u times and slowing nearby enemies by $w1%.\r\n\r\nDealing a Critical Strike creates a Sand Devil at the target's location for $1230713d that periodically pulls enemies to its center. Can only occur every $1230708proccooldown sec.\r\n\r\n$@spellicon453812 $@spellname453812\r\n$@spelldesc453812", "Rank 4/4" },
@@ -26176,6 +26179,7 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1238695, "$@spelldesc1238686", 0, 0 },
   { 1238696, "$@spelldesc452402", "Damage of your next Demonsurge is increased by $w2%.", 0 },
   { 1238697, "$@spelldesc1235136", "Absorbing ${$w1} damage.", 0 },
+  { 1238723, "Grants $s1 Extra Lives in the Tales of the Storyteller and modifies your appearance.", 0, 0 },
   { 1238733, "$@spelldesc178940", 0, 0 },
   { 1238739, "Each Soul Fragment gathered by Reap increases its damage by $s1%.", 0, 0 },
   { 1238742, "$@spelldesc178940", 0, 0 },
@@ -26805,10 +26809,11 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1249215, "$?c1[Caustic Spatter][Blade Flurry] causes an additional $?c1[$s1% of Nature][$s2% of attack] damage dealt to be dealt to affected enemies.", 0, 0 },
   { 1249230, "Increases the damage of your spells by $s1%.", 0, 0 },
   { 1249233, "Surge of Light occurs up to $s1% more often based on your missing mana.", 0, 0 },
-  { 1249393, "$@spellname1224039 further increases your movement speed, and lasts ${$s2/1000} sec longer.", 0, 0 },
+  { 1249393, "$@spellname1224039 further increases your movement speed and lasts ${$s2/1000} sec longer.", 0, 0 },
   { 1249394, "$@spellname1217201 no longer halts your energy regeneration.", 0, 0 },
   { 1249464, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
   { 1249564, "Your class's guard ability reduces incoming damage by this amount.", 0, 0 },
+  { 1249569, "When you critically strike, your attack inflicts greater damage equal to this percentage.", 0, 0 },
   { 1249571, "You have Evade charges equal to this amount.", 0, 0 },
   { 1249573, "You have an absorb that protects your health from incoming damage while it persists.\r\n\r\nThis absorb regenerates after combat.\r\n", 0, 0 },
   { 1249625, "Chi costs are reduced by $s7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s3/1000} sec for $d.\r\n\r\nActivating Zenith resets the remaining cooldown on Rising Sun Kick.", "Chi costs are reduced by $w7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$w3/1000} sec.$?$w1>0[\r\n\r\nCritical strike chance increased by $w1%.][]", 0 },
@@ -28925,11 +28930,11 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1296158, "Collect the weapon enchantment appearance of Venomcoil.", 0, 0 },
   { 1296184, "$@spelldesc1288781", "Movement Speed increased by $w1% and Haste increased by $w2%.\r\n\r\nSuffering $w3% of your current health as Nature damage every $1305686t sec.", 0 },
   { 1296195, "$@spelldesc1288781", "Infusion reversed.", 0 },
-  { 1296236, "Talebound has fewer keys to bind, and we highly suggest you take a moment to rebind any ability you cannot reach comfortably.", 0, 0 },
+  { 1296236, "Talebound has fewer keys to bind, and we highly suggest you take a moment to rebind any ability you cannot reach comfortably.\r\n\r\n|CFFFFFFFFSimple Keybinds|r\r\nYou can enable simple keybinds in the keybindings menu to use modifier keys, like Shift, as bindings for your abilities.\r\n\r\n|CFFFFFFFFToggle Camera Lock|r\r\nYou can add a bind in the keybinds menu to toggle camera lock if you no longer wish to hold right-click to control your camera.\r\n", 0, 0 },
   { 1296237, "Evade grants temporary immunity to all damage and loss of control effects.\r\n\r\nEvade can be used during your other abilities, canceling them immediately and allowing you to move quickly.\r\n\r\nWhen the inner ring of an enemy's ability reaches the outer ring, it deals its harmful effect. Learn enemy abilities and time your Evades.\r\n\r\nBind Evade to a keybind you can reach easily during combat.", 0, 0 },
   { 1296239, "There are many potions and scrolls scattered through each tale.\r\n\r\nYou will not know what an item is until you identify it.\r\n\r\nThe Arcanist in Quillgrave can teach you how to identify more powerful potions and scrolls.", 0, 0 },
   { 1296240, "|CFFFFFFFFHealth|r\r\nYour health does not regenerate passively. When you run out of health, you will die and return to Quillgrave.\r\n\r\n|CFFFFFFFFBarrier|r\r\nEach time you leave combat, you gain a shield absorbing damage equal to the Barrier value in your Character Info. Barrier protects your Health.\r\n\r\n|CFFFFFFFFPotions|r\r\nThere are a variety of potions that restore your health. You can find unidentified potions hidden in each level.\r\n\r\n|CFFFFFFFFVitality Orbs|r\r\nDefeating enemies causes Vitality Orbs to appear for a short time. These golden vitality orbs initially restore health and can be upgraded to grant additional benefits.", 0, 0 },
-  { 1296241, "You have two resources that fuel your abilities.\r\n\r\n|CFFFFFFFFEnergy|r\r\nEnergy is spent by many of your offensive and defensive abilities.\r\n\r\nEnergy regenerates every second, but Evade will pause energy regeneration for a short time.\r\n\r\nYou can improve your maximum Energy at the Outfitter.\r\n\r\n|CFFFFFFFFFocus|r\r\nFocus is spent by your powerful attacks. \r\n\r\nFocus does not passively regenerate, but it can be restored with potions and other augments.\r\n\r\nEach blue \"Pip\" represents $s1 Focus.\r\n\r\nYou can improve your maximum Focus at the Outfitter.", 0, 0 },
+  { 1296241, "You have two resources that fuel your abilities.\r\n\r\n|CFFFFFFFFEnergy|r\r\nEnergy is spent by many of your offensive and defensive abilities.\r\n\r\nEnergy regenerates every second, but Evade will pause energy regeneration for a short time.\r\n\r\nYou can improve your maximum Energy at the Outfitter.\r\n\r\n|CFFFFFFFFFocus|r\r\nFocus is spent by your powerful attacks. Focus is recovered by spending energy and through powers and potions.\r\n\r\nYou can improve your maximum Focus at the Outfitter.\r\n\r\n$@spellname1331597 \r\n$@spelldesc1331597", 0, 0 },
   { 1296242, "When you defeat enemies, more will often appear to attack in retaliation. Be prepared for a counterattack!\r\n\r\nOn higher difficulties, enemy counterattacks are more frequent and more aggressive.", 0, 0 },
   { 1296246, "Avoiding damage in Talebound is often more important than inflicting damage. Nearly all enemy damage can be avoided.\r\n\r\n|CFFFFFFFFEvade|r\r\nEvade grants you |CFF00cc24immunity|r. Evade has a limited number of charges and pauses your energy regeneration, but it is your most powerful defensive tool.\r\n\r\n|CFFFFFFFFSprint|r\r\nSprint grants you a burst of speed for a short duration. Use this burst of speed to avoid enemy attacks or to create distance between you and them.\r\n\r\n|CFFFFFFFFGuard|r\r\nHold your Guard ability to reduce incoming damage and gain immunity to most loss of control effects.\r\n\r\n|CFFFFFFFFDouble Jump|r\r\nSome enemy attacks can be jumped. You can double jump to go higher.\r\n\r\n|CFFFFFFFFCrowd Control|r\r\nMany of your attacks will Stagger or Stun enemies, preventing them from moving or attacking. \r\n\r\nYellow enemy cast bars can be interrupted by inflicting any damage.\r\n\r\nLearning enemy attacks is key to success. On higher difficulties, enemies gain additional abilities.", 0, 0 },
   { 1296418, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
@@ -29429,13 +29434,17 @@ static constexpr std::array<spelltext_data_t, 29429> __ptr_spelltext_data { {
   { 1325540, "Your Rune of Unleashed Fire has a chance to trigger a healing inferno restoring $<fireAOEHealing> health split among allies within $a1 yards.", 0, 0 },
   { 1325553, "$@spelldesc1325140", 0, 0 },
   { 1325566, "$@spelldesc1325540", 0, 0 },
+  { 1331373, "When you critically strike, your attack inflicts greater damage equal to this percentage.", 0, 0 },
+  { 1331597, "Every $s1 energy spent by damaging abilities causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus.\r\n\r\nThis effect only occurs in combat.", 0, 0 },
+  { 1331600, "$@spelldesc1331597", 0, 0 },
+  { 1331603, "$@spelldesc1331597", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.7.70892
+// spelltext hotfix entries, wow build 12.1.7.70986
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.7.70892
+// Spell description variables, wow build 12.1.7.70986
 static constexpr std::array<spelldesc_vars_data_t, 748> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30187,7 +30196,7 @@ static constexpr std::array<spelldesc_vars_data_t, 748> __ptr_spelldesc_vars_dat
   { 1325540, "$basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]\r\n$voidDmg=${$<basePoints>*$1286716s2}\r\n$voidHealing=${$<basePoints>*$1286721s2}\r\n$fireDmg=${$<basePoints>*$1286970s2}\r\n$fireHealing=${$<basePoints>*$1263002s2}\r\n$statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]\r\n$fireAOEDmg=${$<basePoints>*$1325140s2*3}\r\n$fireAOEHealing=${$<basePoints>*$1325540s2*3}\r\n$voidAOEDmg=${$<basePoints>*$1325431s2/$1325431q1*3}\r\n$voidAOEHealing=${$<basePoints>*$1325432s2/$1325431q1*3}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.7.70892
+// spelldesc_vars hotfix entries, wow build 12.1.7.70986
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
