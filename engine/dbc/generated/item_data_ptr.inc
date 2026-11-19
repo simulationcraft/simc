@@ -68271,7 +68271,7 @@ static const dbc_item_data_t::stats_t __ptr_item_stats_data[68270] = {
   { 73,  5259, 0.000000f },
 };
 
-// Items, ilevel 33-1300, wow build 12.1.7.70892
+// Items, ilevel 33-1300, wow build 12.1.7.70986
 
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk0 { {
   { "Worn Shortsword",     25, 0x00000000, 0x00002000, 0x00, 1, 1, 0, 0, 1, 21, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -167186,7 +167186,6 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Glyph of Convoke the Spirits", 217585, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 11, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0400, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Glyph of Radiant Spark", 217586, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 8, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0080, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Glyph of Divine Toll", 217587, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0002, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "Glyph of Blessing of the Seasons", 217588, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0002, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Glyph of Mindgames", 217589, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0010, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Glyph of the Hunt", 217590, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 12, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0800, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Glyph of Elysian Decree", 217591, 0x00000040, 0x00006000, 0x00, 11, 50, 0, 0, 1, 0, 16, 12, 1, 0, 0.000000f, 0.000000f, 0, 0, 0x0800, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -177454,14 +177453,14 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Pristine Gleaming Iron Spike", 246084, 0x00009440, 0x00002040, 0x00, 1, 1, 0, 0, 4, 0, 3, 9, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 4301, 0, 0, 0, 0, 0 },
   { "Pristine Xakal's Determination", 246085, 0x00009440, 0x00002040, 0x00, 1, 1, 0, 0, 4, 0, 3, 9, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 4300, 0, 0, 0, 0, 0 },
   { "Fate Weaver", 246086, 0x00081040, 0x00102000, 0x00, 350, 70, 0, 0, 4, 23, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[55166], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Chest", 246144, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 5, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Treads", 246145, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 8, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Gloves", 246146, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 10, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Leggings", 246147, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 7, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Cord", 246148, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 6, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Wristwraps", 246149, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 9, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Helm", 246150, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Spaulders", 246151, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 3, 4, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Chest", 246144, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 5, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Treads", 246145, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 8, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Gloves", 246146, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 10, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Leggings", 246147, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 7, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Cord", 246148, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 6, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Wristwraps", 246149, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 9, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Helm", 246150, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Spaulders", 246151, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 3, 4, 2, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Marigold Remembrance Veil", 246154, 0x08008000, 0x00026000, 0x00, 1, 1, 0, 0, 2, 1, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Starflower Remembrance Veil", 246155, 0x08008000, 0x00026000, 0x00, 1, 1, 0, 0, 2, 1, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Lotus Remembrance Veil", 246156, 0x08008000, 0x00026000, 0x00, 1, 1, 0, 0, 2, 1, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -179134,9 +179133,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Wraps of Renewal", 251275, 0x00000000, 0x00002000, 0x00, 197, 78, 0, 0, 2, 10, 4, 1, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[47614], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Touch of Renewal", 251276, 0x00000000, 0x00002000, 0x00, 197, 78, 0, 0, 2, 10, 4, 4, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[53864], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Hands of Renewal", 251277, 0x00000000, 0x00002000, 0x00, 197, 78, 0, 0, 2, 10, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[52457], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Cloak", 251310, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 16, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Shirt", 251311, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 4, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-  { "GM3 Tabard", 251312, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 19, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Cloak", 251310, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 16, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Shirt", 251311, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 4, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Traveler's Tabard", 251312, 0x00020000, 0x00406000, 0x00, 1, 1, 0, 0, 2, 19, 4, 1, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Loa Worshiper's Band", 251513, 0x00080440, 0x00006000, 0x00, 197, 1, 0, 0, 4, 11, 4, 0, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[47527], 3, 0xffff, 0xffffffffffffffff, { 7, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Shield of Unending Sorrow", 251514, 0x08008000, 0x00023000, 0x00, 1, 1, 0, 0, 3, 14, 4, 6, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Shield of Unending Grief", 251515, 0x08008000, 0x00023000, 0x00, 1, 1, 0, 0, 3, 14, 4, 6, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -182974,9 +182973,9 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Slitherscale Girdle", 271436, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 6, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67549], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Righteous Lawbringer's Headgear", 271437, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 1, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Temple Delver's Mystic Helm", 271438, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67553], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
-} };
-static const std::array<dbc_item_data_t, 1651> __ptr_item_data_chunk7 { {
   { "Righteous Lawbringer's Tunic", 271439, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 5, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+} };
+static const std::array<dbc_item_data_t, 1650> __ptr_item_data_chunk7 { {
   { "Greaves of the Noxious Depths", 271440, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 8, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67557], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Crushing Coiler Coif", 271441, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 1, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67561], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Righteous Lawbringer's Buckle", 271442, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 6, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
