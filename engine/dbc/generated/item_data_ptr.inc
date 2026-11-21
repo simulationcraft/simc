@@ -68271,7 +68271,7 @@ static const dbc_item_data_t::stats_t __ptr_item_stats_data[68270] = {
   { 73,  5259, 0.000000f },
 };
 
-// Items, ilevel 33-1300, wow build 12.1.7.70986
+// Items, ilevel 33-1300, wow build 12.1.7.71087
 
 static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk0 { {
   { "Worn Shortsword",     25, 0x00000000, 0x00002000, 0x00, 1, 1, 0, 0, 1, 21, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -182975,7 +182975,7 @@ static const std::array<dbc_item_data_t, 16384> __ptr_item_data_chunk6 { {
   { "Temple Delver's Mystic Helm", 271438, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 1, 4, 2, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67553], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Righteous Lawbringer's Tunic", 271439, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 5, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
 } };
-static const std::array<dbc_item_data_t, 1650> __ptr_item_data_chunk7 { {
+static const std::array<dbc_item_data_t, 1658> __ptr_item_data_chunk7 { {
   { "Greaves of the Noxious Depths", 271440, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 8, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67557], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Crushing Coiler Coif", 271441, 0x00000000, 0x00002000, 0x00, 219, 90, 0, 0, 4, 1, 4, 3, 1, 0, 0.000000f, 0.000000f, &__ptr_item_stats_data[67561], 4, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Righteous Lawbringer's Buckle", 271442, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 6, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -183225,6 +183225,14 @@ static const std::array<dbc_item_data_t, 1650> __ptr_item_data_chunk7 { {
   { "Spellbreaker's Phoenixblade", 272318, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 13, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Nullbeacon Rift Channeler", 272320, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 17, 2, 10, 2, 3600, 0.300000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Arcane Ranger's Spellbow", 272321, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 15, 2, 2, 2, 3000, 0.300000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Crown", 272326, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 1, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Sabatons", 272327, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 8, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Chestplate", 272328, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 5, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Claws", 272329, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 10, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Greaves", 272330, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 7, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Pauldron", 272331, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 3, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Cloak", 272332, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 16, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
+  { "Varian's Azure Dragon Belt", 272333, 0x08008000, 0x00022000, 0x00, 1, 1, 0, 0, 4, 6, 4, 5, 1, 0, 0.000000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Nullbeacon Rift Smasher", 272336, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 17, 2, 5, 2, 3600, 0.250000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Mage Guard's Spellblade", 272337, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 13, 2, 7, 2, 2600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
   { "Mage Guard's Spellsteel", 272338, 0x08009000, 0x00022000, 0x00, 1, 1, 0, 0, 3, 17, 2, 8, 2, 3600, 0.500000f, 0.000000f, 0, 0, 0xffff, 0xffffffffffffffff, { 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
