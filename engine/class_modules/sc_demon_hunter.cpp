@@ -6243,21 +6243,18 @@ struct eradicate_t
 
     auto damage = dh()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
-    // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
-    make_event( *dh()->sim, 220_ms, [ this, fragments_consumed, damage ] {
-      damage->set_target( target );
-      action_state_t* damage_state = damage->get_state();
-      damage_state->target         = target;
-      damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    damage->set_target( target );
+    action_state_t* damage_state = damage->get_state();
+    damage_state->target         = target;
+    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-      if ( dh()->talent.devourer.soulshaper->ok() )
-      {
-        damage_state->da_multiplier *=
-            1.0 + fragments_consumed * dh()->talent.devourer.soulshaper->effectN( 1 ).percent();
-      }
+    if ( dh()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *=
+          1.0 + fragments_consumed * dh()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
 
-      damage->schedule_execute( damage_state );
-    } );
+    damage->schedule_execute( damage_state );
     dh()->buff.moment_of_craving->expire();
 
     dh()->buff.eradicate->expire();
