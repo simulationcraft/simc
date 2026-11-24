@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.7.71087
-static constexpr std::array<spelltext_data_t, 29710> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29710,6 +29710,7 @@ static constexpr std::array<spelltext_data_t, 29710> __ptr_spelltext_data { {
   { 1333161, "Collecting Ducats, Vitality Orbs, or Focus Orbs causes your next $@spellname1296328 to flare, striking the primary target again for $s1% damage.", 0, 0 },
   { 1333164, "$@spelldesc1333161", "Your next $@spellname1296328 deals additional damage to the primary target.", 0 },
   { 1333172, "$@spelldesc1333161", 0, 0 },
+  { 1333896, "$@spelldesc1283542", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.1.7.71087
