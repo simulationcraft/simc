@@ -267181,11 +267181,12 @@ Effects          :
 Description      : $@spelldesc1329415
 
 Name             : Zeal (id=1329430) 
+Hotfixed         : Attributes
 Class            : 
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
-Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Attributes       : Allow Cast While Casting (135), Reactive Damage Proc (142), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1368939)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
