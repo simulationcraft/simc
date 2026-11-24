@@ -29686,7 +29686,7 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   { 1329657, "$@spelldesc1329629", 0, 0 },
   { 1329660, "$@spelldesc1329629", 0, 0 },
   { 1331373, "When you critically strike, your attack inflicts greater damage equal to this percentage.", 0, 0 },
-  { 1331597, "Every $s1 energy spent by damaging abilities causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus.\r\n\r\nThis effect only occurs in combat.", 0, 0 },
+  { 1331597, "Every $s1 energy spent while in combat causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus.", 0, 0 },
   { 1331600, "$@spelldesc1331597", 0, 0 },
   { 1331603, "$@spelldesc1331597", 0, 0 },
   { 1331772, "You may now find class-specific powers in the Tales of the Storyteller that you have learned from the Scribe.\r\n\r\nAdditionally, you begin the Tales of the Storyteller with an extra power.", 0, 0 },
@@ -29714,7 +29714,8 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.7.71087
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  { 1331597,  0, "Every $s1 energy spent by damaging abilities causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus.\r\n\r\nThis effect only occurs in combat.", "Every $s1 energy spent while in combat causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus." },
 } };
 
 // Spell description variables, wow build 12.1.7.71087
