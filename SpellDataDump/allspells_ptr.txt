@@ -521788,14 +521788,16 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : Your $@spellname1283305 that encounter an enemy unleash hail on them, inflicting damage in a small area. The damage is increased based on how far the spider traveled before exploding.
 
-Name             : Paralytic Frost (id=1316448) [Passive] 
+Name             : Paralytic Frost (id=1316448) 
+Hotfixed         : Attributes
 Class            : 
 School           : Frost
 Spell Type       : None
+Duration         : Aura (infinite)
 Labels           : 6565
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), Not a Proc (105), Can Proc From Procs (122), Allow Cast While Casting (135), Not Available While Charmed (174), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Don't close loot window (379), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Entering Arena (149), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Aura Required by Client (262), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404), Never Learn (408), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1349173)  : Apply Aura (6) | Proc Trigger Spell (42): Paralytic Frost | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 20722.03 (coefficient=162.1398) | Trigger Spell: 1332196 | Target: Self (1)
@@ -523859,14 +523861,14 @@ Effects          :
 Description      : When you critically strike, your attack inflicts greater damage equal to this percentage.
 
 Name             : Flow State (id=1331597) [Passive, Hidden] 
-Hotfixed         : Description
+Hotfixed         : Proc Chance (101 -> 100), Proc Flags 1 (536870912 -> 2446608), Attributes, Description
 Class            : 
 School           : Physical
 Spell Type       : None
 Labels           : 7558
-Proc Chance      : 101%
-Proc Flags       : Cast Ended
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Allow Cast While Casting (135), Allow Proc While Sitting (147), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1372157)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
