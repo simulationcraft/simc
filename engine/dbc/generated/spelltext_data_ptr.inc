@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.7.71087
-static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29719> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28035,8 +28035,11 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   { 1265916, "Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.\r\n\r\nEach blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.", "Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $w4, while normal foes yield $w3.\r\n\r\nEach blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.", 0 },
   { 1265918, "$@spelldesc1265862", 0, 0 },
   { 1265919, "Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $s4, while normal foes yield $s3.\r\n\r\nEach blessing grants $s1% increased healing and damage. Upon reaching $s6, your companion converts $s2% of their current health into an absorb shield that increases blessing bonuses while active.", "Your companion has a chance to gain Sanctum's Blessings through combat, as well as by slaying foes. Elite enemies grant $w4, while normal foes yield $w3.\r\n\r\nEach blessing grants $w1% increased healing and damage. Upon reaching $w6, your companion converts $w2% of their current health into an absorb shield that increases blessing bonuses while active.", 0 },
+  { 1265920, "$@spelldesc1256150", 0, 0 },
+  { 1265921, "$@spelldesc1256150", 0, 0 },
   { 1265924, "Spirit Bomb shields you for $263648d, absorbing ${$MHP*$s1/100} damage plus ${$MHP*$s2/100} for each Soul Fragment consumed.", 0, 0 },
   { 1265927, "$@spelldesc321708", 0, 0 },
+  { 1265930, "$@spelldesc1256150", 0, 0 },
   { 1265931, "$@spelldesc1265863", "$w2 $Lbullet:bullets; hidden up your sleeve. When you've hidden $1265863s2 bullets, your next Between the Eyes consumes them and costs no Energy, generates $1279356s1 combo points, and immediately resets its own cooldown.", 0 },
   { 1265932, "$?c2[Frost Strike damage is increased by $s1% and Glacial Advance damage is increased by $s2%.\r\n\r\nReaper's Mark grants $s4 charges of Bonegrinder if it is known.]?c1[Death Strike damage increased by $s3%.][]", 0, 0 },
   { 1265935, "$@spelldesc1265863", "Your next Between the Eyes costs no Energy, generates $1279356s1 combo points, and immediately resets its own cooldown.", 0 },
@@ -28053,6 +28056,12 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   { 1265992, "Twin Flame bounces to up to $s1 additional targets.", 0, "Red" },
   { 1265993, "$?c1[Fire Breath has][Dream Breath and Fire Breath have] a $s1% chance to generate Essence Burst.", 0, "Red" },
   { 1266012, 0, "$@spelldesc1253359", 0 },
+  { 1266029, "$@spelldesc1256150", 0, 0 },
+  { 1266030, "$@spelldesc1256150", 0, 0 },
+  { 1266031, "$@spelldesc1256150", 0, 0 },
+  { 1266032, "$@spelldesc1256150", 0, 0 },
+  { 1266033, "$@spelldesc1256150", 0, 0 },
+  { 1266034, "$@spelldesc1256150", 0, 0 },
   { 1266035, "$@spelldesc1256150", 0, 0 },
   { 1266036, "$@spelldesc1256150", 0, 0 },
   { 1266037, "$@spelldesc1256150", 0, 0 },
@@ -29540,7 +29549,6 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   { 1316438, "$@spelldesc1329044", 0, 0 },
   { 1316440, "$@spelldesc1316444", 0, 0 },
   { 1316444, "Your $@spellname1283305 that encounter an enemy unleash hail on them, inflicting damage in a small area. The damage is increased based on how far the spider traveled before exploding.", 0, 0 },
-  { 1316445, "$@spelldesc436573", "Absorbing $w1 damage.", 0 },
   { 1316448, "$@spellname1283305 reduce enemies' damage done by $1332196s2% and significantly reduce their movement speed for $1332196d.", 0, 0 },
   { 1316449, "$@spelldesc432442", 0, 0 },
   { 1316450, "$@spelldesc432442", "Attackers suffer Fire damage.\r\nAbsorbing $w2 damage.\r\nHaste increased by $w3.", 0 },
@@ -29676,7 +29684,7 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
   { 1329466, "$@spelldesc1329461", "A portion of damage taken is also inflicted on Bonded targets.", 0 },
   { 1329490, "$@spelldesc1329461", 0, 0 },
   { 1329491, "$@spelldesc1329461", 0, 0 },
-  { 1329613, "Automatically cast a $@spellname1296120 at an enemy who strikes you while you have $@spellname1253255 active. May only occur every $proccooldown sec.", 0, 0 },
+  { 1329613, "Automatically cast a $@spellname1296120 at an enemy who strikes you while you have $@spellname1253255 active.", 0, 0 },
   { 1329626, "When you finish channeling $@spellname1283965 it upgrades to $@spellname1329629 if you damaged an enemy.\r\n\r\n$@spellicon1329629 $@spellname1329629\r\n$@spelldesc1329629", 0, 0 },
   { 1329629, "|CFFFFFFFF$A1 Yard Cone|r\r\n\r\nInflict heavy damage in a small area around the lowest health enemy in front of you, knocking them away from you and critically striking all targets if they are below $s2% health.\r\n\r\nIf $@spellname1329629 slays the main target, it may be cast again before reverting to $@spellname1283965.", 0, 0 },
   { 1329637, "$@spelldesc1329626", 0, 0 },
@@ -29714,7 +29722,8 @@ static constexpr std::array<spelltext_data_t, 29711> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.7.71087
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  { 1329613,  0, "Automatically cast a $@spellname1296120 at an enemy who strikes you while you have $@spellname1253255 active. May only occur every $proccooldown sec.", "Automatically cast a $@spellname1296120 at an enemy who strikes you while you have $@spellname1253255 active." },
   { 1331597,  0, "Every $s1 energy spent by damaging abilities causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus.\r\n\r\nThis effect only occurs in combat.", "Every $s1 energy spent while in combat causes a Focus Orb to appear for a short time. Collecting this orb restores ${$s3/10} focus." },
 } };
 
