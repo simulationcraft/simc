@@ -1419,7 +1419,7 @@ sim_t::sim_t()
     healing( 0 ),
     global_spawn_index( 0 ),
     max_player_level( -1 ),
-    queue_lag( 5_ms, 0_ms ),
+    queue_lag( 0_ms, 0_ms ),
     gcd_lag( 150_ms, 0_ms ),
     channel_lag( 250_ms, 0_ms ),
     queue_gcd_reduction( 100_ms ),
