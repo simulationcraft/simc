@@ -9,8 +9,8 @@ env:
 
 jobs:
   ubuntu-test:
-    name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }}-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
+    runs-on: ${{ matrix.os }}
     env:
       CACHE_KEY: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
       UBSAN_OPTIONS: print_stacktrace=1
@@ -18,8 +18,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cppVersion: [17, 20]
-        compiler: [clang++-16, clang++-18, gcc-12, gcc-14]
+        cppVersion: [20, 23]
+        compiler: [clang++-16, clang++-20, clang++-22, gcc-12, gcc-13, gcc-15]
+        exclude:
+          # clang 16 is not happy with c++23
+          - compiler: clang++-16
+            cppVersion: 23
+        include:
+          - { compiler: clang++-16, os: ubuntu-24.04 }
+          - { compiler: gcc-12,     os: ubuntu-24.04 }
+          - { compiler: clang++-20, os: ubuntu-latest }
+          - { compiler: clang++-22, os: ubuntu-latest }
+          - { compiler: gcc-13,     os: ubuntu-latest }
+          - { compiler: gcc-15,     os: ubuntu-latest }
 
     steps:
       - uses: actions/cache@v5
@@ -41,7 +52,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE iterations=10 fight_style=DungeonSlice allow_experimental_specializations=1 cleanup_threads=1
 
       - name: Clear Cache
-        if: ( matrix.compiler != 'clang++-16' || matrix.cppVersion != '17' ) && github.event_name == 'push'
+        if: ( matrix.compiler != 'clang++-20' || matrix.cppVersion != '20' ) && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh cache delete ${{ env.CACHE_KEY }}

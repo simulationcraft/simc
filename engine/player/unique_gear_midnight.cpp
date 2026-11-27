@@ -632,7 +632,7 @@ void rite_of_the_hashey( special_effect_t& effect )
       // Currently this always triggers a Crit buff on every single trigger. This will have 0 stats on it unless it
       // rolls crit. We can simulate this behaviour by expiring the crit buff with every trigger.
       // TODO: Fixed in 12.1.5
-      if ( listener->dbc->wowv() < wowv_t{ 12, 1, 5 } )
+      if ( listener->dbc->wowv() < "12.1.5" )
         rites[ STAT_CRIT_RATING ]->expire();
 
       // The enchant favors the highest secondary stat while above 80% health. Instead of tracking
@@ -1653,7 +1653,7 @@ void hunt( special_effect_t& effect )
 
     void pick_random_raid_race()
     {
-      if ( listener->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      if ( listener->sim->dbc->wowv() >= "12.1.0" )
         race = rng().range( raid_races_12_1 );
       else
         race = rng().range( raid_races_12_0 );
@@ -6497,7 +6497,7 @@ void register_special_effects()
   register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   register_special_effect( 1236994, consumables::potion_of_recklessness );
   register_special_effect( 1238443, consumables::potion_of_zealotry );
-  set_min_version( wowv_t( 12, 1, 0 ) );
+  set_min_version( "12.1.0" );
   register_special_effect( 1295132, consumables::liquid_luster, true );
   register_special_effect( 1295015, consumables::alluring_nostrum );
   reset_version_check();
@@ -6532,7 +6532,7 @@ void register_special_effects()
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
   register_special_effect( 1261968, embellishments::b0p_curator_of_booms );
   register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
-  set_min_version( wowv_t( 12, 1, 0 ) );
+  set_min_version( "12.1.0" );
   register_special_effect( 1296982, embellishments::polished_ammolite );
   register_special_effect( 1296550, embellishments::snakeskin_lining );
   register_special_effect( 1296870, embellishments::adorned_fang );
@@ -6602,9 +6602,9 @@ void register_special_effects()
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
   register_special_effect( 1250588, trinkets::permafrost_essence );
-  set_min_version( wowv_t( 12, 0, 7 ) );
+  set_min_version( "12.0.7" );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
-  set_min_version( wowv_t( 12, 1, 0 ) );
+  set_min_version( "12.1.0" );
   register_special_effect( 1295058, trinkets::wavecallers_seastone );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
@@ -6636,7 +6636,7 @@ void register_special_effects()
   register_special_effect( 1307356, DISABLED_EFFECT );  // Sszorak's Ferocity killing blow driver
   register_special_effect( 1295643, trinkets::idol_of_the_howling_nexus );
   register_special_effect( 1293311, trinkets::coiled_fangstone );
-  set_min_version( wowv_t( 12, 1, 5 ) );
+  set_min_version( "12.1.5" );
   register_special_effect( 1310404, trinkets::twisted_horrors_tendril );
   register_special_effect( 1310446, DISABLED_EFFECT );  // twisted horror's tendril new target driver
   reset_version_check();
@@ -6644,13 +6644,13 @@ void register_special_effects()
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
   register_special_effect( 1250529, weapons::murder_row_fishhook );
-  set_min_version( wowv_t( 12, 1, 0 ) );
+  set_min_version( "12.1.0" );
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
   register_special_effect( 1296732, weapons::sharpened_lightwood_slasher );
   register_special_effect( 1298023, weapons::zathatek_breath_of_corruption );
   register_special_effect( 1291718, bite_of_zuljan::venomfang );
-  set_min_version( wowv_t( 12, 1, 5 ) );
+  set_min_version( "12.1.5" );
   register_special_effect( 1309762, weapons::lights_justice );
   reset_version_check();
   // Armor
@@ -6660,13 +6660,13 @@ void register_special_effects()
   register_special_effect( 1243903, armors::azerothian_power );
   register_special_effect( 1241529, armors::arcanoweave_cord );
   register_special_effect( 1241503, armors::sunfire_sash );
-  set_min_version( wowv_t( 12, 0, 7 ) );
+  set_min_version( "12.0.7" );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
-  set_min_version( wowv_t( 12, 1, 0 ) );
+  set_min_version( "12.1.0" );
   register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   register_special_effect( 1317582, armors::venomcursed_ascendance );
-  set_min_version( wowv_t( 12, 1, 5 ) );
+  set_min_version( "12.1.5" );
   register_special_effect( 1310208, armors::void_eruption );
   register_special_effect( 1310082, armors::call_the_swarm );
   reset_version_check();
@@ -6683,7 +6683,7 @@ void register_special_effects()
   register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
   register_special_effect( 1291726, DISABLED_EFFECT ); // bite of zuljan set bonus, handled by bite_of_zuljan::zuljins_guillotine_technique
   // Omnium Folio
-  set_min_version( wowv_t( 12, 0, 7 ) );
+  set_min_version( "12.0.7" );
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
   register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
   register_special_effect( 1287555, DISABLED_EFFECT );  // rune of lingering
@@ -6694,7 +6694,7 @@ void register_special_effects()
   register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
   register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
   register_special_effect( 1279616, DISABLED_EFFECT );  // rune of echoes
-  set_min_version( wowv_t( 12, 1, 7 ) );
+  set_min_version( "12.1.7" );
   register_special_effect( 1324888, DISABLED_EFFECT );  // Rune of Empowerment
   register_special_effect( 1324904, DISABLED_EFFECT );  // Rune of Critical Mass
   reset_version_check();

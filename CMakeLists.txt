@@ -1,5 +1,5 @@
 # Projects Settings
-cmake_minimum_required (VERSION 3.10...3.22)
+cmake_minimum_required (VERSION 3.12...3.22)
 
 # Set OSX minimum version parity with Qt project
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
@@ -18,7 +18,7 @@ option(SC_USE_FLAT_INSTALL "Install files into a flat folder structure" ${WIN32}
 
 option(SC_EVENT_QUEUE_DEBUG "Enable Event Queue Debug Info" OFF)
 
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
+set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard to conform to")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

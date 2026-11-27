@@ -4830,6 +4830,13 @@ struct sundering_splitstream_t : public shaman_attack_t
 
     p()->trigger_earthsurge( execute_state, p()->talent.splitstream->effectN( 1 ).percent() );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    shaman_attack_t::impact( s );
+
+    td( s->target )->debuff.lashing_flames->trigger();
+  }
 };
 
 // Elemental overloads

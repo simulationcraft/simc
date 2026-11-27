@@ -59,27 +59,16 @@
 // Compiler Minimal Limits
 // ==========================================================================
 
-
-// Last updated 2023-09: Support gcc7 / clang 5 / MSVS 19.14 which have (~full) C++17 support
-// Ubuntu LTS EOL is +5 years, Debian has ~+3year EOL, +5 years with separate LTS support
-// Debian 10 (Buster) (Release 2019-07): gcc 8.3 clang 7
-// Ubuntu 20.04: gcc 9.3 clang 10
-// Debian 11 (Bullseye) (Release 2021-08): gcc 10.2 clang 11
-// Ubuntu 22.04: gcc 11.2 clang 14
-// Debian 12 (Bookworm) (Release 2023-06): gcc 12.2 clang 14
-//
-// CI setup currently only supports Ubuntu 20.04+, which has clang 7 as the lowest installable version -
-// so clang 5/6 builds are not actually tested in CI.
-#if defined( SC_CLANG ) && SC_CLANG < 50000
-#  error "clang++ below version 5 not supported"
+// Last updated 2026-10: Support gcc10 / clang 14 / MSVS 16.10 (MSVC 19.29) which have (~full) C++20 support
+#if defined( SC_CLANG ) && SC_CLANG < 140000
+#  error "clang++ below version 14 not supported"
 #endif
-#if defined( SC_GCC ) && SC_GCC < 70000
-#  error "g++ below version 7 not supported"
+#if defined( SC_GCC ) && SC_GCC < 100000
+#  error "g++ below version 10 not supported"
 #endif
-#if defined( SC_VS ) && SC_VS < 1914
-#  error "Visual Studio 2017 below version 15.7 not supported"
+#if defined( SC_VS ) && SC_VS < 1929
+#  error "Visual Studio 2019 below version 16.10 not supported"
 #endif
-
 
 // ==========================================================================
 // General Macros/Defines

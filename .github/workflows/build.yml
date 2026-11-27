@@ -9,17 +9,23 @@ on:
 
 jobs:
   ubuntu-gcc-build:
-    name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }}-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        compiler: [gcc-12, gcc-14]
-        cppVersion: [17, 20]
+        compiler: [gcc-12, gcc-13, gcc-15]
+        cppVersion: [20, 23]
         include:
           - compiler: gcc-12
             cxx: g++-12
-          - compiler: gcc-14
-            cxx: g++-14
+            os: ubuntu-24.04
+          - compiler: gcc-13
+            cxx: g++-13
+            os: ubuntu-latest
+          - compiler: gcc-15
+            cxx: g++-15
+            os: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
@@ -65,17 +71,27 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
-    name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }}-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}-build
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        cppVersion: [17, 20]
-        compiler: [clang++-16, clang++-18]
+        cppVersion: [20, 23]
+        compiler: [clang++-16, clang++-20, clang++-22]
+        exclude:
+          # Clang 16 is not happy with c++23
+          - compiler: clang++-16
+            cppVersion: 23
         include:
           - compiler: clang++-16
             enable_file_prefix_map: true
-          - compiler: clang++-18
+            os: ubuntu-24.04
+          - compiler: clang++-20
             enable_file_prefix_map: true
+            os: ubuntu-latest
+          - compiler: clang++-22
+            enable_file_prefix_map: true
+            os: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6

@@ -467,22 +467,26 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<druid_td_t*>( t )->debuff )->check();
+        auto debuff = std::invoke( d, static_cast<druid_td_t*>( t )->debuff );
+        return debuff ? debuff->check() : 0;
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<druid_td_t*>( t )->debuff )->check() > 0;
+        auto debuff = std::invoke( d, static_cast<druid_td_t*>( t )->debuff );
+        return debuff ? debuff->check() > 0 : false;
       };
   }
   else if constexpr ( std::is_invocable_v<T, druid_td_t::dots_t> )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<druid_td_t*>( t )->dots )->current_stack();
+        auto dot = std::invoke( d, static_cast<druid_td_t*>( t )->dots );
+        return dot ? dot->current_stack() : 0;
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<druid_td_t*>( t )->dots )->is_ticking();
+        auto dot = std::invoke( d, static_cast<druid_td_t*>( t )->dots );
+        return dot ? dot->is_ticking() : false;
       };
   }
   else

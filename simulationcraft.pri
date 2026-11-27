@@ -6,7 +6,7 @@ INCLUDEPATH += ../engine/include
 INCLUDEPATH += ../engine/lib
 DEPENDPATH  = ../engine
 VPATH       = ..
-CONFIG      += c++17
+CONFIG      += c++20
 
 CONFIG(debug, debug|release): OBJECTS_DIR = build/debug
 CONFIG(release, debug|release): OBJECTS_DIR = build/release

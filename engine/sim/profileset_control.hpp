@@ -95,7 +95,7 @@ public:
   std::vector<std::unique_ptr<option_t>> options;
 
   profileset_controller_t( sim_t*, unsigned int );
-  virtual ~profileset_controller_t() = default;
+  virtual ~profileset_controller_t();
 
   const std::string message( call_point_e );
   void add_option( std::unique_ptr<option_t>&& );
