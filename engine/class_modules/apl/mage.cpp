@@ -63,7 +63,9 @@ void fire( player_t* p )
 
   mana( precombat, default_ );
   default_->add_action( "combustion" );
-  default_->add_action( "pyroblast,if=buff.presence_of_mind.up" );
+  default_->add_action( "scorch,if=talent.improved_scorch&(debuff.fire_vulnerability.stack<5|debuff.fire_vulnerability.remains<4)" );
+  default_->add_action( "presence_of_mind" );
+  default_->add_action( "pyroblast,if=buff.presence_of_mind.up|buff.heating_up.stack>=3" );
   default_->add_action( "fire_blast" );
   default_->add_action( "fireball" );
 }

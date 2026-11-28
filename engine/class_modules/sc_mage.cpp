@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "action/parse_effects.hpp"
+#include "action/residual_action.hpp"
 #include "player/ground_aoe.hpp"
 
 #include "class_modules/apl/mage.hpp"
@@ -224,7 +225,8 @@ struct mage_t final : public player_t
     buff_t* evocation        = nullptr;
     buff_t* arcane_power     = nullptr;
     buff_t* presence_of_mind = nullptr;
-    buff_t* combustion       = nullptr;
+    buff_t* combustion       = nullptr;  // fire crit chance, one stack per fire hit
+    buff_t* combustion_crits = nullptr;  // fire crits left before Combustion ends
     buff_t* clearcasting     = nullptr;
     buff_t* heating_up       = nullptr;
     buff_t* missile_barrage  = nullptr;
@@ -236,6 +238,8 @@ struct mage_t final : public player_t
   {
     proc_t* ignite_munch = nullptr;
   } procs;
+
+  action_t* ignite = nullptr;
 
   struct gains_t
   {
@@ -272,6 +276,7 @@ struct mage_t final : public player_t
   }
 
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
+  void create_actions() override;
   void init_action_list() override;
   void init_base_stats() override;
   void init_spells() override;
@@ -291,6 +296,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) : actor_target_data_t( ta
   dots.ignite    = target->get_dot( "ignite", mage );
   dots.fireball  = target->get_dot( "fireball", mage );
   dots.pyroblast = target->get_dot( "pyroblast", mage );
+
+  // fire damage taken from the mage, per stack
+  debuffs.fire_vulnerability =
+    make_buff( *this, "fire_vulnerability", mage->find_spell( 22959 ) )->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -326,6 +335,13 @@ struct mage_spell_t : public mage_action_t<spell_t>
   bool affected_by_clearcasting     = false;
   bool affected_by_presence_of_mind = false;
 
+  // direct damage that can trigger talent procs; false for ground effect
+  // pulses and dots fed by other spells
+  bool triggers_procs = true;
+
+  // non-periodic crits stack Heating Up (Fireball, Fire Blast, Scorch)
+  bool triggers_heating_up = false;
+
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -341,8 +357,80 @@ struct mage_spell_t : public mage_action_t<spell_t>
 
     parse_effects( p()->buffs.arcane_power );
     parse_effects( p()->buffs.combustion );
+    parse_effects( p()->buffs.heating_up );
     affected_by_clearcasting     = parse_effects( p()->buffs.clearcasting );
     affected_by_presence_of_mind = base_execute_time > 0_ms && parse_effects( p()->buffs.presence_of_mind );
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = base_t::composite_target_multiplier( t );
+
+    if ( school == SCHOOL_FIRE )
+      m *= 1.0 + td( t )->debuffs.fire_vulnerability->check_stack_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( !triggers_procs || !result_is_hit( s->result ) )
+      return;
+
+    if ( school == SCHOOL_FIRE )
+      trigger_combustion( s );
+
+    if ( s->result == RESULT_CRIT )
+    {
+      if ( school == SCHOOL_FIRE )
+        trigger_ignite( s );
+
+      if ( triggers_heating_up && p()->talents.heating_up.ok() )
+        p()->buffs.heating_up->trigger();
+
+      // refunds once per cast, not per target hit
+      if ( s->chain_target <= 1 && ( school == SCHOOL_FIRE || school == SCHOOL_FROST ) )
+        trigger_master_of_elements();
+    }
+  }
+
+  // Each fire hit adds crit chance; the buff ends after its crits are used.
+  void trigger_combustion( const action_state_t* s )
+  {
+    if ( !p()->buffs.combustion_crits->check() )
+      return;
+
+    if ( s->result == RESULT_CRIT )
+    {
+      p()->buffs.combustion_crits->decrement();
+      if ( !p()->buffs.combustion_crits->check() )
+      {
+        p()->buffs.combustion->expire();
+        return;
+      }
+    }
+
+    p()->buffs.combustion->trigger();
+  }
+
+  void trigger_ignite( const action_state_t* s )
+  {
+    if ( !p()->talents.ignite.ok() )
+      return;
+
+    residual_action::trigger( p()->ignite, s->target, s->result_amount * p()->talents.ignite->effectN( 1 ).percent() );
+  }
+
+  void trigger_master_of_elements()
+  {
+    if ( !p()->talents.master_of_elements.ok() )
+      return;
+
+    double refund = base_costs[ RESOURCE_MANA ] * p()->talents.master_of_elements->effectN( 1 ).percent();
+    if ( refund > 0 )
+      p()->resource_gain( RESOURCE_MANA, refund, p()->gains.master_of_elements, this );
   }
 
   void execute() override
@@ -357,6 +445,15 @@ struct mage_spell_t : public mage_action_t<spell_t>
       p()->buffs.clearcasting->decrement();
     if ( presence_of_mind )
       p()->buffs.presence_of_mind->decrement();
+  }
+};
+
+// Ignite: rolling fire dot holding a share of fire crit damage
+struct ignite_t final : public residual_action::residual_periodic_action_t<mage_spell_t>
+{
+  ignite_t( mage_t* p ) : residual_periodic_action_t( "ignite", p, p->find_spell( 412538 ) )
+  {
+    triggers_procs = false;
   }
 };
 
@@ -382,6 +479,7 @@ struct fireball_t final : public mage_spell_t
     mage_spell_t( "fireball", p, rank_spell( p, fireball_ranks ) )
   {
     parse_options( options_str );
+    triggers_heating_up = true;
   }
 };
 
@@ -400,6 +498,16 @@ struct fire_blast_t final : public mage_spell_t
     mage_spell_t( "fire_blast", p, rank_spell( p, fire_blast_ranks ) )
   {
     parse_options( options_str );
+    triggers_heating_up = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    // Fire Blast adds a Heating Up stack whenever it deals damage
+    if ( result_is_hit( s->result ) && p()->talents.heating_up.ok() )
+      p()->buffs.heating_up->trigger();
   }
 };
 
@@ -409,6 +517,17 @@ struct scorch_t final : public mage_spell_t
     mage_spell_t( "scorch", p, rank_spell( p, scorch_ranks ) )
   {
     parse_options( options_str );
+    triggers_heating_up = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    // Improved Scorch: chance to stack Fire Vulnerability
+    if ( result_is_hit( s->result ) && p()->talents.improved_scorch.ok() &&
+         rng().roll( p()->talents.improved_scorch->effectN( 1 ).percent() ) )
+      td( s->target )->debuffs.fire_vulnerability->trigger();
   }
 };
 
@@ -418,6 +537,12 @@ struct pyroblast_t final : public mage_spell_t
     mage_spell_t( "pyroblast", p, talent_rank_spell( p, p->talents.pyroblast, pyroblast_ranks ) )
   {
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->buffs.heating_up->expire();
   }
 };
 
@@ -498,6 +623,7 @@ struct mage_tick_spell_t final : public mage_spell_t
   {
     background = dual = ground_aoe = true;
     aoe                         = -1;
+    triggers_procs              = false;
   }
 };
 
@@ -708,6 +834,28 @@ struct buff_spell_t final : public mage_spell_t
   }
 };
 
+// Combustion lasts until its fire crits are used up
+struct combustion_t final : public mage_spell_t
+{
+  combustion_t( mage_t* p, std::string_view options_str ) :
+    mage_spell_t( "combustion", p, p->talents.combustion.ok() ? p->talents.combustion.spell() : spell_data_t::not_found() )
+  {
+    parse_options( options_str );
+    harmful = may_miss = may_crit = false;
+    target              = p;
+    trigger_gcd         = 0_ms;
+    use_off_gcd         = true;
+    triggers_procs      = false;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->buffs.combustion->expire();
+    p()->buffs.combustion_crits->trigger( p()->buffs.combustion_crits->max_stack() );
+  }
+};
+
 struct cold_snap_t final : public mage_spell_t
 {
   cold_snap_t( mage_t* p, std::string_view options_str ) :
@@ -767,10 +915,16 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
     return new buff_spell_t( name, this, options_str, talents.arcane_power, buffs.arcane_power );
   if ( name == "presence_of_mind" )
     return new buff_spell_t( name, this, options_str, talents.presence_of_mind, buffs.presence_of_mind );
-  if ( name == "combustion" )
-    return new buff_spell_t( name, this, options_str, talents.combustion, buffs.combustion );
+  if ( name == "combustion" )       return new combustion_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+void mage_t::create_actions()
+{
+  ignite = new ignite_t( this );
+
+  player_t::create_actions();
 }
 
 void mage_t::init_spells()
@@ -855,6 +1009,10 @@ void mage_t::create_buffs()
   buffs.presence_of_mind =
     make_buff( this, "presence_of_mind", talents.presence_of_mind.spell() )->set_cooldown( 0_ms );
   buffs.combustion = make_buff( this, "combustion", find_spell( 28682 ) )->set_cooldown( 0_ms );
+  buffs.combustion_crits = make_buff( this, "combustion_crits", talents.combustion.spell() )
+                             ->set_cooldown( 0_ms )
+                             ->set_duration( 0_ms )
+                             ->set_max_stack( std::max( 1u, talents.combustion->max_stacks() ) );
 
   buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 12536 ) );
   buffs.heating_up       = make_buff( this, "heating_up", find_spell( 400625 ) );
