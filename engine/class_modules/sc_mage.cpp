@@ -241,6 +241,11 @@ struct mage_t final : public player_t
 
   action_t* ignite = nullptr;
 
+  struct cooldowns_t
+  {
+    cooldown_t* arcane_concentration = nullptr;  // internal cooldown of the Clearcasting proc
+  } cooldowns;
+
   struct options_t
   {
     // raid bosses cannot be frozen; enable for targets Frost Nova and Frostbite can root
@@ -262,8 +267,11 @@ struct mage_t final : public player_t
     buffs(),
     procs(),
     gains(),
+    cooldowns(),
     target_data()
-  { }
+  {
+    cooldowns.arcane_concentration = get_cooldown( "arcane_concentration" );
+  }
 
   resource_e primary_resource() const override { return RESOURCE_MANA; }
   role_e primary_role() const override { return ROLE_SPELL; }
@@ -292,6 +300,7 @@ struct mage_t final : public player_t
   void create_buffs() override;
   void reset() override;
   double resource_regen_per_second( resource_e ) const override;
+  double composite_spell_power( school_e ) const override;
   double mana_regen_while_casting() const;
   // talent tree (arcane, fire, frost) holding the most points
   enum class mage_tree_e { ARCANE, FIRE, FROST };
@@ -361,6 +370,9 @@ struct mage_spell_t : public mage_action_t<spell_t>
   // this cast spends a Fingers of Frost charge: the target counts as frozen
   bool fingers_of_frost_cast = false;
 
+  // share of the Missile Barrage talent chance this cast rolls (1 = full)
+  double missile_barrage_share = 0.0;
+
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -377,6 +389,7 @@ struct mage_spell_t : public mage_action_t<spell_t>
     parse_effects( p()->buffs.arcane_power );
     parse_effects( p()->buffs.combustion );
     parse_effects( p()->buffs.heating_up );
+    parse_effects( p()->buffs.arcane_blast );
     affected_by_clearcasting     = parse_effects( p()->buffs.clearcasting );
     affected_by_presence_of_mind = base_execute_time > 0_ms && parse_effects( p()->buffs.presence_of_mind );
   }
@@ -430,6 +443,8 @@ struct mage_spell_t : public mage_action_t<spell_t>
     if ( school == SCHOOL_FIRE )
       trigger_combustion( s );
 
+    trigger_arcane_concentration();
+
     if ( s->result == RESULT_CRIT )
     {
       if ( school == SCHOOL_FIRE )
@@ -461,6 +476,19 @@ struct mage_spell_t : public mage_action_t<spell_t>
     }
 
     p()->buffs.combustion->trigger();
+  }
+
+  // Clearcasting after a damage spell hits, with an internal cooldown
+  void trigger_arcane_concentration()
+  {
+    if ( !p()->talents.arcane_concentration.ok() || p()->cooldowns.arcane_concentration->down() )
+      return;
+
+    if ( rng().roll( p()->talents.arcane_concentration->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.clearcasting->trigger();
+      p()->cooldowns.arcane_concentration->start( p()->talents.arcane_concentration->internal_cooldown() );
+    }
   }
 
   void trigger_winters_chill( action_state_t* s )
@@ -501,6 +529,10 @@ struct mage_spell_t : public mage_action_t<spell_t>
     if ( fingers_of_frost_cast )
       p()->buffs.fingers_of_frost->decrement();
 
+    if ( missile_barrage_share > 0 && p()->talents.missile_barrage.ok() &&
+         rng().roll( missile_barrage_share * p()->talents.missile_barrage->effectN( 1 ).percent() ) )
+      p()->buffs.missile_barrage->trigger();
+
     if ( clearcasting )
       p()->buffs.clearcasting->decrement();
     if ( presence_of_mind )
@@ -539,7 +571,8 @@ struct fireball_t final : public mage_spell_t
     mage_spell_t( "fireball", p, rank_spell( p, fireball_ranks ) )
   {
     parse_options( options_str );
-    triggers_heating_up = true;
+    triggers_heating_up   = true;
+    missile_barrage_share = 0.5;
   }
 };
 
@@ -549,7 +582,8 @@ struct frostbolt_t final : public mage_spell_t
     mage_spell_t( "frostbolt", p, rank_spell( p, frostbolt_ranks ) )
   {
     parse_options( options_str );
-    chills = true;
+    chills                = true;
+    missile_barrage_share = 0.5;
   }
 
   void impact( action_state_t* s ) override
@@ -649,6 +683,14 @@ struct arcane_blast_t final : public mage_spell_t
     mage_spell_t( "arcane_blast", p, talent_rank_spell( p, p->talents.arcane_blast, arcane_blast_ranks ) )
   {
     parse_options( options_str );
+    missile_barrage_share = 1.0;
+  }
+
+  // each cast adds a stack: spell damage from intellect, higher Arcane Blast cost
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->buffs.arcane_blast->trigger();
   }
 };
 
@@ -658,6 +700,14 @@ struct arcane_wrath_t final : public mage_spell_t
     mage_spell_t( "arcane_wrath", p, talent_rank_spell( p, p->talents.arcane_wrath, arcane_wrath_ranks ) )
   {
     parse_options( options_str );
+    missile_barrage_share = 0.5;
+  }
+
+  // extra spell damage from maximum mana
+  double composite_total_spell_power() const override
+  {
+    return mage_spell_t::composite_total_spell_power() +
+           p()->resources.max[ RESOURCE_MANA ] * data().effectN( 2 ).percent();
   }
 };
 
@@ -822,6 +872,20 @@ struct arcane_missiles_t final : public mage_spell_t
 
     if ( data().ok() )
       tick_action = new arcane_missile_t( p, max_rank( p, arcane_missiles_ranks ).tick_id );
+  }
+
+  void init() override
+  {
+    mage_spell_t::init();
+    parse_effects( p()->buffs.missile_barrage );
+  }
+
+  // Missile Barrage shortens the channel and the time between missiles; it
+  // stays up until the channel ends so every tick keeps the faster rate
+  void last_tick( dot_t* d ) override
+  {
+    mage_spell_t::last_tick( d );
+    p()->buffs.missile_barrage->expire();
   }
 };
 
@@ -1146,7 +1210,9 @@ void mage_t::create_buffs()
   buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 12536 ) );
   buffs.heating_up       = make_buff( this, "heating_up", find_spell( 400625 ) );
   buffs.missile_barrage  = make_buff( this, "missile_barrage", find_spell( 400589 ) );
-  buffs.arcane_blast     = make_buff( this, "arcane_blast", find_spell( 400573 ) );
+  buffs.arcane_blast     = make_buff( this, "arcane_blast", find_spell( 400573 ) )
+                         ->set_default_value_from_effect( 1 )
+                         ->add_invalidate( CACHE_SPELL_POWER );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 400669 ) )
                              ->set_max_stack( 2 );
 }
@@ -1190,6 +1256,16 @@ double mage_t::mana_regen_while_casting() const
     pct += talents.arcane_meditation->effectN( 1 ).percent();
 
   return std::min( pct, 1.0 );
+}
+
+double mage_t::composite_spell_power( school_e school ) const
+{
+  double sp = player_t::composite_spell_power( school );
+
+  // Arcane Blast: spell damage equal to a share of intellect per stack
+  sp += buffs.arcane_blast->check_stack_value() * cache.intellect();
+
+  return sp;
 }
 
 double mage_t::resource_regen_per_second( resource_e r ) const

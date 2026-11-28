@@ -50,8 +50,9 @@ void arcane( player_t* p )
   mana( precombat, default_ );
   default_->add_action( "arcane_power" );
   default_->add_action( "presence_of_mind" );
+  default_->add_action( "arcane_missiles,if=buff.missile_barrage.up" );
   default_->add_action( "arcane_wrath" );
-  default_->add_action( "arcane_blast" );
+  default_->add_action( "arcane_blast,if=buff.arcane_blast.remains<2|buff.arcane_blast.stack<4&mana.pct>50" );
   default_->add_action( "arcane_missiles" );
   default_->add_action( "frostbolt" );
 }
