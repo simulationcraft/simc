@@ -241,6 +241,12 @@ struct mage_t final : public player_t
 
   action_t* ignite = nullptr;
 
+  struct options_t
+  {
+    // raid bosses cannot be frozen; enable for targets Frost Nova and Frostbite can root
+    bool freezable_target = false;
+  } options;
+
   struct gains_t
   {
     gain_t* evocation          = nullptr;
@@ -277,6 +283,7 @@ struct mage_t final : public player_t
 
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
   void create_actions() override;
+  void create_options() override;
   void init_action_list() override;
   void init_base_stats() override;
   void init_spells() override;
@@ -300,6 +307,12 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) : actor_target_data_t( ta
   // fire damage taken from the mage, per stack
   debuffs.fire_vulnerability =
     make_buff( *this, "fire_vulnerability", mage->find_spell( 22959 ) )->set_default_value_from_effect( 1 );
+
+  // empowers the next Cone of Cold, per stack
+  debuffs.winters_chill = make_buff( *this, "winters_chill", mage->find_spell( 12579 ) );
+
+  // rooted by Frost Nova or Frostbite; duration given on trigger
+  debuffs.frozen = make_buff( *this, "frozen" )->set_duration( 0_ms );
 }
 
 // ==========================================================================
@@ -342,6 +355,12 @@ struct mage_spell_t : public mage_action_t<spell_t>
   // non-periodic crits stack Heating Up (Fireball, Fire Blast, Scorch)
   bool triggers_heating_up = false;
 
+  // hits apply a Chill effect (Frostbite, Fingers of Frost)
+  bool chills = false;
+
+  // this cast spends a Fingers of Frost charge: the target counts as frozen
+  bool fingers_of_frost_cast = false;
+
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -372,9 +391,38 @@ struct mage_spell_t : public mage_action_t<spell_t>
     return m;
   }
 
+  bool frozen( player_t* t ) const
+  {
+    return fingers_of_frost_cast || td( t )->debuffs.frozen->check();
+  }
+
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double c = base_t::composite_target_crit_chance( t );
+
+    if ( p()->talents.shatter.ok() && frozen( t ) )
+      c += p()->talents.shatter->effectN( 1 ).percent();
+
+    return c;
+  }
+
+  // Frostbite can freeze, Fingers of Frost can empower the next casts
+  void trigger_chill( action_state_t* s )
+  {
+    if ( p()->talents.frostbite.ok() && p()->options.freezable_target &&
+         rng().roll( p()->talents.frostbite->effectN( 1 ).percent() ) )
+      td( s->target )->debuffs.frozen->trigger( p()->find_spell( 12494 )->duration() );
+
+    if ( p()->talents.fingers_of_frost.ok() && rng().roll( p()->talents.fingers_of_frost->effectN( 2 ).percent() ) )
+      p()->buffs.fingers_of_frost->trigger( as<int>( p()->talents.fingers_of_frost->effectN( 1 ).base_value() ) );
+  }
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
+
+    if ( chills && result_is_hit( s->result ) )
+      trigger_chill( s );
 
     if ( !triggers_procs || !result_is_hit( s->result ) )
       return;
@@ -415,6 +463,12 @@ struct mage_spell_t : public mage_action_t<spell_t>
     p()->buffs.combustion->trigger();
   }
 
+  void trigger_winters_chill( action_state_t* s )
+  {
+    if ( p()->talents.winters_chill.ok() && rng().roll( p()->talents.winters_chill->effectN( 2 ).percent() ) )
+      td( s->target )->debuffs.winters_chill->trigger();
+  }
+
   void trigger_ignite( const action_state_t* s )
   {
     if ( !p()->talents.ignite.ok() )
@@ -439,7 +493,13 @@ struct mage_spell_t : public mage_action_t<spell_t>
     bool clearcasting     = affected_by_clearcasting && p()->buffs.clearcasting->check();
     bool presence_of_mind = affected_by_presence_of_mind && p()->buffs.presence_of_mind->check();
 
+    // any damaging cast spends a Fingers of Frost charge
+    fingers_of_frost_cast = harmful && !background && p()->buffs.fingers_of_frost->check();
+
     base_t::execute();
+
+    if ( fingers_of_frost_cast )
+      p()->buffs.fingers_of_frost->decrement();
 
     if ( clearcasting )
       p()->buffs.clearcasting->decrement();
@@ -489,6 +549,15 @@ struct frostbolt_t final : public mage_spell_t
     mage_spell_t( "frostbolt", p, rank_spell( p, frostbolt_ranks ) )
   {
     parse_options( options_str );
+    chills = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      trigger_winters_chill( s );
   }
 };
 
@@ -553,6 +622,25 @@ struct ice_lance_t final : public mage_spell_t
   {
     parse_options( options_str );
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = mage_spell_t::composite_target_multiplier( t );
+
+    if ( frozen( t ) )
+      m *= 1.0 + data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    // only Ice Lance empowered by Fingers of Frost applies Winter's Chill
+    if ( result_is_hit( s->result ) && fingers_of_frost_cast )
+      trigger_winters_chill( s );
+  }
 };
 
 struct arcane_blast_t final : public mage_spell_t
@@ -591,7 +679,31 @@ struct cone_of_cold_t final : public mage_spell_t
     mage_spell_t( "cone_of_cold", p, rank_spell( p, cone_of_cold_ranks ) )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe    = -1;
+    chills = true;
+  }
+
+  // Winter's Chill: more damage and spell power coefficient per stack, then consumed
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = mage_spell_t::composite_target_multiplier( t );
+    auto wc  = td( t )->debuffs.winters_chill;
+    m *= 1.0 + wc->check() * wc->data().effectN( 1 ).percent();
+    return m;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    double c = mage_spell_t::spell_direct_power_coefficient( s );
+    auto wc  = td( s->target )->debuffs.winters_chill;
+    c += wc->check() * wc->data().effectN( 2 ).percent();
+    return c;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+    td( s->target )->debuffs.winters_chill->expire();
   }
 };
 
@@ -602,6 +714,14 @@ struct frost_nova_t final : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->options.freezable_target )
+      td( s->target )->debuffs.frozen->trigger( data().duration() );
   }
 };
 
@@ -673,7 +793,9 @@ struct blizzard_t final : public mage_spell_t
     {
       dot_duration   = data().duration();
       base_tick_time = data().effectN( 3 ).period();
-      tick_action    = new mage_tick_spell_t( "blizzard_tick", p, max_rank( p, blizzard_ranks ).tick_id );
+      auto tick      = new mage_tick_spell_t( "blizzard_tick", p, max_rank( p, blizzard_ranks ).tick_id );
+      tick->chills   = p->talents.improved_blizzard.ok();
+      tick_action    = tick;
     }
   }
 };
@@ -920,6 +1042,13 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   return player_t::create_action( name, options_str );
 }
 
+void mage_t::create_options()
+{
+  player_t::create_options();
+
+  add_option( opt_bool( "freezable_target", options.freezable_target ) );
+}
+
 void mage_t::create_actions()
 {
   ignite = new ignite_t( this );
@@ -1018,7 +1147,8 @@ void mage_t::create_buffs()
   buffs.heating_up       = make_buff( this, "heating_up", find_spell( 400625 ) );
   buffs.missile_barrage  = make_buff( this, "missile_barrage", find_spell( 400589 ) );
   buffs.arcane_blast     = make_buff( this, "arcane_blast", find_spell( 400573 ) );
-  buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 400669 ) );
+  buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 400669 ) )
+                             ->set_max_stack( 2 );
 }
 
 void mage_t::init_base_stats()

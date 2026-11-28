@@ -76,6 +76,9 @@ void frost( player_t* p )
   action_priority_list_t* default_  = p->get_action_priority_list( "default" );
 
   mana( precombat, default_ );
+  default_->add_action( "cold_snap,if=cooldown.cone_of_cold.remains>5&debuff.winters_chill.stack>=5" );
+  default_->add_action( "ice_lance,if=buff.fingers_of_frost.up|debuff.frozen.up" );
+  default_->add_action( "cone_of_cold,if=debuff.winters_chill.stack>=5|!talent.winters_chill" );
   default_->add_action( "frostbolt" );
 }
 //mage_apl_end
