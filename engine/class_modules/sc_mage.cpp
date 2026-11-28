@@ -294,6 +294,7 @@ struct mage_t final : public player_t
   void reset() override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_spell_power( school_e ) const override;
+  void invalidate_cache( cache_e ) override;
   double mana_regen_while_casting() const;
   // talent tree (arcane, fire, frost) holding the most points
   enum class mage_tree_e { ARCANE, FIRE, FROST };
@@ -362,6 +363,9 @@ struct mage_spell_t : public mage_action_t<spell_t>
 
   // this cast spends a Fingers of Frost charge: the target counts as frozen
   bool fingers_of_frost_cast = false;
+
+  // Master of Elements refunds once per cast, not per target hit
+  bool master_of_elements_refunded = false;
 
   // share of the Missile Barrage talent chance this cast rolls (1 = full)
   double missile_barrage_share = 0.0;
@@ -470,8 +474,7 @@ struct mage_spell_t : public mage_action_t<spell_t>
       if ( triggers_heating_up && p()->talents.heating_up.ok() )
         p()->buffs.heating_up->trigger();
 
-      // refunds once per cast, not per target hit
-      if ( s->chain_target <= 1 && ( school == SCHOOL_FIRE || school == SCHOOL_FROST ) )
+      if ( !master_of_elements_refunded && ( school == SCHOOL_FIRE || school == SCHOOL_FROST ) )
         trigger_master_of_elements();
     }
   }
@@ -527,6 +530,7 @@ struct mage_spell_t : public mage_action_t<spell_t>
     if ( !p()->talents.master_of_elements.ok() )
       return;
 
+    master_of_elements_refunded = true;
     double refund = base_costs[ RESOURCE_MANA ] * p()->talents.master_of_elements->effectN( 1 ).percent();
     if ( refund > 0 )
       p()->resource_gain( RESOURCE_MANA, refund, p()->gains.master_of_elements, this );
@@ -535,22 +539,28 @@ struct mage_spell_t : public mage_action_t<spell_t>
   void execute() override
   {
     // the buffs modify this cast, so read them before execute() and consume after
-    bool clearcasting     = affected_by_clearcasting && p()->buffs.clearcasting->check();
-    bool presence_of_mind = affected_by_presence_of_mind && p()->buffs.presence_of_mind->check();
+    bool clearcasting     = !background && affected_by_clearcasting && p()->buffs.clearcasting->check();
+    bool presence_of_mind = !background && affected_by_presence_of_mind && p()->buffs.presence_of_mind->check();
+    timespan_t clearcasting_trigger = p()->buffs.clearcasting->last_trigger_time();
 
-    // any damaging cast spends a Fingers of Frost charge
-    fingers_of_frost_cast = harmful && !background && p()->buffs.fingers_of_frost->check();
-
-    base_t::execute();
-
+    // any damaging cast spends a Fingers of Frost charge; channels whose ticks
+    // deal the damage cannot use it. Spent before execute() so a proc from this
+    // cast's own hit keeps all its charges.
+    fingers_of_frost_cast =
+      harmful && !background && !( channeled && tick_action ) && p()->buffs.fingers_of_frost->check();
     if ( fingers_of_frost_cast )
       p()->buffs.fingers_of_frost->decrement();
+
+    master_of_elements_refunded = false;
+
+    base_t::execute();
 
     if ( missile_barrage_share > 0 && p()->talents.missile_barrage.ok() &&
          rng().roll( missile_barrage_share * p()->talents.missile_barrage->effectN( 1 ).percent() ) )
       p()->buffs.missile_barrage->trigger();
 
-    if ( clearcasting )
+    // a Clearcasting proc from this cast's own hit is kept for the next cast
+    if ( clearcasting && p()->buffs.clearcasting->last_trigger_time() == clearcasting_trigger )
       p()->buffs.clearcasting->decrement();
     if ( presence_of_mind )
       p()->buffs.presence_of_mind->decrement();
@@ -625,7 +635,8 @@ struct fire_blast_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    // Fire Blast adds a Heating Up stack whenever it deals damage
+    // Fire Blast adds a Heating Up stack whenever it deals damage, on top of
+    // the stack every Heating Up spell gets from a crit
     if ( result_is_hit( s->result ) && p()->talents.heating_up.ok() )
       p()->buffs.heating_up->trigger();
   }
@@ -684,13 +695,14 @@ struct ice_lance_t final : public mage_spell_t
     return m;
   }
 
-  void impact( action_state_t* s ) override
+  // only Ice Lance empowered by Fingers of Frost applies Winter's Chill; decided
+  // at cast because a later cast overwrites fingers_of_frost_cast before impact
+  void execute() override
   {
-    mage_spell_t::impact( s );
+    mage_spell_t::execute();
 
-    // only Ice Lance empowered by Fingers of Frost applies Winter's Chill
-    if ( result_is_hit( s->result ) && fingers_of_frost_cast )
-      trigger_winters_chill( s );
+    if ( fingers_of_frost_cast && result_is_hit( execute_state->result ) )
+      trigger_winters_chill( execute_state );
   }
 };
 
@@ -1266,6 +1278,15 @@ double mage_t::mana_regen_while_casting() const
     pct += talents.arcane_meditation->effectN( 1 ).percent();
 
   return std::min( pct, 1.0 );
+}
+
+void mage_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  // Arcane Blast spell power depends on intellect
+  if ( c == CACHE_INTELLECT && buffs.arcane_blast && buffs.arcane_blast->check() )
+    player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 
 double mage_t::composite_spell_power( school_e school ) const
