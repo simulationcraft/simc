@@ -234,11 +234,6 @@ struct mage_t final : public player_t
     buff_t* fingers_of_frost = nullptr;
   } buffs;
 
-  struct procs_t
-  {
-    proc_t* ignite_munch = nullptr;
-  } procs;
-
   action_t* ignite = nullptr;
 
   struct cooldowns_t
@@ -265,7 +260,6 @@ struct mage_t final : public player_t
     player_t( sim, MAGE, name, r ),
     talents(),
     buffs(),
-    procs(),
     gains(),
     cooldowns(),
     target_data()
@@ -296,7 +290,6 @@ struct mage_t final : public player_t
   void init_base_stats() override;
   void init_spells() override;
   void init_gains() override;
-  void init_procs() override;
   void create_buffs() override;
   void reset() override;
   double resource_regen_per_second( resource_e ) const override;
@@ -373,6 +366,10 @@ struct mage_spell_t : public mage_action_t<spell_t>
   // share of the Missile Barrage talent chance this cast rolls (1 = full)
   double missile_barrage_share = 0.0;
 
+  // hit chance from Arcane Focus and Elemental Precision; their spell modifier
+  // (P_PENETRATION in the data) is a hit chance bonus on this client
+  double talent_hit = 0.0;
+
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -392,6 +389,15 @@ struct mage_spell_t : public mage_action_t<spell_t>
     parse_effects( p()->buffs.arcane_blast );
     affected_by_clearcasting     = parse_effects( p()->buffs.clearcasting );
     affected_by_presence_of_mind = base_execute_time > 0_ms && parse_effects( p()->buffs.presence_of_mind );
+
+    for ( const auto& t : { p()->talents.arcane_focus, p()->talents.elemental_precision } )
+      if ( t.ok() && data().affected_by( t->effectN( 1 ) ) )
+        talent_hit += t->effectN( 1 ).percent();
+  }
+
+  double composite_hit() const override
+  {
+    return base_t::composite_hit() + talent_hit;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -399,7 +405,18 @@ struct mage_spell_t : public mage_action_t<spell_t>
     double m = base_t::composite_target_multiplier( t );
 
     if ( school == SCHOOL_FIRE )
-      m *= 1.0 + td( t )->debuffs.fire_vulnerability->check_stack_value();
+    {
+      const mage_td_t* d = td( t );
+      m *= 1.0 + d->debuffs.fire_vulnerability->check_stack_value();
+
+      // Fire Power: bonus per fire effect of the mage on the target, up to four
+      if ( p()->talents.fire_power.ok() )
+      {
+        int effects = d->dots.fireball->is_ticking() + d->dots.pyroblast->is_ticking() +
+                      d->dots.ignite->is_ticking() + ( d->debuffs.fire_vulnerability->check() > 0 );
+        m *= 1.0 + std::min( effects, 4 ) * p()->talents.fire_power->effectN( 1 ).percent();
+      }
+    }
 
     return m;
   }
@@ -1229,13 +1246,6 @@ void mage_t::init_gains()
   gains.evocation          = get_gain( "Evocation" );
   gains.master_of_elements = get_gain( "Master of Elements" );
   gains.mana_gem           = get_gain( "Mana Gem" );
-}
-
-void mage_t::init_procs()
-{
-  player_t::init_procs();
-
-  procs.ignite_munch = get_proc( "Ignite Munch" );
 }
 
 void mage_t::reset()
