@@ -19,6 +19,7 @@
 #include "generated/sc_spec_list.inc"
 #include "generated/trait_data.inc"
 #include "sc_extra_data.inc"
+#include "sc_level_stats.inc"
 
 #if SC_USE_PTR
 #include "generated/sc_scale_data_ptr.inc"
@@ -879,6 +880,18 @@ const stat_data_t& dbc_t::race_base( race_e r ) const
 const stat_data_t& dbc_t::race_base( pet_e /* r */ ) const
 {
   return race_base( RACE_NONE );
+}
+
+const stat_data_t* dbc_t::race_class_base( race_e r, player_e t, unsigned level ) const
+{
+  const unsigned race_id  = util::race_id( r );
+  const unsigned class_id = util::class_id( t );
+
+  auto it = range::find_if( __race_class_stats_by_level, [ & ]( const race_class_stats_t& e ) {
+    return e.race == race_id && e.cls == class_id && e.level == level;
+  } );
+
+  return it == std::end( __race_class_stats_by_level ) ? nullptr : &it->stats;
 }
 
 double dbc_t::dodge_factor( player_e t ) const

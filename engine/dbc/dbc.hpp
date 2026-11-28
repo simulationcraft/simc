@@ -351,6 +351,8 @@ public:
   const stat_data_t& attribute_base( pet_e t, unsigned level ) const;
   const stat_data_t& race_base( race_e r ) const;
   const stat_data_t& race_base( pet_e t ) const;
+  // exact base attributes for a race/class/level, racial modifiers included; nullptr if not tabulated
+  const stat_data_t* race_class_base( race_e r, player_e t, unsigned level ) const;
   double parry_factor( player_e t ) const;
   double dodge_factor( player_e t ) const;
   double miss_factor( player_e t ) const;

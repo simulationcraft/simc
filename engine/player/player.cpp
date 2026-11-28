@@ -1482,6 +1482,16 @@ void player_t::init_base_stats()
     base.stats.attribute[ ATTR_SPIRIT ] =
       dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
+    // exact per race/class/level values replace the class + race approximation where known
+    if ( const stat_data_t* exact = is_pet() ? nullptr : dbc->race_class_base( race, type, level() ) )
+    {
+      base.stats.attribute[ ATTR_STRENGTH ]  = exact->strength;
+      base.stats.attribute[ ATTR_AGILITY ]   = exact->agility;
+      base.stats.attribute[ ATTR_STAMINA ]   = exact->stamina;
+      base.stats.attribute[ ATTR_INTELLECT ] = exact->intellect;
+      base.stats.attribute[ ATTR_SPIRIT ]    = exact->spirit;
+    }
+
     // Passive Flat Stat Modifiers
     for( auto attr : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
     {

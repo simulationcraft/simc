@@ -2066,6 +2066,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_ATTACK_POWER:        return STAT_ATTACK_POWER;
     case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
     case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
+    case ITEM_MOD_SPELL_DAMAGE_DONE:   return STAT_SPELL_POWER;  // classic "+spell damage" item stat
     case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
